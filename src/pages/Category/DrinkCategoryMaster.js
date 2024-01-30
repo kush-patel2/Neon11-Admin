@@ -16,11 +16,10 @@ import {
   Input,
   Row,
 } from "reactstrap";
-import BreadCrumb from "../../../Components/Common/BreadCrumb";
+import BreadCrumb from "../../Components/Common/BreadCrumb";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 
-import { Table } from "antd";
 import {
   createDrinkCategory,
   getDrinkCategory,
@@ -28,7 +27,6 @@ import {
   removeDrinkCategory,
   updateDrinkCategory,
 } from "../../functions/Category/DrinkCategoryMaster";
-import { getSalesForecastChartsData } from "../../store/actions";
 
 const initialState = {
   categoryName: "",
@@ -38,12 +36,10 @@ const initialState = {
 const DrinkCategoryMaster = () => {
   const [values, setValues] = useState(initialState);
   const { categoryName, IsActive } = values;
-  // const [CountryCode, setCountryCode] = useState("");
-  // const [CountryName, setCountryName] = useState("");
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
-  //validation check
+ 
   const [errCN, setErrCN] = useState(false);
 
   const [query, setQuery] = useState("");
@@ -60,11 +56,6 @@ const DrinkCategoryMaster = () => {
     }
   }, [formErrors, isSubmit]);
 
-  const loadCategories = () => {
-    listDrinkCategory().then((res) => {
-      setCategories(res);
-    });
-  };
   const [modal_list, setmodal_list] = useState(false);
   const tog_list = () => {
     setmodal_list(!modal_list);
@@ -113,7 +104,6 @@ const DrinkCategoryMaster = () => {
     setFormErrors(erros);
     setIsSubmit(true);
 
-    if (CountryCode !== "" && CountryName !== "") {
       createDrinkCategory(values)
         .then((res) => {
           if (res.isOk) {
@@ -132,12 +122,10 @@ const DrinkCategoryMaster = () => {
         .catch((error) => {
           console.log(error);
         });
-    }
   };
 
   const handleDelete = (e) => {
     e.preventDefault();
-    console.log("CountryId", remove_id);
     removeDrinkCategory(remove_id)
       .then((res) => {
         setmodal_delete(!modal_delete);
@@ -301,7 +289,7 @@ const DrinkCategoryMaster = () => {
     },
   ];
 
-  document.title = "Drink Category | RC Henning Coffee Company";
+  document.title = "Drink Category Master | RC Henning Coffee Company";
 
   return (
     <React.Fragment>
@@ -318,7 +306,7 @@ const DrinkCategoryMaster = () => {
                 <CardHeader>
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" sm={6} lg={4} md={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">Category</h2>
+                      <h2 className="card-title mb-0 fs-4 mt-2">Drink Category</h2>
                     </Col>
 
                     <Col sm={6} lg={4} md={6}>

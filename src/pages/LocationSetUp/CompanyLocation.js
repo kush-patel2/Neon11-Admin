@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import UiContent from "../../../Components/Common/UiContent";
-import BreadCrumb from "../../../Components/Common/BreadCrumb";
-import { Link } from "react-router-dom";
+import UiContent from "../../Components/Common/UiContent";
+import BreadCrumb from "../../Components/Common/BreadCrumb";
 import {
   Button,
   Card,
@@ -25,32 +24,30 @@ import {
   listCity,
   listState,
   listCountry,
-} from "../../../functions/Location/Location";
+} from "../../functions/Location/Location";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 import {
-  createZiyaLocation,
-  getZiyaLocation,
-  removeZiyaLocation,
-  updateZiyaLocation,
-} from "../../../functions/ziyaLocation/ziyaLocation";
+  createCompanyLocation,
+  getCompanyLocation,
+  updateCompanyLocation,
+  removeCompanyLocation
+} from "../../functions/Location/CompanyLocation";
 
 const initialState = {
   CityID: "",
   CountryID: "",
   StateID: "",
   Area: "",
-  Address: "",
-  StoreLogo: "",
-  UserName: "",
-  Password: "",
   Location: "",
   latitude: "",
   longitude: "",
-  isActive: false,
+  Address: "",
+  StoreLogo: "",
+  IsActive: false,
 };
 
-const ZiyaLocation = () => {
+const CompanyLocation = () => {
   const [values, setValues] = useState(initialState);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
@@ -67,12 +64,10 @@ const ZiyaLocation = () => {
     Area,
     Address,
     StoreLogo,
-    UserName,
-    Password,
     longitude,
     latitude,
     Location,
-    isActive,
+    IsActive,
   } = values;
 
   useEffect(() => {
@@ -110,7 +105,7 @@ const ZiyaLocation = () => {
     setmodal_edit(!modal_edit);
     setIsSubmit(false);
     set_Id(_id);
-    getZiyaLocation(_id)
+    getCompanyLocation(_id)
       .then((res) => {
         console.log(res);
         setValues({
@@ -120,13 +115,11 @@ const ZiyaLocation = () => {
           Location: res.Location,
           latitude: res.latitude,
           StoreLogo: res.StoreLogo,
-          UserName: res.UserName,
-          Password: res.Password,
           Address: res.Address,
           longitude: res.longitude,
           CountryID: res.CountryID,
           StateID: res.StateID,
-          isActive: res.isActive,
+          IsActive: res.IsActive,
         });
       })
       .catch((err) => {
@@ -136,12 +129,11 @@ const ZiyaLocation = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    console.log("city update", values);
-    let erros = validate(values);
-    setFormErrors(erros);
+    // let erros = validate(values);
+    // setFormErrors(erros);
     setIsSubmit(true);
 
-    if (Object.keys(erros).length === 0) {
+    // if (Object.keys(erros).length === 0) {
       const formdata = new FormData();
 
       formdata.append("CityID", values.CityID);
@@ -152,28 +144,22 @@ const ZiyaLocation = () => {
       formdata.append("longitude", values.longitude);
       formdata.append("latitude", values.latitude);
       formdata.append("Location", values.Location);
-      //
-      formdata.append("UserName", values.UserName);
-      formdata.append("Password", values.Password);
-
       formdata.append("myFile", values.StoreLogo);
-      formdata.append("isActive", values.isActive);
+      formdata.append("IsActive", values.IsActive);
 
-      updateZiyaLocation(_id, formdata)
+      updateCompanyLocation(_id, formdata)
         .then((res) => {
-          console.log("updated form", res);
           setmodal_edit(!modal_edit);
-          fetchCity();
+          fetchData();
           setNewProfileImageSelected(false);
           setImage("");
-
           setFormErrors({});
           setValues(initialState);
         })
         .catch((err) => {
           console.log(err);
         });
-    }
+    // }
   };
 
   const [Cities, setCities] = useState([]);
@@ -190,7 +176,6 @@ const ZiyaLocation = () => {
   const loadCity = () => {
     listCity().then((res) => {
       setCities(res);
-      console.log("citiess", res);
     });
   };
 
@@ -201,29 +186,24 @@ const ZiyaLocation = () => {
   const loadStates = () => {
     listState().then((res) => {
       setStates(res);
-      //console.log(res);
     });
   };
 
   const handleChange = (e) => {
-    console.log(e.target.name, e.target.value);
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
   const handleCheck = (e) => {
-    console.log(e.target.checked);
-    setValues({ ...values, isActive: e.target.checked });
+    setValues({ ...values, IsActive: e.target.checked });
   };
 
   const handleClick = (e) => {
     e.preventDefault();
-    console.log(values);
-    let erros = validate(values);
-    setFormErrors(erros);
+    // let erros = validate(values);
+    // setFormErrors(erros);
     setIsSubmit(true);
 
-    console.log(Object.keys(erros).length);
-    if (Object.keys(erros).length === 0) {
+    // if (Object.keys(erros).length === 0) {
       const formdata = new FormData();
 
       formdata.append("CityID", values.CityID);
@@ -232,56 +212,42 @@ const ZiyaLocation = () => {
       formdata.append("Area", values.Area);
       formdata.append("Address", values.Address);
       formdata.append("longitude", values.longitude);
-
-      //
-      formdata.append("UserName", values.UserName);
-      formdata.append("Password", values.Password);
-
       formdata.append("latitude", values.latitude);
       formdata.append("Location", values.Location);
       formdata.append("myFile", values.StoreLogo);
-      formdata.append("isActive", values.isActive);
+      formdata.append("IsActive", values.IsActive);
 
-      createZiyaLocation(formdata)
+      createCompanyLocation(formdata)
         .then((res) => {
           if (res.isOk) {
-            console.log(res);
             setmodal_list(!modal_list);
             setValues(initialState);
             setIsSubmit(false);
             setFormErrors({});
             setImage("");
-
             setNewProfileImageSelected(false);
-
-            fetchCity();
+            fetchData();
           }
         })
         .catch((err) => {
           console.log(err);
         });
-    }
+    // }
   };
 
   const handleDelete = (e) => {
     e.preventDefault();
-    console.log("state id", remove_id);
-    removeZiyaLocation(remove_id)
+    removeCompanyLocation(remove_id)
       .then((res) => {
-        console.log("deleted", res);
         setmodal_delete(false);
-        fetchCity();
+        fetchData();
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  //validation check
   const [errCiN, setErrCiN] = useState(false);
-  const [errUN, setErrUN] = useState(false);
-  const [errPass, setErrPass] = useState(false);
-
   const [errCC, setErrCC] = useState(false);
   const [errSN, setErrSN] = useState(false);
   const [errCN, setErrCN] = useState(false);
@@ -290,7 +256,6 @@ const ZiyaLocation = () => {
   const [errLocation, setErrLocation] = useState(false);
   const [errLAT, setErrLAT] = useState(false);
   const [errLONG, setErrLONG] = useState(false);
-  const [errLOGO, setErrLOGO] = useState(false);
 
   const validate = (values) => {
     const errors = {};
@@ -329,13 +294,6 @@ const ZiyaLocation = () => {
     if (values.Location !== "") {
       setErrLocation(false);
     }
-    if (values.StoreLogo == "") {
-      errors.StoreLogo = "Logo is Required!";
-      setErrLOGO(true);
-    }
-    if (values.StoreLogo !== "") {
-      setErrLOGO(false);
-    }
 
     if (values.latitude == "") {
       errors.latitude = "Latitude is Required!";
@@ -361,29 +319,11 @@ const ZiyaLocation = () => {
       setErrSN(false);
     }
 
-    if (values.UserName == "") {
-      errors.UserName = "UserName is requires!";
-      setErrUN(true);
-    }
-    if (values.UserName !== "") {
-      setErrUN(false);
-    }
-
-    if (values.Password == "") {
-      errors.Password = "Password is Required!";
-      setErrPass(true);
-    }
-    if (values.Password !== "") {
-      setErrPass(false);
-    }
-
     return errors;
   };
 
   const validClassCountryName =
     errCN && isSubmit ? "form-control is-invalid" : "form-control";
-  //   const validClassCityCode =
-  //     errCC && isSubmit ? "form-control is-invalid" : "form-control";
   const validClassCityName =
     errCiN && isSubmit ? "form-control is-invalid" : "form-control";
   const validClassStateName =
@@ -396,17 +336,10 @@ const ZiyaLocation = () => {
   const validClassLocation =
     errLocation && isSubmit ? "form-control is-invalid" : "form-control";
 
-  const validClassLogo =
-    errLOGO && isSubmit ? "form-control is-invalid" : "form-control";
   const validClassLAT =
     errLAT && isSubmit ? "form-control is-invalid" : "form-control";
   const validClassLONG =
     errLONG && isSubmit ? "form-control is-invalid" : "form-control";
-
-  const validClassUN =
-    errUN && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassPasss =
-    errPass && isSubmit ? "form-control is-invalid" : "form-control";
 
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
@@ -425,10 +358,10 @@ const ZiyaLocation = () => {
   }, []);
 
   useEffect(() => {
-    fetchCity();
+    fetchData();
   }, [pageNo, perPage, column, sortDirection, query, filter]);
 
-  const fetchCity = async () => {
+  const fetchData = async () => {
     setLoading(true);
     let skip = (pageNo - 1) * perPage;
     if (skip < 0) {
@@ -437,7 +370,7 @@ const ZiyaLocation = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_ZIYA}/api/auth/location/ziya-by-params`,
+        `${process.env.REACT_APP_API_URL_ZIYA}/api/auth/list-by-params/company-locations`,
         {
           skip: skip,
           per_page: perPage,
@@ -482,15 +415,6 @@ const ZiyaLocation = () => {
       sortable: true,
       sortField: "countryname",
     },
-
-    {
-      name: "Area",
-      cell: (row) => row.Address,
-      sortable: true,
-      sortField: "Address",
-      minWidth: "180px",
-    },
-
     {
       name: "Location Name",
       cell: (row) => row.Location,
@@ -501,7 +425,7 @@ const ZiyaLocation = () => {
     {
       name: "Status",
       selector: (row) => {
-        return <p>{row.isActive ? "Active" : "InActive"}</p>;
+        return <p>{row. IsActive ? "Active" : "InActive"}</p>;
       },
       sortable: false,
       sortField: "Status",
@@ -542,7 +466,7 @@ const ZiyaLocation = () => {
     },
   ];
 
-  document.title = "Ziya Location | ZIYA";
+  document.title = "Company Location | ZIYA";
   return (
     <React.Fragment>
       <UiContent />
@@ -550,7 +474,7 @@ const ZiyaLocation = () => {
         <Container fluid>
           <BreadCrumb
             maintitle="Location Setup"
-            title="Ziya Location"
+            title="Company Location"
             pageTitle="Location SetUp"
           />
           <Row>
@@ -560,7 +484,7 @@ const ZiyaLocation = () => {
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" lg={4} md={6} sm={6}>
                       <h2 className="card-title mb-0 fs-4 mt-2">
-                        Ziya Location{" "}
+                        Company Location{" "}
                       </h2>
                     </Col>
                     <Col lg={4} md={6} sm={6}>
@@ -647,7 +571,7 @@ const ZiyaLocation = () => {
             setValues(initialState);
           }}
         >
-          Add Ziya Location
+          Add Company Location
         </ModalHeader>
         <form>
           <ModalBody>
@@ -715,7 +639,6 @@ const ZiyaLocation = () => {
                   <select
                     name="CityID"
                     className={validClassCityName}
-                    // className="form-control"
                     onChange={handleChange}
                     value={CityID}
                     data-choices
@@ -750,7 +673,6 @@ const ZiyaLocation = () => {
                   <Input
                     type="text"
                     className={validClassArea}
-                    // className="form-control"
                     placeholder="Enter area"
                     name="Area"
                     value={Area}
@@ -768,7 +690,6 @@ const ZiyaLocation = () => {
                   <Input
                     type="text"
                     className={validClassLocation}
-                    // className="form-control"
                     placeholder="Enter location"
                     name="Location"
                     value={Location}
@@ -788,7 +709,6 @@ const ZiyaLocation = () => {
               <Input
                 type="text"
                 className={validClassAdd}
-                // className="form-control"
                 placeholder="Enter address"
                 name="Address"
                 value={Address}
@@ -807,7 +727,6 @@ const ZiyaLocation = () => {
                   <Input
                     type="text"
                     className={validClassLAT}
-                    // className="form-control"
                     placeholder="Enter latitude"
                     name="latitude"
                     value={latitude}
@@ -826,7 +745,6 @@ const ZiyaLocation = () => {
                   <Input
                     type="text"
                     className={validClassLONG}
-                    // className="form-control"
                     placeholder="Enter longitude"
                     name="longitude"
                     value={longitude}
@@ -842,56 +760,16 @@ const ZiyaLocation = () => {
               </Col>
             </Row>
 
-            <Row>
-              <Col lg={6}>
-                <div className="form-floating mb-3">
-                  <Input
-                    type="text"
-                    className={validClassUN}
-                    // className="form-control"
-                    placeholder="Enter Username"
-                    name="UserName"
-                    value={UserName}
-                    onChange={handleChange}
-                  />
-                  <Label>
-                    UserName <span className="text-danger">*</span>
-                  </Label>
-                  {isSubmit && (
-                    <p className="text-danger">{formErrors.UserName}</p>
-                  )}
-                </div>
-              </Col>
-
-              <Col lg={6}>
-                <div className="form-floating mb-3">
-                  <Input
-                    type="text"
-                    className={validClassPasss}
-                    // className="form-control"
-                    placeholder="Enter Username"
-                    name="Password"
-                    value={Password}
-                    onChange={handleChange}
-                  />
-                  <Label>
-                    Password <span className="text-danger">*</span>
-                  </Label>
-                  {isSubmit && (
-                    <p className="text-danger">{formErrors.Password}</p>
-                  )}
-                </div>
-              </Col>
-            </Row>
+          
             <Col lg={6}>
               <label>
-                Store Logo <span className="text-danger">*</span>
+                Store Logo 
               </label>
 
               <input
                 type="file"
                 name="StoreLogo"
-                className={validClassLogo}
+                // className={validClassLogo}
                 // accept="images/*"
                 accept=".jpg, .jpeg, .png"
                 onChange={imageUpload}
@@ -908,8 +786,8 @@ const ZiyaLocation = () => {
               <Input
                 type="checkbox"
                 className="form-check-input"
-                name="isActive"
-                value={isActive}
+                name="IsActive"
+                value={IsActive}
                 onChange={handleCheck}
               />
               <Label className="form-check-label ms-1">Is Active</Label>
@@ -959,16 +837,8 @@ const ZiyaLocation = () => {
             setIsSubmit(false);
           }}
         >
-          Edit Ziya Location
-          {/* <Button
-            type="button"
-            onClick={() => {
-              setmodal_edit(false);
-              setIsSubmit(false);
-            }}
-            className="btn-close"
-            aria-label="Close"
-          ></Button> */}
+          Edit Company Location
+          
         </ModalHeader>
         <form>
           <ModalBody>
@@ -1164,57 +1034,16 @@ const ZiyaLocation = () => {
               </Col>
             </Row>
 
-            <Row>
-              <Col lg={6}>
-                <div className="form-floating mb-3">
-                  <Input
-                    type="text"
-                    className={validClassUN}
-                    // className="form-control"
-                    placeholder="Enter Username"
-                    name="UserName"
-                    value={UserName}
-                    onChange={handleChange}
-                  />
-                  <Label>
-                    UserName <span className="text-danger">*</span>
-                  </Label>
-                  {isSubmit && (
-                    <p className="text-danger">{formErrors.UserName}</p>
-                  )}
-                </div>
-              </Col>
-
-              <Col lg={6}>
-                <div className="form-floating mb-3">
-                  <Input
-                    type="text"
-                    className={validClassPasss}
-                    // className="form-control"
-                    placeholder="Enter Username"
-                    name="Password"
-                    value={Password}
-                    onChange={handleChange}
-                  />
-                  <Label>
-                    Password <span className="text-danger">*</span>
-                  </Label>
-                  {isSubmit && (
-                    <p className="text-danger">{formErrors.Password}</p>
-                  )}
-                </div>
-              </Col>
-            </Row>
-
+          
             <Col lg={6}>
               <label>
-                Store Logo <span className="text-danger">*</span>
+                Store Logo 
               </label>
               <input
                 key={"StoreLogo_" + _id}
                 type="file"
                 name="StoreLogo"
-                className={validClassLogo}
+                // className={validClassLogo}
                 // accept="images/*"
                 accept=".jpg, .jpeg, .png"
                 onChange={imageUpload}
@@ -1241,9 +1070,9 @@ const ZiyaLocation = () => {
               <Input
                 type="checkbox"
                 className="form-check-input"
-                name="isActive"
-                value={isActive}
-                checked={isActive}
+                name="IsActive"
+                value={IsActive}
+                checked={IsActive}
                 onChange={handleCheck}
               />
               <Label className="form-check-label ms-1">Is Active</Label>
@@ -1292,7 +1121,7 @@ const ZiyaLocation = () => {
             setmodal_delete(false);
           }}
         >
-          Remove Ziya Location
+          Remove Company Location
         </ModalHeader>
         <form>
           <ModalBody>
@@ -1337,4 +1166,4 @@ const ZiyaLocation = () => {
   );
 };
 
-export default ZiyaLocation;
+export default CompanyLocation;

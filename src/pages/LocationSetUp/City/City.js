@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+
+import UiContent from "../../../Components/Common/UiContent";
+import BreadCrumb from "../../../Components/Common/BreadCrumb";
+import { Link } from "react-router-dom";
 import {
   Button,
   Card,
@@ -12,53 +16,54 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
+  Row,
   Label,
   Input,
-  Row,
 } from "reactstrap";
-import BreadCrumb from "../../Components/Common/BreadCrumb";
+
+import {
+  listCity,
+  createCity,
+  removeAndUpdateCity,
+  removeCity,
+  listState,
+  listCountry,
+  getCity,
+  updateCity,
+} from "../../../functions/Location/Location";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 
-import {
-  createGrindCategoryMaster,
-  getGrindCategoryMaster,
-  removeGrindCategoryMaster,
-  updateGrindCategoryMaster,
-} from "../../functions/Category/GrindCategoryMaster";
-import { listDrinkCategory } from "../../functions/Category/DrinkCategoryMaster";
-
 const initialState = {
-  drinkCategory: "",
-  grindType: "",
-  IsActive: false,
+  CityName: "",
+  // CityCode: "",
+  CountryID: "",
+  StateID: "",
+  isActive: false,
 };
 
-const GrindCategoryMaster = () => {
+const City = () => {
   const [values, setValues] = useState(initialState);
-  const { drinkCategory, grindType, IsActive } = values;
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
-
-  const [errCN, setErrCN] = useState(false); //drink category
-  const [errGT, setErrGT] = useState(false); // grind type
+  const [remove_id, setRemove_id] = useState("");
+  const [_id, set_Id] = useState("");
+  //validation check
+  const [errCiN, setErrCiN] = useState(false);
+  const [errCC, setErrCC] = useState(false);
+  const [errSN, setErrSN] = useState(false);
+  const [errCN, setErrCN] = useState(false);
 
   const [query, setQuery] = useState("");
 
-  const [_id, set_Id] = useState("");
-  const [remove_id, setRemove_id] = useState("");
-
-  const [categories, setCategories] = useState([]);
-  const [drinkCategories, setDrinkCategories] = useState([]);
-
-  useEffect(() => {
-    loadDrinkCategories();
-  }, [drinkCategory]);
-
-  const loadDrinkCategories = () => {
-    listDrinkCategory().then((res) => setDrinkCategories(res));
-  };
+  const {
+    CityName,
+    // CityCode,
+    CountryID,
+    StateID,
+    isActive,
+  } = values;
 
   useEffect(() => {
     console.log(formErrors);
@@ -70,7 +75,6 @@ const GrindCategoryMaster = () => {
   const [modal_list, setmodal_list] = useState(false);
   const tog_list = () => {
     setmodal_list(!modal_list);
-    setValues(initialState);
     setIsSubmit(false);
   };
 
@@ -85,62 +89,17 @@ const GrindCategoryMaster = () => {
     setmodal_edit(!modal_edit);
     setIsSubmit(false);
     set_Id(_id);
-    getGrindCategoryMaster(_id)
+    getCity(_id)
       .then((res) => {
         console.log(res);
         setValues({
           ...values,
-          drinkCategory: res.drinkCategory,
-          grindType: res.grindType,
-          IsActive: res.IsActive,
+          CityName: res.CityName,
+          // CityCode: res.CityCode,
+          CountryID: res.CountryID,
+          StateID: res.StateID,
+          isActive: res.isActive,
         });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const handleChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value });
-  };
-
-  const handleCheck = (e) => {
-    setValues({ ...values, IsActive: e.target.checked });
-  };
-
-  const handleClick = (e) => {
-    e.preventDefault();
-    setFormErrors({});
-    let erros = validate(values);
-    setFormErrors(erros);
-    setIsSubmit(true);
-
-    createGrindCategoryMaster(values)
-      .then((res) => {
-        if (res.isOk) {
-          setmodal_list(!modal_list);
-          setValues(initialState);
-          fetchCategories();
-        } else {
-          if (res.field === 1) {
-            setErrCN(true);
-            setFormErrors({
-              categoryName: "This grind type is already exists!",
-            });
-          }
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const handleDelete = (e) => {
-    e.preventDefault();
-    removeGrindCategoryMaster(remove_id)
-      .then((res) => {
-        setmodal_delete(!modal_delete);
-        fetchCategories();
       })
       .catch((err) => {
         console.log(err);
@@ -149,15 +108,18 @@ const GrindCategoryMaster = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
+    console.log("city update", values);
     let erros = validate(values);
     setFormErrors(erros);
     setIsSubmit(true);
 
     if (Object.keys(erros).length === 0) {
-      updateGrindCategoryMaster(_id, values)
+      updateCity(_id, values)
         .then((res) => {
+          console.log("updated city form", res);
           setmodal_edit(!modal_edit);
-          fetchCategories();
+          fetchCity();
+          setValues(initialState);
         })
         .catch((err) => {
           console.log(err);
@@ -165,32 +127,125 @@ const GrindCategoryMaster = () => {
     }
   };
 
+  const [Cities, setCities] = useState([]);
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+
+  useEffect(() => {
+    loadCountries();
+    // loadCity();
+    loadStates();
+  }, []);
+
+  const loadCity = () => {
+    listCity().then((res) => {
+      setCities(res);
+      console.log(res);
+    });
+  };
+
+  const loadCountries = () => {
+    listCountry().then((res) => setCountries(res));
+  };
+
+  const loadStates = () => {
+    listState().then((res) => {
+      setStates(res);
+      //console.log(res);
+    });
+  };
+
+  const handleChange = (e) => {
+    console.log(e.target.name, e.target.value);
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
+
+  const handleCheck = (e) => {
+    console.log(e.target.checked);
+    setValues({ ...values, isActive: e.target.checked });
+  };
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    console.log(values);
+    let erros = validate(values);
+    setFormErrors(erros);
+    setIsSubmit(true);
+
+    console.log(Object.keys(erros).length);
+    if (Object.keys(erros).length === 0) {
+      createCity(values)
+        .then((res) => {
+          if (res.isOk) {
+            console.log(res);
+            setmodal_list(!modal_list);
+            setValues(initialState);
+            setIsSubmit(false);
+            setFormErrors({});
+            fetchCity();
+          } else {
+            if (res.field === 1) {
+              setErrCiN(true);
+              setFormErrors({ CityName: "City with this name is exists!" });
+            }
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    console.log("state id", remove_id);
+    removeCity(remove_id)
+      .then((res) => {
+        console.log("deleted", res);
+        setmodal_delete(false);
+        fetchCity();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const validate = (values) => {
     const errors = {};
+    if (values.CityName == "") {
+      errors.CityName = "City name is required!";
+      setErrCiN(true);
+    }
+    if (values.CityName !== "") {
+      setErrCiN(false);
+    }
 
-    if (values.drinkCategory === "") {
-      errors.drinkCategory = "Category Name is required!";
+    if (values.CountryID == "") {
+      errors.CountryID = "Select country name!";
       setErrCN(true);
     }
-    if (values.drinkCategory !== "") {
+    if (values.CountryID !== "") {
       setErrCN(false);
     }
-
-    if (values.grindType === "") {
-      errors.grindType = "Grind type is required!";
-      setErrGT(true);
+    if (values.StateID == "") {
+      errors.StateID = "Select state name!";
+      setErrSN(true);
     }
-    if (values.grindType !== "") {
-      setErrGT(false);
+    if (values.StateID !== "") {
+      setErrSN(false);
     }
 
     return errors;
   };
 
-  const validClassCategoryName =
+  const validClassCountryName =
     errCN && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassGrindType =
-    errGT && isSubmit ? "form-control is-invalid" : "form-control";
+  // const validClassCityCode =
+  //   errCC && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassCityName =
+    errCiN && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassStateName =
+    errSN && isSubmit ? "form-control is-invalid" : "form-control";
 
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
@@ -209,10 +264,10 @@ const GrindCategoryMaster = () => {
   }, []);
 
   useEffect(() => {
-    fetchCategories();
+    fetchCity();
   }, [pageNo, perPage, column, sortDirection, query, filter]);
 
-  const fetchCategories = async () => {
+  const fetchCity = async () => {
     setLoading(true);
     let skip = (pageNo - 1) * perPage;
     if (skip < 0) {
@@ -220,25 +275,23 @@ const GrindCategoryMaster = () => {
     }
 
     await axios
-      .post(
-        `${process.env.REACT_APP_API_URL_MARWIZ}/api/auth/list-by-params/grindMaster`,
-        {
-          skip: skip,
-          per_page: perPage,
-          sorton: column,
-          sortdir: sortDirection,
-          match: query,
-          IsActive: filter,
-        }
-      )
+      .post(`${process.env.REACT_APP_API_URL_ZIYA}/api/auth/location/cities`, {
+        skip: skip,
+        per_page: perPage,
+        sorton: column,
+        sortdir: sortDirection,
+        match: query,
+        isActive: filter,
+      })
       .then((response) => {
         if (response.length > 0) {
           let res = response[0];
           setLoading(false);
-          setCategories(res.data);
+          setCities(res.data);
+          //console.log("response", res.data);
           setTotalRows(res.count);
         } else if (response.length === 0) {
-          setCategories([]);
+          setCities([]);
         }
         // console.log(res);
       });
@@ -257,25 +310,33 @@ const GrindCategoryMaster = () => {
   const handleFilter = (e) => {
     setFilter(e.target.checked);
   };
+
   const col = [
     {
-      name: "Drink Category",
-      selector: (row) => row.drinkCategory,
+      name: "City Name",
+      selector: (row) => row.CityName,
       sortable: true,
-      sortField: "drinkCategory",
-      minWidth: "150px",
+      sortField: "CityName",
+      minWidth: "180px",
+    },
+
+    {
+      name: "Country",
+      selector: (row) => row.countryname,
+      sortable: true,
+      sortField: "countryname",
     },
     {
-      name: "Grind Category",
-      selector: (row) => row.grindType,
+      name: "State",
+      selector: (row) => row.statename,
       sortable: true,
-      sortField: "grindType",
-      minWidth: "150px",
+      sortField: "statename",
     },
+
     {
       name: "Status",
       selector: (row) => {
-        return <p>{row.IsActive ? "Active" : "InActive"}</p>;
+        return <p>{row.isActive ? "Active" : "InActive"}</p>;
       },
       sortable: false,
       sortField: "Status",
@@ -316,29 +377,26 @@ const GrindCategoryMaster = () => {
     },
   ];
 
-  document.title = "Grind Category Master | RC Henning Coffee Company";
-
+  document.title = "City | ZIYA";
   return (
     <React.Fragment>
+      <UiContent />
       <div className="page-content">
         <Container fluid>
           <BreadCrumb
-            maintitle="Category"
-            title="Grind Category"
-            pageTitle="Category"
+            maintitle="Location Setup"
+            title="City"
+            pageTitle="Location SetUp"
           />
           <Row>
             <Col lg={12}>
               <Card>
                 <CardHeader>
                   <Row className="g-4 mb-1">
-                    <Col className="col-sm" sm={6} lg={4} md={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">
-                        Grind Category
-                      </h2>
+                    <Col className="col-sm" lg={4} md={6} sm={6}>
+                      <h2 className="card-title mb-0 fs-4 mt-2">City </h2>
                     </Col>
-
-                    <Col sm={6} lg={4} md={6}>
+                    <Col lg={4} md={6} sm={6}>
                       <div className="text-end mt-2">
                         <Input
                           type="checkbox"
@@ -351,7 +409,7 @@ const GrindCategoryMaster = () => {
                         <Label className="form-check-label ms-2">Active</Label>
                       </div>
                     </Col>
-                    <Col className="col-sm-auto" sm={12} lg={4} md={12}>
+                    <Col className="col-sm-auto" lg={4} md={6} sm={6}>
                       <div className="d-flex justify-content-sm-end">
                         <div className="ms-2">
                           <Button
@@ -383,7 +441,7 @@ const GrindCategoryMaster = () => {
                     <div className="table-responsive table-card mt-1 mb-1 text-right">
                       <DataTable
                         columns={col}
-                        data={categories}
+                        data={Cities}
                         progressPending={loading}
                         sortServer
                         onSort={(column, sortDirection, sortedRows) => {
@@ -418,65 +476,80 @@ const GrindCategoryMaster = () => {
           toggle={() => {
             setmodal_list(false);
             setIsSubmit(false);
+            setValues(initialState);
           }}
         >
-          Add Grind Category
+          Add City
         </ModalHeader>
         <form>
           <ModalBody>
             <div className="form-floating  mb-3">
               <select
-                name="drinkCategory"
-                className={validClassCategoryName}
+                name="CountryID"
+                className={validClassCountryName}
                 onChange={handleChange}
-                value={drinkCategory}
-                data-choices
-                data-choices-sorting="true"
               >
-                <option>Select drink category</option>
-                {drinkCategories.map((c) => {
+                <option>Please Select</option>
+                {countries.map((c) => {
                   return (
                     <React.Fragment key={c._id}>
-                      {c.IsActive && (
-                        <option value={c._id}>{c.drinkCategory}</option>
+                      {c.isActive && (
+                        <option value={c._id}>{c.CountryName}</option>
                       )}
                     </React.Fragment>
                   );
                 })}
               </select>
-              <Label>
-                Select Drink Category <span className="text-danger">*</span>
-              </Label>
+              <Label>Select Country</Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.drinkCategory}</p>
+                <p className="text-danger">{formErrors.CountryID}</p>
               )}
+            </div>
+
+            <div className="form-floating  mb-3">
+              <select
+                name="StateID"
+                className={validClassStateName}
+                onChange={handleChange}
+              >
+                <option>Please Select</option>
+                {states.map((s) => {
+                  return (
+                    <React.Fragment key={s._id}>
+                      {s.isActive && CountryID === s.CountryID && (
+                        <option value={s._id}>{s.StateName}</option>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </select>
+              <Label>Select State</Label>
+              {isSubmit && <p className="text-danger">{formErrors.StateID}</p>}
             </div>
 
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassGrindType}
-                placeholder="Enter Grind Type"
-                required
-                name="grindType"
-                value={grindType}
+                className={validClassCityName}
+                placeholder="Enter City Name"
+                id="CityName"
+                name="CityName"
+                value={CityName}
                 onChange={handleChange}
               />
-              <Label>Grind Type</Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.grindType}</p>
-              )}
+              <Label>City Name</Label>
+              {isSubmit && <p className="text-danger">{formErrors.CityName}</p>}
             </div>
 
-            <div className="form-check mb-2">
+            <div className=" mb-3">
               <Input
                 type="checkbox"
                 className="form-check-input"
-                name="IsActive"
-                value={IsActive}
+                name="isActive"
+                value={isActive}
                 onChange={handleCheck}
               />
-              <Label className="form-check-label">Is Active</Label>
+              <Label className="form-check-label ms-1">Is Active</Label>
             </div>
           </ModalBody>
           <ModalFooter>
@@ -496,6 +569,7 @@ const GrindCategoryMaster = () => {
                   setmodal_list(false);
                   setValues(initialState);
                   setIsSubmit(false);
+                  setFormErrors({});
                 }}
               >
                 Cancel
@@ -520,67 +594,82 @@ const GrindCategoryMaster = () => {
             setIsSubmit(false);
           }}
         >
-          Edit Grind Category
+          Edit Country
         </ModalHeader>
         <form>
           <ModalBody>
             <div className="form-floating  mb-3">
               <select
-                name="drinkCategory"
-                className={validClassCategoryName}
+                name="CountryID"
+                className={validClassCountryName}
                 onChange={handleChange}
-                value={drinkCategory}
-                data-choices
-                data-choices-sorting="true"
+                value={CountryID}
               >
-                <option>Select drink category</option>
-                {drinkCategories.map((c) => {
+                <option>Please Select</option>
+                {countries.map((c) => {
                   return (
                     <React.Fragment key={c._id}>
-                      {c.IsActive && (
-                        <option value={c._id}>{c.drinkCategory}</option>
+                      {c.isActive && (
+                        <option value={c._id}>{c.CountryName}</option>
                       )}
                     </React.Fragment>
                   );
                 })}
               </select>
-              <Label>
-                Select Drink Category <span className="text-danger">*</span>
-              </Label>
+              <Label>Select Country</Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.drinkCategory}</p>
+                <p className="text-danger">{formErrors.CountryID}</p>
               )}
+            </div>
+
+            <div className="form-floating  mb-3">
+              <select
+                name="StateID"
+                className={validClassStateName}
+                onChange={handleChange}
+                value={StateID}
+              >
+                <option>Please Select</option>
+                {states.map((s) => {
+                  return (
+                    <React.Fragment key={s._id}>
+                      {s.isActive && CountryID === s.CountryID && (
+                        <option value={s._id}>{s.StateName}</option>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </select>
+              <Label>Select State</Label>
+              {isSubmit && <p className="text-danger">{formErrors.StateID}</p>}
             </div>
 
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassGrindType}
-                placeholder="Enter Grind Type"
-                required
-                name="grindType"
-                value={grindType}
+                className={validClassCityName}
+                placeholder="Enter City Name"
+                id="CityName"
+                name="CityName"
+                value={CityName}
                 onChange={handleChange}
               />
-              <Label>Grind Type</Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.grindType}</p>
-              )}
+              <Label>City Name</Label>
+              {isSubmit && <p className="text-danger">{formErrors.CityName}</p>}
             </div>
 
-            <div className="form-check mb-2">
+            <div className=" mb-3">
               <Input
                 type="checkbox"
                 className="form-check-input"
-                name="IsActive"
-                value={IsActive}
-                checked={IsActive}
+                name="isActive"
+                value={isActive}
+                checked={isActive}
                 onChange={handleCheck}
               />
-              <Label className="form-check-label">Is Active</Label>
+              <Label className="form-check-label ms-1">Is Active</Label>
             </div>
           </ModalBody>
-
           <ModalFooter>
             <div className="hstack gap-2 justify-content-end">
               <button
@@ -612,7 +701,7 @@ const GrindCategoryMaster = () => {
       <Modal
         isOpen={modal_delete}
         toggle={() => {
-          tog_delete();
+          setmodal_delete(!modal_delete);
         }}
         centered
       >
@@ -622,7 +711,7 @@ const GrindCategoryMaster = () => {
             setmodal_delete(false);
           }}
         >
-          Remove Grind Category
+          Remove City
         </ModalHeader>
         <form>
           <ModalBody>
@@ -667,4 +756,4 @@ const GrindCategoryMaster = () => {
   );
 };
 
-export default GrindCategoryMaster;
+export default City;

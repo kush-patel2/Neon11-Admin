@@ -12,8 +12,10 @@ import withRouter from "../../Components/Common/withRouter";
 const VerticalLayout = (props) => {
   const [locationSetup, setLocationSetup] = useState(false);
   const [product, setproduct] = useState(false);
-  const [rateCard, setRateCard] = useState(false);
-  const [application, setApplication] = useState(false);
+  const [category, setCategory] = useState(false);
+  const [subs, setSubs] = useState(false);
+  const [inquiry, setInquiry] = useState(false);
+  const [policy, setPolicy] = useState(false);
   const [reports, setreports] = useState(false);
   const [mediaManage, setMediaManage] = useState(false);
 
@@ -113,40 +115,9 @@ const VerticalLayout = (props) => {
       </li>
 
       <li className="nav-item">
-        <Link className="nav-link menu-link" to="#">
+        <Link className="nav-link menu-link" to="/manage-users">
           <span data-key="t-apps"> Manage Users </span>
         </Link>
-      </li>
-
-      <li className="nav-item">
-        <Link
-          className="nav-link menu-link"
-          to="#"
-          data-bs-toggle="collapse"
-          onClick={() => {
-            setRateCard(!rateCard);
-          }}
-        >
-          <span data-key="t-apps"> Rate Card </span>
-        </Link>
-        <Collapse
-          className="menu-dropdown"
-          isOpen={rateCard}
-          //   id="sidebarApps"
-        >
-          <ul className="nav nav-sm flex-column test">
-            <li className="nav-item">
-              <Link className="nav-link menu-link" to="/gold-price">
-                <span data-key="t-apps"> Gold Prices </span>
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link menu-link" to="/gold-karat">
-                <span data-key="t-apps"> Gold Karat </span>
-              </Link>
-            </li>
-          </ul>
-        </Collapse>
       </li>
 
       <li className="nav-item">
@@ -182,8 +153,38 @@ const VerticalLayout = (props) => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link to="/ziya-location" className="nav-link">
-                Ziya Locations
+              <Link to="/location" className="nav-link">
+                 Locations
+              </Link>
+            </li>
+          </ul>
+        </Collapse>
+      </li>
+
+      <li className="nav-item">
+        <Link
+          className="nav-link menu-link"
+          to="#"
+          data-bs-toggle="collapse"
+          onClick={() => {
+            setCategory(!category);
+          }}
+        >
+          <span data-key="t-apps"> Category Master</span>
+        </Link>
+        <Collapse
+          className="menu-dropdown"
+          isOpen={category}
+        >
+          <ul className="nav nav-sm flex-column test">
+            <li className="nav-item">
+              <Link className="nav-link menu-link" to="/drink-category">
+                <span data-key="t-apps"> Drink Category  </span>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link menu-link" to="/grind-category">
+                <span data-key="t-apps"> Grind Category</span>
               </Link>
             </li>
           </ul>
@@ -199,7 +200,7 @@ const VerticalLayout = (props) => {
             setproduct(!product);
           }}
         >
-          <span data-key="t-apps"> Product Details </span>
+          <span data-key="t-apps"> Product Master </span>
         </Link>
         <Collapse
           className="menu-dropdown"
@@ -208,59 +209,15 @@ const VerticalLayout = (props) => {
         >
           <ul className="nav nav-sm flex-column test">
             <li className="nav-item">
-              <Link to="/category" className="nav-link">
-                Category
+              <Link to="/product-details" className="nav-link">
+                Product Details
               </Link>
             </li>
           </ul>
           <ul className="nav nav-sm flex-column test">
             <li className="nav-item">
-              <Link to="/category-products" className="nav-link">
-                Products
-              </Link>
-            </li>
-          </ul>
-          <ul className="nav nav-sm flex-column test">
-            <li className="nav-item">
-              <Link to="/top-products" className="nav-link">
-                Top Products
-              </Link>
-            </li>
-          </ul>
-        </Collapse>
-      </li>
-      <li className="nav-item">
-        <Link className="nav-link menu-link" to="/prospect">
-          <span data-key="t-apps"> Prospect </span>
-        </Link>
-      </li>
-
-      <li className="nav-item">
-        <Link className="nav-link menu-link" to="/partner-login">
-          <span data-key="t-apps"> Partner Details </span>
-        </Link>
-      </li>
-
-      <li className="nav-item">
-        <Link
-          className="nav-link menu-link"
-          to="#"
-          data-bs-toggle="collapse"
-          onClick={() => {
-            setreports(!reports);
-          }}
-        >
-          <span data-key="t-apps"> Reports </span>
-        </Link>
-        <Collapse
-          className="menu-dropdown"
-          isOpen={reports}
-          //   id="sidebarApps"
-        >
-          <ul className="nav nav-sm flex-column test">
-            <li className="nav-item">
-              <Link className="nav-link menu-link" to="/wishList-data">
-                <span data-key="t-apps"> WishList </span>
+              <Link to="/order-details" className="nav-link">
+                Orders
               </Link>
             </li>
           </ul>
@@ -273,26 +230,26 @@ const VerticalLayout = (props) => {
           to="#"
           data-bs-toggle="collapse"
           onClick={() => {
-            setMediaManage(!mediaManage);
+            setSubs(!subs);
           }}
         >
-          <span data-key="t-apps"> Signage Management </span>
+          <span data-key="t-apps"> Subscription Master </span>
         </Link>
         <Collapse
           className="menu-dropdown"
-          isOpen={mediaManage}
-          //   id="sidebarApps"
+          isOpen={subs}
         >
           <ul className="nav nav-sm flex-column test">
             <li className="nav-item">
-              <Link className="nav-link menu-link" to="/manage-media">
-                <span data-key="t-apps"> Manage Media </span>
+              <Link className="nav-link menu-link" to="/subscription-master">
+                <span data-key="t-apps"> Subscriptions </span>
               </Link>
             </li>
-
+          </ul>
+          <ul className="nav nav-sm flex-column test">
             <li className="nav-item">
-              <Link className="nav-link menu-link" to="/media-playlist">
-                <span data-key="t-apps"> Media Playlist </span>
+              <Link className="nav-link menu-link" to="/user-subscriptions">
+                <span data-key="t-apps"> User Subscriptions </span>
               </Link>
             </li>
           </ul>
@@ -305,25 +262,27 @@ const VerticalLayout = (props) => {
           to="#"
           data-bs-toggle="collapse"
           onClick={() => {
-            setApplication(!application);
+            setInquiry(!inquiry);
           }}
         >
-          <span data-key="t-apps"> Applications </span>
+          <span data-key="t-apps"> Inquiry Details</span>
         </Link>
         <Collapse
           className="menu-dropdown"
-          isOpen={application}
+          isOpen={inquiry}
           //   id="sidebarApps"
         >
           <ul className="nav nav-sm flex-column test">
             <li className="nav-item">
-              <Link className="nav-link menu-link" to="#">
-                <span data-key="t-apps"> WhatsApp </span>
+              <Link to="/inquiry" className="nav-link">
+                Inquiry
               </Link>
             </li>
+          </ul>
+          <ul className="nav nav-sm flex-column test">
             <li className="nav-item">
-              <Link className="nav-link menu-link" to="/try-jewellery">
-                <span data-key="t-apps"> Try Jewellery </span>
+              <Link to="/newsletter-subscription" className="nav-link">
+                Newsletter Subscriptions
               </Link>
             </li>
           </ul>
@@ -331,10 +290,51 @@ const VerticalLayout = (props) => {
       </li>
 
       <li className="nav-item">
-        <Link className="nav-link menu-link" to="/inquiry-details">
-          <span data-key="t-apps"> Inquiry </span>
+        <Link
+          className="nav-link menu-link"
+          to="#"
+          data-bs-toggle="collapse"
+          onClick={() => {
+            setPolicy(!policy);
+          }}
+        >
+          <span data-key="t-apps"> Policy and Promos</span>
+        </Link>
+        <Collapse
+          className="menu-dropdown"
+          isOpen={policy}
+        >
+          <ul className="nav nav-sm flex-column test">
+            <li className="nav-item">
+              <Link to="/policy-master" className="nav-link">
+                Policy Master
+              </Link>
+            </li>
+          </ul>
+          <ul className="nav nav-sm flex-column test">
+            <li className="nav-item">
+              <Link to="/promocode-master" className="nav-link">
+                Promocode Master
+              </Link>
+            </li>
+          </ul>
+          <ul className="nav nav-sm flex-column test">
+            <li className="nav-item">
+              <Link to="/faqs" className="nav-link">
+                FAQs 
+              </Link>
+            </li>
+          </ul>
+        </Collapse>
+      </li>
+
+      <li className="nav-item">
+        <Link className="nav-link menu-link" to="/blogs">
+          <span data-key="t-apps">Blogs </span>
         </Link>
       </li>
+
+
     </React.Fragment>
   );
 };

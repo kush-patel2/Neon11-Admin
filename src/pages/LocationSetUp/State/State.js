@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import UiContent from "../../../../Components/Common/UiContent";
-import BreadCrumb from "../../../../Components/Common/BreadCrumb";
+import UiContent from "../../../Components/Common/UiContent";
+import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import { Link } from "react-router-dom";
 import {
   Button,
@@ -20,49 +20,48 @@ import {
   Label,
   Input,
 } from "reactstrap";
-
-import {
-  listCity,
-  createCity,
-  removeAndUpdateCity,
-  removeCity,
-  listState,
-  listCountry,
-  getCity,
-  updateCity,
-} from "../../../../functions/Location/Location";
 import axios from "axios";
 import DataTable from "react-data-table-component";
+import {
+  listCountry,
+  createState,
+  listState,
+  removeAndUpdatState,
+  updateState,
+  getState,
+  removeState,
+} from "../../../functions/Location/Location";
 
 const initialState = {
-  CityName: "",
-  // CityCode: "",
+  StateName: "",
+  // StateCode: "",
   CountryID: "",
-  StateID: "",
+  CountryName: "",
   isActive: false,
 };
 
-const City = () => {
+const State = () => {
+  const [countries, setCountries] = useState([]);
+
   const [values, setValues] = useState(initialState);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
-  const [remove_id, setRemove_id] = useState("");
   const [_id, set_Id] = useState("");
+  const [remove_id, setRemove_id] = useState("");
   //validation check
-  const [errCiN, setErrCiN] = useState(false);
-  const [errCC, setErrCC] = useState(false);
-  const [errSN, setErrSN] = useState(false);
   const [errCN, setErrCN] = useState(false);
+  const [errsC, setErrsC] = useState(false);
+  const [errSN, setErrSN] = useState(false);
 
   const [query, setQuery] = useState("");
 
   const {
-    CityName,
-    // CityCode,
+    StateName,
+    // StateCode,
     CountryID,
-    StateID,
     isActive,
+    CountryName,
   } = values;
 
   useEffect(() => {
@@ -72,10 +71,12 @@ const City = () => {
     }
   }, [formErrors, isSubmit]);
 
+  const [States, setStates] = useState([]);
   const [modal_list, setmodal_list] = useState(false);
   const tog_list = () => {
     setmodal_list(!modal_list);
     setIsSubmit(false);
+    // setCompanyUsers(initialState);
   };
 
   const [modal_delete, setmodal_delete] = useState(false);
@@ -87,17 +88,15 @@ const City = () => {
   const [modal_edit, setmodal_edit] = useState(false);
   const handleTog_edit = (_id) => {
     setmodal_edit(!modal_edit);
-    setIsSubmit(false);
     set_Id(_id);
-    getCity(_id)
+    getState(_id)
       .then((res) => {
         console.log(res);
         setValues({
           ...values,
-          CityName: res.CityName,
-          // CityCode: res.CityCode,
           CountryID: res.CountryID,
-          StateID: res.StateID,
+          StateName: res.StateName,
+          // StateCode: res.StateCode,
           isActive: res.isActive,
         });
       })
@@ -106,41 +105,18 @@ const City = () => {
       });
   };
 
-  const handleUpdate = (e) => {
-    e.preventDefault();
-    console.log("city update", values);
-    let erros = validate(values);
-    setFormErrors(erros);
-    setIsSubmit(true);
-
-    if (Object.keys(erros).length === 0) {
-      updateCity(_id, values)
-        .then((res) => {
-          console.log("updated city form", res);
-          setmodal_edit(!modal_edit);
-          fetchCity();
-          setValues(initialState);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  };
-
-  const [Cities, setCities] = useState([]);
-  const [countries, setCountries] = useState([]);
-  const [states, setStates] = useState([]);
-
   useEffect(() => {
-    loadCountries();
-    // loadCity();
-    loadStates();
-  }, []);
+    fetchCountryName();
+  }, [CountryID]);
 
-  const loadCity = () => {
-    listCity().then((res) => {
-      setCities(res);
-      console.log(res);
+  const fetchCountryName = () => {
+    countries.map((c) => {
+      return (
+        <React.Fragment key={c._id}>
+          {c._id == CountryID &&
+            setValues({ ...values, CountryName: c.CountryName })}
+        </React.Fragment>
+      );
     });
   };
 
@@ -148,15 +124,18 @@ const City = () => {
     listCountry().then((res) => setCountries(res));
   };
 
+  useEffect(() => {
+    loadCountries();
+  }, []);
+
   const loadStates = () => {
     listState().then((res) => {
       setStates(res);
-      //console.log(res);
+      console.log(res);
     });
   };
 
   const handleChange = (e) => {
-    console.log(e.target.name, e.target.value);
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
@@ -164,29 +143,31 @@ const City = () => {
     console.log(e.target.checked);
     setValues({ ...values, isActive: e.target.checked });
   };
-
   const handleClick = (e) => {
     e.preventDefault();
     console.log(values);
+
     let erros = validate(values);
     setFormErrors(erros);
     setIsSubmit(true);
 
-    console.log(Object.keys(erros).length);
-    if (Object.keys(erros).length === 0) {
-      createCity(values)
+    if (
+      // StateCode !== "" &&
+      StateName !== "" &&
+      CountryID !== ""
+    ) {
+      createState(values)
         .then((res) => {
+          console.log(res);
           if (res.isOk) {
             console.log(res);
-            setmodal_list(!modal_list);
+            setmodal_list(false);
+            fetchStates();
             setValues(initialState);
-            setIsSubmit(false);
-            setFormErrors({});
-            fetchCity();
           } else {
             if (res.field === 1) {
-              setErrCiN(true);
-              setFormErrors({ CityName: "City with this name is exists!" });
+              setErrSN(true);
+              setFormErrors({ StateName: "State with this name is exists!" });
             }
           }
         })
@@ -199,40 +180,54 @@ const City = () => {
   const handleDelete = (e) => {
     e.preventDefault();
     console.log("state id", remove_id);
-    removeCity(remove_id)
+    removeState(remove_id)
       .then((res) => {
         console.log("deleted", res);
         setmodal_delete(false);
-        fetchCity();
+        fetchStates();
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
+  const handleUpdate = (e) => {
+    e.preventDefault();
+
+    let erros = validate(values);
+    setFormErrors(erros);
+    setIsSubmit(true);
+
+    if (Object.keys(erros).length === 0) {
+      updateState(_id, values)
+        .then((res) => {
+          console.log(res);
+          setmodal_edit(!modal_edit);
+          fetchStates();
+          setValues(initialState);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   const validate = (values) => {
     const errors = {};
-    if (values.CityName == "") {
-      errors.CityName = "City name is required!";
-      setErrCiN(true);
-    }
-    if (values.CityName !== "") {
-      setErrCiN(false);
-    }
 
-    if (values.CountryID == "") {
+    if (!values.StateName) {
+      errors.StateName = "State Name is required!";
+      setErrSN(true);
+    }
+    if (values.StateName) {
+      setErrSN(false);
+    }
+    if (!values.CountryID) {
       errors.CountryID = "Select country name!";
       setErrCN(true);
     }
-    if (values.CountryID !== "") {
+    if (values.CountryID) {
       setErrCN(false);
-    }
-    if (values.StateID == "") {
-      errors.StateID = "Select state name!";
-      setErrSN(true);
-    }
-    if (values.StateID !== "") {
-      setErrSN(false);
     }
 
     return errors;
@@ -240,10 +235,7 @@ const City = () => {
 
   const validClassCountryName =
     errCN && isSubmit ? "form-control is-invalid" : "form-control";
-  // const validClassCityCode =
-  //   errCC && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassCityName =
-    errCiN && isSubmit ? "form-control is-invalid" : "form-control";
+
   const validClassStateName =
     errSN && isSubmit ? "form-control is-invalid" : "form-control";
 
@@ -264,10 +256,10 @@ const City = () => {
   }, []);
 
   useEffect(() => {
-    fetchCity();
+    fetchStates();
   }, [pageNo, perPage, column, sortDirection, query, filter]);
 
-  const fetchCity = async () => {
+  const fetchStates = async () => {
     setLoading(true);
     let skip = (pageNo - 1) * perPage;
     if (skip < 0) {
@@ -275,7 +267,7 @@ const City = () => {
     }
 
     await axios
-      .post(`${process.env.REACT_APP_API_URL_ZIYA}/api/auth/location/cities`, {
+      .post(`${process.env.REACT_APP_API_URL_ZIYA}/api/auth/location/states`, {
         skip: skip,
         per_page: perPage,
         sorton: column,
@@ -287,11 +279,11 @@ const City = () => {
         if (response.length > 0) {
           let res = response[0];
           setLoading(false);
-          setCities(res.data);
-          //console.log("response", res.data);
+          setStates(res.data);
+          console.log(res.data);
           setTotalRows(res.count);
         } else if (response.length === 0) {
-          setCities([]);
+          setStates([]);
         }
         // console.log(res);
       });
@@ -310,14 +302,12 @@ const City = () => {
   const handleFilter = (e) => {
     setFilter(e.target.checked);
   };
-
   const col = [
     {
-      name: "City Name",
-      selector: (row) => row.CityName,
+      name: "State",
+      selector: (row) => row.StateName,
       sortable: true,
-      sortField: "CityName",
-      minWidth: "180px",
+      sortField: "StateName",
     },
 
     {
@@ -325,12 +315,6 @@ const City = () => {
       selector: (row) => row.countryname,
       sortable: true,
       sortField: "countryname",
-    },
-    {
-      name: "State",
-      selector: (row) => row.statename,
-      sortable: true,
-      sortField: "statename",
     },
 
     {
@@ -377,7 +361,7 @@ const City = () => {
     },
   ];
 
-  document.title = "City | ZIYA";
+  document.title = "State | ZIYA";
   return (
     <React.Fragment>
       <UiContent />
@@ -385,7 +369,7 @@ const City = () => {
         <Container fluid>
           <BreadCrumb
             maintitle="Location Setup"
-            title="City"
+            title="State"
             pageTitle="Location SetUp"
           />
           <Row>
@@ -394,7 +378,7 @@ const City = () => {
                 <CardHeader>
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" lg={4} md={6} sm={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">City </h2>
+                      <h2 className="card-title mb-0 fs-4 mt-2">State </h2>
                     </Col>
                     <Col lg={4} md={6} sm={6}>
                       <div className="text-end mt-2">
@@ -441,7 +425,7 @@ const City = () => {
                     <div className="table-responsive table-card mt-1 mb-1 text-right">
                       <DataTable
                         columns={col}
-                        data={Cities}
+                        data={States}
                         progressPending={loading}
                         sortServer
                         onSort={(column, sortDirection, sortedRows) => {
@@ -476,20 +460,19 @@ const City = () => {
           toggle={() => {
             setmodal_list(false);
             setIsSubmit(false);
-            setValues(initialState);
           }}
         >
-          Add City
+          Add State
         </ModalHeader>
         <form>
           <ModalBody>
-            <div className="form-floating  mb-3">
+            <div className="form-floating mb-3">
               <select
                 name="CountryID"
-                className={validClassCountryName}
                 onChange={handleChange}
+                className={validClassCountryName}
               >
-                <option>Please Select</option>
+                <option>Select Country</option>
                 {countries.map((c) => {
                   return (
                     <React.Fragment key={c._id}>
@@ -506,39 +489,19 @@ const City = () => {
               )}
             </div>
 
-            <div className="form-floating  mb-3">
-              <select
-                name="StateID"
-                className={validClassStateName}
-                onChange={handleChange}
-              >
-                <option>Please Select</option>
-                {states.map((s) => {
-                  return (
-                    <React.Fragment key={s._id}>
-                      {s.isActive && CountryID === s.CountryID && (
-                        <option value={s._id}>{s.StateName}</option>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </select>
-              <Label>Select State</Label>
-              {isSubmit && <p className="text-danger">{formErrors.StateID}</p>}
-            </div>
-
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassCityName}
-                placeholder="Enter City Name"
-                id="CityName"
-                name="CityName"
-                value={CityName}
+                className={validClassStateName}
+                placeholder="Enter State Name"
+                name="StateName"
+                value={StateName}
                 onChange={handleChange}
               />
-              <Label>City Name</Label>
-              {isSubmit && <p className="text-danger">{formErrors.CityName}</p>}
+              <Label>State Name</Label>
+              {isSubmit && (
+                <p className="text-danger">{formErrors.StateName}</p>
+              )}
             </div>
 
             <div className=" mb-3">
@@ -562,6 +525,7 @@ const City = () => {
               >
                 Submit
               </button>
+
               <button
                 type="button"
                 className="btn btn-outline-danger"
@@ -569,7 +533,6 @@ const City = () => {
                   setmodal_list(false);
                   setValues(initialState);
                   setIsSubmit(false);
-                  setFormErrors({});
                 }}
               >
                 Cancel
@@ -594,18 +557,17 @@ const City = () => {
             setIsSubmit(false);
           }}
         >
-          Edit Country
+          Edit State
         </ModalHeader>
         <form>
           <ModalBody>
-            <div className="form-floating  mb-3">
+            <div className="form-floating mb-3">
               <select
                 name="CountryID"
                 className={validClassCountryName}
                 onChange={handleChange}
                 value={CountryID}
               >
-                <option>Please Select</option>
                 {countries.map((c) => {
                   return (
                     <React.Fragment key={c._id}>
@@ -622,40 +584,20 @@ const City = () => {
               )}
             </div>
 
-            <div className="form-floating  mb-3">
-              <select
-                name="StateID"
-                className={validClassStateName}
-                onChange={handleChange}
-                value={StateID}
-              >
-                <option>Please Select</option>
-                {states.map((s) => {
-                  return (
-                    <React.Fragment key={s._id}>
-                      {s.isActive && CountryID === s.CountryID && (
-                        <option value={s._id}>{s.StateName}</option>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </select>
-              <Label>Select State</Label>
-              {isSubmit && <p className="text-danger">{formErrors.StateID}</p>}
-            </div>
-
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassCityName}
-                placeholder="Enter City Name"
-                id="CityName"
-                name="CityName"
-                value={CityName}
+                className={validClassStateName}
+                placeholder="Enter State Name"
+                id="StateName"
+                name="StateName"
+                value={StateName}
                 onChange={handleChange}
               />
-              <Label>City Name</Label>
-              {isSubmit && <p className="text-danger">{formErrors.CityName}</p>}
+              <Label>State Name</Label>
+              {isSubmit && (
+                <p className="text-danger">{formErrors.StateName}</p>
+              )}
             </div>
 
             <div className=" mb-3">
@@ -711,7 +653,7 @@ const City = () => {
             setmodal_delete(false);
           }}
         >
-          Remove City
+          Remove State
         </ModalHeader>
         <form>
           <ModalBody>
@@ -756,4 +698,4 @@ const City = () => {
   );
 };
 
-export default City;
+export default State;

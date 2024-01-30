@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from "react";
-
-import UiContent from "../../../../Components/Common/UiContent";
-import BreadCrumb from "../../../../Components/Common/BreadCrumb";
-import { Link } from "react-router-dom";
 import {
   Button,
   Card,
@@ -16,53 +12,39 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-  Row,
   Label,
   Input,
+  Row,
 } from "reactstrap";
+import BreadCrumb from "../../Components/Common/BreadCrumb";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 import {
-  listCountry,
-  createState,
-  listState,
-  removeAndUpdatState,
-  updateState,
-  getState,
-  removeState,
-} from "../../../../functions/Location/Location";
+  createPromocodeMaster,
+  getPromocodeMaster,
+  removePromocodeMaster,
+  updatePromocodeMaster,
+} from "../../functions/Products/PromocodeMaster";
 
 const initialState = {
-  StateName: "",
-  // StateCode: "",
-  CountryID: "",
-  CountryName: "",
-  isActive: false,
+  code: "",
+  savePercentage: "",
+  IsActive: false,
 };
 
-const State = () => {
-  const [countries, setCountries] = useState([]);
-
+const PromocodeMaster = () => {
   const [values, setValues] = useState(initialState);
+  const { code, savePercentage, IsActive } = values;
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
-  const [_id, set_Id] = useState("");
-  const [remove_id, setRemove_id] = useState("");
-  //validation check
-  const [errCN, setErrCN] = useState(false);
-  const [errsC, setErrsC] = useState(false);
-  const [errSN, setErrSN] = useState(false);
 
   const [query, setQuery] = useState("");
 
-  const {
-    StateName,
-    // StateCode,
-    CountryID,
-    isActive,
-    CountryName,
-  } = values;
+  const [_id, set_Id] = useState("");
+  const [remove_id, setRemove_id] = useState("");
+
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     console.log(formErrors);
@@ -71,12 +53,11 @@ const State = () => {
     }
   }, [formErrors, isSubmit]);
 
-  const [States, setStates] = useState([]);
   const [modal_list, setmodal_list] = useState(false);
   const tog_list = () => {
     setmodal_list(!modal_list);
+    setValues(initialState);
     setIsSubmit(false);
-    // setCompanyUsers(initialState);
   };
 
   const [modal_delete, setmodal_delete] = useState(false);
@@ -88,16 +69,16 @@ const State = () => {
   const [modal_edit, setmodal_edit] = useState(false);
   const handleTog_edit = (_id) => {
     setmodal_edit(!modal_edit);
+    setIsSubmit(false);
     set_Id(_id);
-    getState(_id)
+    getPromocodeMaster(_id)
       .then((res) => {
         console.log(res);
         setValues({
           ...values,
-          CountryID: res.CountryID,
-          StateName: res.StateName,
-          // StateCode: res.StateCode,
-          isActive: res.isActive,
+          code: res.code,
+          savePercentage: res.savePercentage,
+          IsActive: res.IsActive,
         });
       })
       .catch((err) => {
@@ -105,86 +86,42 @@ const State = () => {
       });
   };
 
-  useEffect(() => {
-    fetchCountryName();
-  }, [CountryID]);
-
-  const fetchCountryName = () => {
-    countries.map((c) => {
-      return (
-        <React.Fragment key={c._id}>
-          {c._id == CountryID &&
-            setValues({ ...values, CountryName: c.CountryName })}
-        </React.Fragment>
-      );
-    });
-  };
-
-  const loadCountries = () => {
-    listCountry().then((res) => setCountries(res));
-  };
-
-  useEffect(() => {
-    loadCountries();
-  }, []);
-
-  const loadStates = () => {
-    listState().then((res) => {
-      setStates(res);
-      console.log(res);
-    });
-  };
-
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
   const handleCheck = (e) => {
-    console.log(e.target.checked);
-    setValues({ ...values, isActive: e.target.checked });
+    setValues({ ...values, IsActive: e.target.checked });
   };
+
   const handleClick = (e) => {
     e.preventDefault();
-    console.log(values);
-
-    let erros = validate(values);
-    setFormErrors(erros);
+    setFormErrors({});
+    // let erros = validate(values);
+    // setFormErrors(erros);
     setIsSubmit(true);
 
-    if (
-      // StateCode !== "" &&
-      StateName !== "" &&
-      CountryID !== ""
-    ) {
-      createState(values)
-        .then((res) => {
-          console.log(res);
-          if (res.isOk) {
-            console.log(res);
-            setmodal_list(false);
-            fetchStates();
-            setValues(initialState);
-          } else {
-            if (res.field === 1) {
-              setErrSN(true);
-              setFormErrors({ StateName: "State with this name is exists!" });
-            }
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    // if (Object.keys(errors).length === 0) {
+    createPromocodeMaster(values)
+      .then((res) => {
+        setmodal_list(!modal_list);
+        setValues(initialState);
+        setIsSubmit(false);
+        setFormErrors({});
+        fetchCategories();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // }
   };
 
   const handleDelete = (e) => {
     e.preventDefault();
-    console.log("state id", remove_id);
-    removeState(remove_id)
+    removePromocodeMaster(remove_id)
       .then((res) => {
-        console.log("deleted", res);
-        setmodal_delete(false);
-        fetchStates();
+        setmodal_delete(!modal_delete);
+        fetchCategories();
       })
       .catch((err) => {
         console.log(err);
@@ -193,51 +130,21 @@ const State = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-
-    let erros = validate(values);
-    setFormErrors(erros);
+    // let erros = validate(values);
+    // setFormErrors(erros);
     setIsSubmit(true);
 
-    if (Object.keys(erros).length === 0) {
-      updateState(_id, values)
-        .then((res) => {
-          console.log(res);
-          setmodal_edit(!modal_edit);
-          fetchStates();
-          setValues(initialState);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    // if (Object.keys(erros).length === 0) {
+    updatePromocodeMaster(_id, values)
+      .then((res) => {
+        setmodal_edit(!modal_edit);
+        fetchCategories();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // }
   };
-
-  const validate = (values) => {
-    const errors = {};
-
-    if (!values.StateName) {
-      errors.StateName = "State Name is required!";
-      setErrSN(true);
-    }
-    if (values.StateName) {
-      setErrSN(false);
-    }
-    if (!values.CountryID) {
-      errors.CountryID = "Select country name!";
-      setErrCN(true);
-    }
-    if (values.CountryID) {
-      setErrCN(false);
-    }
-
-    return errors;
-  };
-
-  const validClassCountryName =
-    errCN && isSubmit ? "form-control is-invalid" : "form-control";
-
-  const validClassStateName =
-    errSN && isSubmit ? "form-control is-invalid" : "form-control";
 
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
@@ -256,10 +163,10 @@ const State = () => {
   }, []);
 
   useEffect(() => {
-    fetchStates();
+    fetchCategories();
   }, [pageNo, perPage, column, sortDirection, query, filter]);
 
-  const fetchStates = async () => {
+  const fetchCategories = async () => {
     setLoading(true);
     let skip = (pageNo - 1) * perPage;
     if (skip < 0) {
@@ -267,23 +174,25 @@ const State = () => {
     }
 
     await axios
-      .post(`${process.env.REACT_APP_API_URL_ZIYA}/api/auth/location/states`, {
-        skip: skip,
-        per_page: perPage,
-        sorton: column,
-        sortdir: sortDirection,
-        match: query,
-        isActive: filter,
-      })
+      .post(
+        `${process.env.REACT_APP_API_URL_MARWIZ}/api/auth/list-by-params/PromocodeMaster`,
+        {
+          skip: skip,
+          per_page: perPage,
+          sorton: column,
+          sortdir: sortDirection,
+          match: query,
+          IsActive: filter,
+        }
+      )
       .then((response) => {
         if (response.length > 0) {
           let res = response[0];
           setLoading(false);
-          setStates(res.data);
-          console.log(res.data);
+          setData(res.data);
           setTotalRows(res.count);
         } else if (response.length === 0) {
-          setStates([]);
+          setData([]);
         }
         // console.log(res);
       });
@@ -302,25 +211,34 @@ const State = () => {
   const handleFilter = (e) => {
     setFilter(e.target.checked);
   };
+
   const col = [
     {
-      name: "State",
-      selector: (row) => row.StateName,
+      name: "Promocode",
+      selector: (row) => row.code,
       sortable: true,
-      sortField: "StateName",
+      sortField: "code",
+      minWidth: "150px",
     },
-
     {
-      name: "Country",
-      selector: (row) => row.countryname,
+      name: "savePercentage",
+      selector: (row) => row.savePercentage,
       sortable: true,
-      sortField: "countryname",
+      sortField: "savePercentage",
+      minWidth: "150px",
+    },
+    {
+      name: " Date",
+      selector: (row) => row.createdAt,
+      sortable: true,
+      sortField: "createdAt",
+      minWidth: "150px",
     },
 
     {
       name: "Status",
       selector: (row) => {
-        return <p>{row.isActive ? "Active" : "InActive"}</p>;
+        return <p>{row.IsActive ? "Active" : "InActive"}</p>;
       },
       sortable: false,
       sortField: "Status",
@@ -361,26 +279,29 @@ const State = () => {
     },
   ];
 
-  document.title = "State | ZIYA";
+  document.title = "Promocode Master | RC Henning Coffee Company";
+
   return (
     <React.Fragment>
-      <UiContent />
       <div className="page-content">
         <Container fluid>
           <BreadCrumb
-            maintitle="Location Setup"
-            title="State"
-            pageTitle="Location SetUp"
+            maintitle="Subscriptions"
+            title="Promocode Master"
+            pageTitle="Subscriptions"
           />
           <Row>
             <Col lg={12}>
               <Card>
                 <CardHeader>
                   <Row className="g-4 mb-1">
-                    <Col className="col-sm" lg={4} md={6} sm={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">State </h2>
+                    <Col className="col-sm" sm={6} lg={4} md={6}>
+                      <h2 className="card-title mb-0 fs-4 mt-2">
+                        Promocode Master
+                      </h2>
                     </Col>
-                    <Col lg={4} md={6} sm={6}>
+
+                    <Col sm={6} lg={4} md={6}>
                       <div className="text-end mt-2">
                         <Input
                           type="checkbox"
@@ -393,7 +314,7 @@ const State = () => {
                         <Label className="form-check-label ms-2">Active</Label>
                       </div>
                     </Col>
-                    <Col className="col-sm-auto" lg={4} md={6} sm={6}>
+                    <Col className="col-sm-auto" sm={12} lg={4} md={12}>
                       <div className="d-flex justify-content-sm-end">
                         <div className="ms-2">
                           <Button
@@ -425,7 +346,7 @@ const State = () => {
                     <div className="table-responsive table-card mt-1 mb-1 text-right">
                       <DataTable
                         columns={col}
-                        data={States}
+                        data={data}
                         progressPending={loading}
                         sortServer
                         onSort={(column, sortDirection, sortedRows) => {
@@ -462,57 +383,51 @@ const State = () => {
             setIsSubmit(false);
           }}
         >
-          Add State
+          Add Promocode
         </ModalHeader>
         <form>
           <ModalBody>
             <div className="form-floating mb-3">
-              <select
-                name="CountryID"
+              <Input
+                type="text"
+                className="form-control"
+                placeholder="Enter code "
+                required
+                name="code"
+                value={code}
                 onChange={handleChange}
-                className={validClassCountryName}
-              >
-                <option>Select Country</option>
-                {countries.map((c) => {
-                  return (
-                    <React.Fragment key={c._id}>
-                      {c.isActive && (
-                        <option value={c._id}>{c.CountryName}</option>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </select>
-              <Label>Select Country</Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.CountryID}</p>
-              )}
-            </div>
+              />
+              <Label>Promocode </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.categoryName}</p>
+              )} */}
+            </div> 
 
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassStateName}
-                placeholder="Enter State Name"
-                name="StateName"
-                value={StateName}
+                className="form-control"
+                placeholder="savePercentage "
+                required
+                name="savePercentage"
+                value={savePercentage}
                 onChange={handleChange}
               />
-              <Label>State Name</Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.StateName}</p>
-              )}
+              <Label>Save </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.categoryName}</p>
+              )} */}
             </div>
 
-            <div className=" mb-3">
+            <div className="form-check mb-2">
               <Input
                 type="checkbox"
                 className="form-check-input"
-                name="isActive"
-                value={isActive}
+                name="IsActive"
+                value={IsActive}
                 onChange={handleCheck}
               />
-              <Label className="form-check-label ms-1">Is Active</Label>
+              <Label className="form-check-label">Is Active</Label>
             </div>
           </ModalBody>
           <ModalFooter>
@@ -525,7 +440,6 @@ const State = () => {
               >
                 Submit
               </button>
-
               <button
                 type="button"
                 className="btn btn-outline-danger"
@@ -557,61 +471,54 @@ const State = () => {
             setIsSubmit(false);
           }}
         >
-          Edit State
+          Edit Promocode
         </ModalHeader>
         <form>
           <ModalBody>
             <div className="form-floating mb-3">
-              <select
-                name="CountryID"
-                className={validClassCountryName}
+              <Input
+                type="text"
+                className="form-control"
+                placeholder="Enter code "
+                required
+                name="code"
+                value={code}
                 onChange={handleChange}
-                value={CountryID}
-              >
-                {countries.map((c) => {
-                  return (
-                    <React.Fragment key={c._id}>
-                      {c.isActive && (
-                        <option value={c._id}>{c.CountryName}</option>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </select>
-              <Label>Select Country</Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.CountryID}</p>
-              )}
+              />
+              <Label>Promocode </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.categoryName}</p>
+              )} */}
             </div>
 
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassStateName}
-                placeholder="Enter State Name"
-                id="StateName"
-                name="StateName"
-                value={StateName}
+                className="form-control"
+                placeholder="savePercentage "
+                required
+                name="savePercentage"
+                value={savePercentage}
                 onChange={handleChange}
               />
-              <Label>State Name</Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.StateName}</p>
-              )}
+              <Label>Save </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.categoryName}</p>
+              )} */}
             </div>
 
-            <div className=" mb-3">
+            <div className="form-check mb-2">
               <Input
                 type="checkbox"
                 className="form-check-input"
-                name="isActive"
-                value={isActive}
-                checked={isActive}
+                name="IsActive"
+                value={IsActive}
                 onChange={handleCheck}
               />
-              <Label className="form-check-label ms-1">Is Active</Label>
+              <Label className="form-check-label">Is Active</Label>
             </div>
           </ModalBody>
+
           <ModalFooter>
             <div className="hstack gap-2 justify-content-end">
               <button
@@ -643,7 +550,7 @@ const State = () => {
       <Modal
         isOpen={modal_delete}
         toggle={() => {
-          setmodal_delete(!modal_delete);
+          tog_delete();
         }}
         centered
       >
@@ -653,7 +560,7 @@ const State = () => {
             setmodal_delete(false);
           }}
         >
-          Remove State
+          Remove Promocode
         </ModalHeader>
         <form>
           <ModalBody>
@@ -698,4 +605,4 @@ const State = () => {
   );
 };
 
-export default State;
+export default PromocodeMaster;

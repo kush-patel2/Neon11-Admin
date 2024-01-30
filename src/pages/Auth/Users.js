@@ -16,46 +16,54 @@ import {
   Input,
   Row,
 } from "reactstrap";
+import BreadCrumb from "../../Components/Common/BreadCrumb";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 
 import {
-  createCountry,
-  listCountry,
-  updateCountry,
-  getCountry,
-  removeCountry,
-} from "../../../../functions/Location/Location";
-import BreadCrumb from "../../../../Components/Common/BreadCrumb";
+  createUsers,
+  getUsers,
+  removeUsers,
+  updateUsers,
+} from "../../functions/Auth/Users";
 
 const initialState = {
-  CountryName: "",
-  // CountryCode: "",
-  isActive: false,
+  firstName: "",
+  lastName: "",
+  Email: "",
+  Password: "",
+  IsPublic: "",
+  UserType: "",
+  followers: [],
+  following: [],
+  IsActive: false,
 };
 
-const CountryN = () => {
+const Users = () => {
   const [values, setValues] = useState(initialState);
   const {
-    CountryName,
-    //  CountryCode,
-    isActive,
+    firstName,
+    lastName,
+    Email,
+    Password,
+    IsPublic,
+    UserType,
+    followers,
+    following,
+    IsActive,
   } = values;
-  // const [CountryCode, setCountryCode] = useState("");
-  // const [CountryName, setCountryName] = useState("");
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
-  //validation check
-  const [errCN, setErrCN] = useState(false);
-  const [errCC, setErrCC] = useState(false);
+
+  // const [errCN, setErrCN] = useState(false);
 
   const [query, setQuery] = useState("");
 
   const [_id, set_Id] = useState("");
   const [remove_id, setRemove_id] = useState("");
 
-  const [countries, setCountries] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     console.log(formErrors);
@@ -64,12 +72,6 @@ const CountryN = () => {
     }
   }, [formErrors, isSubmit]);
 
-  const loadCountries = () => {
-    listCountry().then((res) => {
-      setCountries(res);
-      console.log(res);
-    });
-  };
   const [modal_list, setmodal_list] = useState(false);
   const tog_list = () => {
     setmodal_list(!modal_list);
@@ -88,14 +90,17 @@ const CountryN = () => {
     setmodal_edit(!modal_edit);
     setIsSubmit(false);
     set_Id(_id);
-    getCountry(_id)
+    getUsers(_id)
       .then((res) => {
-        console.log(res);
         setValues({
           ...values,
-          // CountryCode: res.CountryCode,
-          CountryName: res.CountryName,
-          isActive: res.isActive,
+          firstName: res.firstName,
+          lastName: res.lastName,
+          Email: res.Email,
+          Password: res.Password,
+          UserType: res.UserType,
+          IsPublic: res.IsPublic,
+          IsActive: res.IsActive,
         });
       })
       .catch((err) => {
@@ -108,52 +113,34 @@ const CountryN = () => {
   };
 
   const handleCheck = (e) => {
-    console.log(e.target.checked);
-    setValues({ ...values, isActive: e.target.checked });
+    setValues({ ...values, IsActive: e.target.checked });
   };
 
   const handleClick = (e) => {
     e.preventDefault();
     setFormErrors({});
-    console.log("country", values);
-    let erros = validate(values);
-    setFormErrors(erros);
+    // let erros = validate(values);
+    // setFormErrors(erros);
     setIsSubmit(true);
-
-    if (
-      // values.CountryCode !== "" &&
-      values.CountryName !== ""
-    ) {
-      createCountry(values)
-        .then((res) => {
-          if (res.isOk) {
-            console.log(res);
-            setmodal_list(!modal_list);
-            setValues(initialState);
-            fetchCountries();
-          } else {
-            if (res.field === 1) {
-              setErrCN(true);
-              setFormErrors({
-                CountryName: "Country with this name already exists!",
-              });
-            }
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+    createUsers(values)
+      .then((res) => {
+        setmodal_list(!modal_list);
+        setValues(initialState);
+        setIsSubmit(false);
+        setFormErrors({});
+        fetchUsers();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleDelete = (e) => {
     e.preventDefault();
-    console.log("CountryId", remove_id);
-    removeCountry(remove_id)
+    removeUsers(remove_id)
       .then((res) => {
-        console.log("deleted", res);
         setmodal_delete(!modal_delete);
-        fetchCountries();
+        fetchUsers();
       })
       .catch((err) => {
         console.log(err);
@@ -162,40 +149,38 @@ const CountryN = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    console.log("update country", values);
-    let erros = validate(values);
-    setFormErrors(erros);
+    // let erros = validate(values);
+    // setFormErrors(erros);
     setIsSubmit(true);
 
-    if (Object.keys(erros).length === 0) {
-      updateCountry(_id, values)
-        .then((res) => {
-          console.log(res);
-          setmodal_edit(!modal_edit);
-          fetchCountries();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    // if (Object.keys(erros).length === 0) {
+    updateUsers(_id, values)
+      .then((res) => {
+        setmodal_edit(!modal_edit);
+        fetchUsers();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // }
   };
 
-  const validate = (values) => {
-    const errors = {};
+  // const validate = (values) => {
+  //   const errors = {};
 
-    if (values.CountryName === "") {
-      errors.CountryName = "Country Name is required!";
-      setErrCN(true);
-    }
-    if (values.CountryName !== "") {
-      setErrCN(false);
-    }
+  //   if (values.categoryName === "") {
+  //     errors.categoryName = "Category Name is required!";
+  //     setErrCN(true);
+  //   }
+  //   if (values.categoryName !== "") {
+  //     setErrCN(false);
+  //   }
 
-    return errors;
-  };
+  //   return errors;
+  // };
 
-  const validClassCountryName =
-    errCN && isSubmit ? "form-control is-invalid" : "form-control";
+  // const validClassCategoryName =
+  //   errCN && isSubmit ? "form-control is-invalid" : "form-control";
 
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
@@ -214,10 +199,10 @@ const CountryN = () => {
   }, []);
 
   useEffect(() => {
-    fetchCountries();
+    fetchUsers();
   }, [pageNo, perPage, column, sortDirection, query, filter]);
 
-  const fetchCountries = async () => {
+  const fetchUsers = async () => {
     setLoading(true);
     let skip = (pageNo - 1) * perPage;
     if (skip < 0) {
@@ -226,24 +211,24 @@ const CountryN = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_ZIYA}/api/auth/location/countries`,
+        `${process.env.REACT_APP_API_URL_MARWIZ}/api/auth/list-by-params/users`,
         {
           skip: skip,
           per_page: perPage,
           sorton: column,
           sortdir: sortDirection,
           match: query,
-          isActive: filter,
+          IsActive: filter,
         }
       )
       .then((response) => {
         if (response.length > 0) {
           let res = response[0];
           setLoading(false);
-          setCountries(res.data);
+          setUsers(res.data);
           setTotalRows(res.count);
         } else if (response.length === 0) {
-          setCountries([]);
+          setUsers([]);
         }
         // console.log(res);
       });
@@ -264,21 +249,42 @@ const CountryN = () => {
   };
   const col = [
     {
-      name: "Country Name",
-      selector: (row) => row.CountryName,
+      name: "First Name",
+      selector: (row) => row.firstName,
       sortable: true,
-      sortField: "CountryName",
-      minWidth: "180px",
+      sortField: "firstName",
+      minWidth: "150px",
     },
-
+    {
+      name: "Last Name",
+      selector: (row) => row.lastName,
+      sortable: true,
+      sortField: "lastName",
+      minWidth: "150px",
+    },
+    {
+      name: "Email",
+      selector: (row) => row.Email,
+      sortable: true,
+      sortField: "Email",
+      minWidth: "150px",
+    },
+    {
+      name: "Password",
+      selector: (row) => row.Password,
+      sortable: true,
+      sortField: "Password",
+      minWidth: "150px",
+    },
     {
       name: "Status",
       selector: (row) => {
-        return <p>{row.isActive ? "Active" : "InActive"}</p>;
+        return <p>{row.IsPublic ? "Public" : "Private"}</p>;
       },
       sortable: false,
-      sortField: "Status",
+      sortField: "IsPublic",
     },
+
     {
       name: "Action",
       selector: (row) => {
@@ -315,26 +321,29 @@ const CountryN = () => {
     },
   ];
 
-  document.title = "Country | ZIYA";
+  document.title = "Manage Users | RC Henning Coffee Company";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           <BreadCrumb
-            maintitle="Location Setup"
-            title="Country"
-            pageTitle="Location SetUp"
+            maintitle="Users"
+            title="Manage Users"
+            pageTitle="Users"
           />
           <Row>
             <Col lg={12}>
               <Card>
                 <CardHeader>
                   <Row className="g-4 mb-1">
-                    <Col className="col-sm" lg={4} md={6} sm={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">Country</h2>
+                    <Col className="col-sm" sm={6} lg={4} md={6}>
+                      <h2 className="card-title mb-0 fs-4 mt-2">
+                        Manage Users
+                      </h2>
                     </Col>
-                    <Col lg={4} md={6} sm={6}>
+
+                    <Col sm={6} lg={4} md={6}>
                       <div className="text-end mt-2">
                         <Input
                           type="checkbox"
@@ -347,10 +356,9 @@ const CountryN = () => {
                         <Label className="form-check-label ms-2">Active</Label>
                       </div>
                     </Col>
-
-                    <Col className="col-sm-auto" lg={4} md={12} sm={12}>
+                    <Col className="col-sm-auto" sm={12} lg={4} md={12}>
                       <div className="d-flex justify-content-sm-end">
-                        <div>
+                        <div className="ms-2">
                           <Button
                             color="success"
                             className="add-btn me-1"
@@ -380,7 +388,7 @@ const CountryN = () => {
                     <div className="table-responsive table-card mt-1 mb-1 text-right">
                       <DataTable
                         columns={col}
-                        data={countries}
+                        data={users}
                         progressPending={loading}
                         sortServer
                         onSort={(column, sortDirection, sortedRows) => {
@@ -417,35 +425,80 @@ const CountryN = () => {
             setIsSubmit(false);
           }}
         >
-          Add Country
+          Add User
         </ModalHeader>
         <form>
           <ModalBody>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassCountryName}
-                placeholder="Enter Country Name"
+                className="form-control"
+                placeholder="Enter first Name"
                 required
-                name="CountryName"
-                value={CountryName}
+                name="firstName"
+                value={firstName}
                 onChange={handleChange}
               />
-              <Label>Country Name </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.CountryName}</p>
-              )}
+              <Label>First Name </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.firstName}</p>
+              )} */}
+            </div>
+            <div className="form-floating mb-3">
+              <Input
+                type="text"
+                className="form-control"
+                placeholder="Enter last Name"
+                required
+                name="lastName"
+                value={lastName}
+                onChange={handleChange}
+              />
+              <Label>Last Name </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.firstName}</p>
+              )} */}
+            </div>
+            <div className="form-floating mb-3">
+              <Input
+                type="text"
+                className="form-control"
+                placeholder="Enter email "
+                required
+                name="Email"
+                value={Email}
+                onChange={handleChange}
+              />
+              <Label>Email </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.firstName}</p>
+              )} */}
+            </div>
+            <div className="form-floating mb-3">
+              <Input
+                type="text"
+                className="form-control"
+                placeholder="Enter password"
+                required
+                name="Password"
+                value={Password}
+                onChange={handleChange}
+              />
+              <Label>Password </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.firstName}</p>
+              )} */}
             </div>
 
-            <div className=" mb-3">
+            <div className="form-check mb-2">
               <Input
                 type="checkbox"
                 className="form-check-input"
-                name="isActive"
-                value={isActive}
+                name="IsActive"
+                value={IsActive}
                 onChange={handleCheck}
               />
-              <Label className="form-check-label ms-1">Is Active</Label>
+              <Label className="form-check-label">Is Active</Label>
             </div>
           </ModalBody>
           <ModalFooter>
@@ -489,36 +542,80 @@ const CountryN = () => {
             setIsSubmit(false);
           }}
         >
-          Edit Country
+          Edit Users
         </ModalHeader>
         <form>
           <ModalBody>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassCountryName}
-                placeholder="Enter Country Name"
+                className="form-control"
+                placeholder="Enter first Name"
                 required
-                name="CountryName"
-                value={CountryName}
+                name="firstName"
+                value={firstName}
                 onChange={handleChange}
               />
-              <Label>Country Name </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.CountryName}</p>
-              )}
+              <Label>First Name </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.firstName}</p>
+              )} */}
+            </div>
+            <div className="form-floating mb-3">
+              <Input
+                type="text"
+                className="form-control"
+                placeholder="Enter last Name"
+                required
+                name="lastName"
+                value={lastName}
+                onChange={handleChange}
+              />
+              <Label>Last Name </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.firstName}</p>
+              )} */}
+            </div>
+            <div className="form-floating mb-3">
+              <Input
+                type="text"
+                className="form-control"
+                placeholder="Enter email "
+                required
+                name="Email"
+                value={Email}
+                onChange={handleChange}
+              />
+              <Label>Email </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.firstName}</p>
+              )} */}
+            </div>
+            <div className="form-floating mb-3">
+              <Input
+                type="text"
+                className="form-control"
+                placeholder="Enter password"
+                required
+                name="Password"
+                value={Password}
+                onChange={handleChange}
+              />
+              <Label>Password </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.firstName}</p>
+              )} */}
             </div>
 
-            <div className=" mb-3">
+            <div className="form-check mb-2">
               <Input
                 type="checkbox"
                 className="form-check-input"
-                name="isActive"
-                value={isActive}
-                checked={isActive}
+                name="IsActive"
+                value={IsActive}
                 onChange={handleCheck}
               />
-              <Label className="form-check-label ms-1">Is Active</Label>
+              <Label className="form-check-label">Is Active</Label>
             </div>
           </ModalBody>
 
@@ -563,7 +660,7 @@ const CountryN = () => {
             setmodal_delete(false);
           }}
         >
-          Remove Country
+          Remove User
         </ModalHeader>
         <form>
           <ModalBody>
@@ -608,4 +705,4 @@ const CountryN = () => {
   );
 };
 
-export default CountryN;
+export default Users;
