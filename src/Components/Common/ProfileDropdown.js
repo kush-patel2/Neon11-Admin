@@ -13,6 +13,12 @@ const ProfileDropdown = () => {
         user: state.Profile.user,
     }));
 
+    const handleLogout = () => {
+        localStorage.removeItem("RCCoffeeUser");
+    
+        window.location.replace("/");
+      };
+
     const [userName, setUserName] = useState("Admin");
 
     useEffect(() => {
@@ -50,26 +56,8 @@ const ProfileDropdown = () => {
                     <h6 className="dropdown-header">Welcome {userName}!</h6>
                     <DropdownItem href="/profile"><i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
                         <span className="align-middle">Profile</span></DropdownItem>
-                    {/* <DropdownItem href="/apps-chat"><i
-                        className="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span
-                            className="align-middle">Messages</span></DropdownItem>
-                    <DropdownItem href="#"><i
-                        className="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i> <span
-                            className="align-middle">Taskboard</span></DropdownItem>
-                    <DropdownItem href="/pages-faqs"><i
-                        className="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span
-                            className="align-middle">Help</span></DropdownItem>
-                    <div className="dropdown-divider"></div>
-                    <DropdownItem href="/pages-profile"><i
-                        className="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span
-                            className="align-middle">Balance : <b>$5971.67</b></span></DropdownItem>
-                    <DropdownItem href="/pages-profile-settings"><span
-                        className="badge bg-soft-success text-success mt-1 float-end">New</span><i
-                            className="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span
-                                className="align-middle">Settings</span></DropdownItem> */}
-                    {/* <DropdownItem href="/auth-lockscreen-basic"><i
-                        className="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span className="align-middle">Lock screen</span></DropdownItem> */}
-                    <DropdownItem href="/"><i
+                   
+                    <DropdownItem onClick={handleLogout} ><i
                         className="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
                             className="align-middle" data-key="t-logout">Logout</span></DropdownItem>
                 </DropdownMenu>
