@@ -45,29 +45,6 @@ const authProtectedRoutes = [
   { path: "/product-details", component: <ProductDetails /> },
   { path: "/order-details", component: <OrderDetails /> },
 
-  // { path: "/gold-price", component: <GoldPrice /> },
-  // { path: "/silver-price", component: <SilverPrice /> },
-  // { path: "/gold-karat", component: <GoldKarat /> },
-  // { path: "/top-products", component: <TopProducts /> },
-  // { path: "/category-products", component: <CategoryProduct /> },
-
-  // { path: "/category", component: <Category /> },
-  // { path: "/inquiry-details", component: <InquiryDetails /> },
-
-  // { path: "/prospect", component: <ProspectDetails /> },
-  // { path: "/wishList-data", component: <WhishListData /> },
-
-  // { path: "/manage-media", component: <ManageMedia /> },
-  // { path: "/media-playlist", component: <MediaPlayList /> },
-
-  // { path: "/try", component: <TryJewel /> },
-  // { path: "/try-on", component: <Try /> },
-  // { path: "/try-jewellery", component: <TryJewelForm /> },
-  // { path: "/partner-login", component: <PartnerLogin /> },
-
-  // //User Profile
-  // { path: "/profile", component: <UserProfile /> },
-
   {
     path: "/",
     exact: true,
