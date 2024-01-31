@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import moment from "moment-timezone";
 import {
   Button,
   Card,
@@ -33,7 +34,7 @@ const initialState = {
   blogImage: "",
   likes: [],
   comments: [],
-  userId: "",
+  userId: localStorage.getItem('RCCoffeeUser'),
   IsActive: false,
 };
 
@@ -201,7 +202,7 @@ const Blogs = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_MARWIZ}/api/auth/list-by-params/blogs`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/blogs`,
         {
           skip: skip,
           per_page: perPage,
@@ -241,9 +242,35 @@ const Blogs = () => {
   const col = [
     {
       name: "Title",
-      selector: (row) => row.blogTitle,
+      cell: (row) => row.blogTitle,
       sortable: true,
       sortField: "blogTitle",
+      minWidth: "150px",
+    },
+
+    {
+      name: " Written By",
+      cell: (row) => row.userId,
+      sortable: true,
+      sortField: "userId",
+      minWidth: "150px",
+    },
+
+    {
+      name: " Date",
+      selector: (row) => {
+        const dateObject = new Date(row.createdAt);
+
+        return (
+          <React.Fragment>
+            {moment(new Date(dateObject.getTime())).format(
+              "DD-MM-YYYY hh:mm A"
+            )}
+          </React.Fragment>
+        );
+      },
+      sortable: true,
+      sortField: "createdAt",
       minWidth: "150px",
     },
 
@@ -414,7 +441,7 @@ const Blogs = () => {
                 type="textarea"
                 className="form-control"
                 placeholder="Enter Blog Description..."
-                required
+                style={{ height: "150px" }}
                 name="blogDesc"
                 value={blogDesc}
                 onChange={handleChange}
@@ -502,7 +529,7 @@ const Blogs = () => {
                 type="textarea"
                 className="form-control"
                 placeholder="Enter Blog Description..."
-                required
+                style={{ height: "150px" }}
                 name="blogDesc"
                 value={blogDesc}
                 onChange={handleChange}

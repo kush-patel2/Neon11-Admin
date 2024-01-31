@@ -370,7 +370,7 @@ const CompanyLocation = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_ZIYA}/api/auth/list-by-params/company-locations`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/company-locations`,
         {
           skip: skip,
           per_page: perPage,
@@ -417,9 +417,9 @@ const CompanyLocation = () => {
     },
     {
       name: "Location Name",
-      cell: (row) => row.Location,
+      cell: (row) => row.Address,
       sortable: true,
-      sortField: "Location",
+      sortField: "Address",
       minWidth: "180px",
     },
     {
@@ -1058,7 +1058,7 @@ const CompanyLocation = () => {
                   src={
                     newProfileImageSelected
                       ? image
-                      : `${process.env.REACT_APP_API_URL_ZIYA}/${values.StoreLogo}`
+                      : `${process.env.REACT_APP_API_URL_COFFEE}/${values.StoreLogo}`
                   }
                   width="180"
                   height="180"

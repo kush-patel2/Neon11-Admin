@@ -32,8 +32,8 @@ const initialState = {
   lastName: "",
   Email: "",
   Password: "",
-  IsPublic: "",
-  UserType: "",
+  IsPublic: false,
+  UserType: "user",
   followers: [],
   following: [],
   IsActive: false,
@@ -211,7 +211,7 @@ const Users = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_MARWIZ}/api/auth/list-by-params/users`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/users`,
         {
           skip: skip,
           per_page: perPage,
@@ -613,6 +613,7 @@ const Users = () => {
                 className="form-check-input"
                 name="IsActive"
                 value={IsActive}
+                checked={IsActive}
                 onChange={handleCheck}
               />
               <Label className="form-check-label">Is Active</Label>

@@ -5,7 +5,9 @@ import SimpleBar from "simplebar-react";
 import logoSm from "../assets/images/logo-sm.png";
 import logoDark from "../assets/images/logo-dark.png";
 import logoLight from "../assets/images/logo-light.png";
-import logoZiya from "../assets/images/logo/ziya-logo-original.png";
+
+import logo from "../assets/images/logo/RC-logo-png.png";
+
 
 //Import Components
 import VerticalLayout from "./VerticalLayouts";
@@ -55,21 +57,21 @@ const Sidebar = ({ layoutType }) => {
             height: "110px",
           }}
         >
-          <Link to="/gold-price" className="logo logo-dark">
+          <Link to="/manage-users" className="mt-2 logo logo-dark">
             <span className="logo-sm">
-              <img src={logoZiya} alt="" height="90" />
+              <img src={logo} alt="" height="80" />
             </span>
             <span className="logo-lg">
-              <img src={logoZiya} alt="" height="90" />
+              <img src={logo} alt="" height="80" />
             </span>
           </Link>
 
-          <Link to="/gold-price" className="logo logo-light">
+          <Link to="/manage-users" className="mt-2 logo logo-light">
             <span className="logo-sm">
-              <img src={logoZiya} alt="" height="90" />
+              <img src={logo} alt="" height="90" />
             </span>
             <span className="logo-lg">
-              <img src={logoZiya} alt="" height="90" />
+              <img src={logo} alt="" height="90" />
             </span>
           </Link>
           <button

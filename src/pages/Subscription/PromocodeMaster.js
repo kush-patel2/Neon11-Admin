@@ -25,7 +25,7 @@ import {
   removePromocodeMaster,
   updatePromocodeMaster,
 } from "../../functions/Products/PromocodeMaster";
-
+import moment from "moment-timezone";
 const initialState = {
   code: "",
   savePercentage: "",
@@ -175,7 +175,7 @@ const PromocodeMaster = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_MARWIZ}/api/auth/list-by-params/PromocodeMaster`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/PromocodeMaster`,
         {
           skip: skip,
           per_page: perPage,
@@ -221,7 +221,7 @@ const PromocodeMaster = () => {
       minWidth: "150px",
     },
     {
-      name: "savePercentage",
+      name: "Save(%)",
       selector: (row) => row.savePercentage,
       sortable: true,
       sortField: "savePercentage",
@@ -229,7 +229,17 @@ const PromocodeMaster = () => {
     },
     {
       name: " Date",
-      selector: (row) => row.createdAt,
+      selector: (row) => {
+        const dateObject = new Date(row.createdAt);
+
+        return (
+          <React.Fragment>
+            {moment(new Date(dateObject.getTime())).format(
+              "DD-MM-YYYY hh:mm A"
+            )}
+          </React.Fragment>
+        );
+      },
       sortable: true,
       sortField: "createdAt",
       minWidth: "150px",
@@ -401,7 +411,7 @@ const PromocodeMaster = () => {
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
-            </div> 
+            </div>
 
             <div className="form-floating mb-3">
               <Input
@@ -413,7 +423,7 @@ const PromocodeMaster = () => {
                 value={savePercentage}
                 onChange={handleChange}
               />
-              <Label>Save </Label>
+              <Label>Save(%) </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -501,7 +511,7 @@ const PromocodeMaster = () => {
                 value={savePercentage}
                 onChange={handleChange}
               />
-              <Label>Save </Label>
+              <Label>Save(%) </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -513,6 +523,7 @@ const PromocodeMaster = () => {
                 className="form-check-input"
                 name="IsActive"
                 value={IsActive}
+                checked={IsActive}
                 onChange={handleCheck}
               />
               <Label className="form-check-label">Is Active</Label>

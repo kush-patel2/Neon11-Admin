@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import moment from "moment-timezone";
 import UiContent from "../../Components/Common/UiContent";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import {
@@ -97,7 +97,7 @@ const Inquiry = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_ZIYA}/api/auth/list-by-params/users`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/Inquiry`,
         {
           skip: skip,
           per_page: perPage,
@@ -160,6 +160,23 @@ const Inquiry = () => {
       sortable: true,
       rtField: "Message",
       xWidth: "400px",
+    },
+    {
+      name: "Date",
+      selector: (row) => {
+        const dateObject = new Date(row.createdAt);
+
+        return (
+          <React.Fragment>
+            {moment(new Date(dateObject.getTime())).format(
+              "DD-MM-YYYY hh:mm A"
+            )}
+          </React.Fragment>
+        );
+      },
+      sortable: true,
+      sortField: "createdAt",
+      minWidth: "150px",
     },
     {
       name: "Action",

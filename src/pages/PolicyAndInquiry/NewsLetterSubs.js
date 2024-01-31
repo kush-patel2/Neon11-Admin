@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import moment from "moment-timezone";
 import UiContent from "../../Components/Common/UiContent";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import {
@@ -80,9 +80,6 @@ const NewsletterSubs = () => {
     setsortDirection(sortDirection);
   };
 
-  useEffect(() => {
-    // fetchUsers(1); // fetch page 1 of users
-  }, []);
 
   useEffect(() => {
     fetchData();
@@ -97,7 +94,7 @@ const NewsletterSubs = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_ZIYA}/api/auth/list-by-params/users`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/NewsLetter`,
         {
           skip: skip,
           per_page: perPage,
@@ -138,14 +135,24 @@ const NewsletterSubs = () => {
       selector: (row) => row.email,
       sortable: true,
       sortField: "email",
-      maxWidth: "280px",
+      // maxWidth: "280px",
     },
     {
       name: "Subscription Date",
-      selector: (row) => row.createdAt,
+      selector: (row) => {
+        const dateObject = new Date(row.createdAt);
+
+        return (
+          <React.Fragment>
+            {moment(new Date(dateObject.getTime())).format(
+              "DD-MM-YYYY hh:mm A"
+            )}
+          </React.Fragment>
+        );
+      },
       sortable: true,
       sortField: "createdAt",
-      maxWidth: "280px",
+      // maxWidth: "280px",
     },
     {
       name: "Action",
@@ -168,7 +175,7 @@ const NewsletterSubs = () => {
         );
       },
       sortable: false,
-      maxWidth: "180px",
+      // maxWidth: "180px",
     },
   ];
 

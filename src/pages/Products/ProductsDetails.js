@@ -24,6 +24,7 @@ import {
   removeProductsDetails,
   updateProductsDetails,
 } from "../../functions/Products/ProductsDetails";
+import { listDrinkCategory } from "../../functions/Category/DrinkCategoryMaster";
 
 const ProductDetails = () => {
   const [formErrors, setFormErrors] = useState({});
@@ -86,13 +87,13 @@ const ProductDetails = () => {
       sortField: "productName",
       minWidth: "150px",
     },
-    {
-      name: "Image",
-      selector: (row) => row.productImage,
-      sortable: true,
-      sortField: "productImage",
-      minWidth: "150px",
-    },
+    // {
+    //   name: "Image",
+    //   selector: (row) => row.productImage,
+    //   sortable: true,
+    //   sortField: "productImage",
+    //   minWidth: "150px",
+    // },
     {
       name: "Gift Hamper",
       selector: (row) => {
@@ -158,7 +159,7 @@ const ProductDetails = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_ZIYA}/api/auth/list-by-params/product-details`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/product-details`,
         {
           skip: skip,
           per_page: perPage,
@@ -248,6 +249,16 @@ const ProductDetails = () => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
+  const [drinkCategories, setDrinkCategories] = useState([]);
+
+  useEffect(() => {
+    loadDrinkCategories();
+  }, [category]);
+
+  const loadDrinkCategories = () => {
+    listDrinkCategory().then((res) => setDrinkCategories(res));
+  };
+
   const handleClick = (e) => {
     e.preventDefault();
     // let errors = validate(values);
@@ -256,7 +267,7 @@ const ProductDetails = () => {
     // if (Object.keys(errors).length === 0) {
     const formdata = new FormData();
 
-    formdata.append("ProductImage", values.productImage);
+    formdata.append("myFile", values.productImage);
     formdata.append("category", values.category);
     formdata.append("productName", values.productName);
     formdata.append("productDescription", values.productDescription);
@@ -307,7 +318,7 @@ const ProductDetails = () => {
     // if (Object.keys(errors).length === 0) {
     const formdata = new FormData();
 
-    formdata.append("ProductImage", values.productImage);
+    formdata.append("myFile", values.productImage);
     formdata.append("category", values.category);
     formdata.append("productName", values.productName);
     formdata.append("productDescription", values.productDescription);
@@ -387,7 +398,6 @@ const ProductDetails = () => {
 
   const PhotoUpload = (e) => {
     if (e.target.files.length > 0) {
-      console.log(e.target.files);
       const image = new Image();
 
       let imageurl = URL.createObjectURL(e.target.files[0]);
@@ -400,12 +410,9 @@ const ProductDetails = () => {
         // Now, you have the image width and height available.
         // You can use this information when sending the image to the backend.
       };
-      console.log("width", image.width);
 
       setPhotoAdd(imageurl);
-      setValues({ ...values, CategoryImage: e.target.files[0] });
-      //   console.log("img add", ProductImage);
-      console.log("photoAdd", photoAdd);
+      setValues({ ...values, productImage: e.target.files[0] });
       setCheckImagePhoto(true);
     }
   };
@@ -524,46 +531,78 @@ const ProductDetails = () => {
         </ModalHeader>
         <form>
           <ModalBody>
-            <div className="form-floating mb-3">
-              <input
-                type="text"
+            <div className="form-floating  mb-3">
+              <select
+                name="category"
                 className="form-control"
-                placeholder="Enter product name"
-                required
-                name="productName"
-                value={values.productName}
                 onChange={handleChange}
-              />
-              <label htmlFor="role-field" className="form-label">
-                Product Name
-                <span className="text-danger">*</span>
-              </label>
-              {/* {isSubmit && <p className="text-danger">{formErrors.Category}</p>} */}
+                value={category}
+                data-choices
+                data-choices-sorting="true"
+              >
+                <option>Select Category</option>
+                {drinkCategories.map((c) => {
+                  return (
+                    <React.Fragment key={c._id}>
+                      {c.IsActive && (
+                        <option value={c._id}>{c.categoryName}</option>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </select>
+              <Label>
+                Select Drink Category <span className="text-danger">*</span>
+              </Label>
+              {isSubmit && (
+                <p className="text-danger">{formErrors.drinkCategory}</p>
+              )}
             </div>
-
-            <div className="form-floating mb-3">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter product price"
-                required
-                name="price"
-                value={values.price}
-                onChange={handleChange}
-              />
-              <label htmlFor="role-field" className="form-label">
-                Price
-                <span className="text-danger">*</span>
-              </label>
-              {/* {isSubmit && <p className="text-danger">{formErrors.Category}</p>} */}
-            </div>
+            <Row>
+              <Col lg={6}>
+                <div className="form-floating mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter product name"
+                    required
+                    name="productName"
+                    value={values.productName}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="role-field" className="form-label">
+                    Product Name
+                    <span className="text-danger">*</span>
+                  </label>
+                  {/* {isSubmit && <p className="text-danger">{formErrors.Category}</p>} */}
+                </div>
+              </Col>
+              <Col lg={6}>
+                <div className="form-floating mb-3">
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Enter product price"
+                    required
+                    name="price"
+                    value={values.price}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="role-field" className="form-label">
+                    Price ($)
+                    <span className="text-danger">*</span>
+                  </label>
+                  {/* {isSubmit && <p className="text-danger">{formErrors.Category}</p>} */}
+                </div>
+              </Col>
+            </Row>
 
             <div className="form-floating mb-3">
               <input
                 type="textarea"
                 className="form-control"
-                placeholder="productDescription"
-                name="Enter product description..."
+                placeholder="Enter product description..."
+                name="productDescription"
                 rows="5"
                 style={{ height: "150px" }}
                 value={values.productDescription}
@@ -582,7 +621,7 @@ const ProductDetails = () => {
 
               <input
                 type="file"
-                name="CategoryImage"
+                name="productImage"
                 className="form-control"
                 // accept="images/*"
                 accept=".jpg, .jpeg, .png"
@@ -594,10 +633,11 @@ const ProductDetails = () => {
               {checkImagePhoto ? (
                 <img
                   //   src={image ?? myImage}
+                  className="m-2"
                   src={photoAdd}
                   alt="Profile"
-                  width="200"
-                  height="160"
+                  width="180"
+                  height="200"
                 />
               ) : null}
             </Col>
@@ -689,46 +729,78 @@ const ProductDetails = () => {
         </ModalHeader>
         <form>
           <ModalBody>
-            <div className="form-floating mb-3">
-              <input
-                type="text"
+          <div className="form-floating  mb-3">
+              <select
+                name="category"
                 className="form-control"
-                placeholder="Enter product name"
-                required
-                name="productName"
-                value={values.productName}
                 onChange={handleChange}
-              />
-              <label htmlFor="role-field" className="form-label">
-                Product Name
-                <span className="text-danger">*</span>
-              </label>
-              {/* {isSubmit && <p className="text-danger">{formErrors.Category}</p>} */}
+                value={category}
+                data-choices
+                data-choices-sorting="true"
+              >
+                <option>Select Category</option>
+                {drinkCategories.map((c) => {
+                  return (
+                    <React.Fragment key={c._id}>
+                      {c.IsActive && (
+                        <option value={c._id}>{c.categoryName}</option>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </select>
+              <Label>
+                Select Drink Category <span className="text-danger">*</span>
+              </Label>
+              {isSubmit && (
+                <p className="text-danger">{formErrors.drinkCategory}</p>
+              )}
             </div>
-
-            <div className="form-floating mb-3">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter product price"
-                required
-                name="price"
-                value={values.price}
-                onChange={handleChange}
-              />
-              <label htmlFor="role-field" className="form-label">
-                Price
-                <span className="text-danger">*</span>
-              </label>
-              {/* {isSubmit && <p className="text-danger">{formErrors.Category}</p>} */}
-            </div>
+            <Row>
+              <Col lg={6}>
+                <div className="form-floating mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter product name"
+                    required
+                    name="productName"
+                    value={values.productName}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="role-field" className="form-label">
+                    Product Name
+                    <span className="text-danger">*</span>
+                  </label>
+                  {/* {isSubmit && <p className="text-danger">{formErrors.Category}</p>} */}
+                </div>
+              </Col>
+              <Col lg={6}>
+                <div className="form-floating mb-3">
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Enter product price"
+                    required
+                    name="price"
+                    value={values.price}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="role-field" className="form-label">
+                    Price ($)
+                    <span className="text-danger">*</span>
+                  </label>
+                  {/* {isSubmit && <p className="text-danger">{formErrors.Category}</p>} */}
+                </div>
+              </Col>
+            </Row>
 
             <div className="form-floating mb-3">
               <input
                 type="textarea"
                 className="form-control"
-                placeholder="productDescription"
-                name="Enter product description..."
+                placeholder="Enter product description..."
+                name="productDescription"
                 rows="5"
                 style={{ height: "150px" }}
                 value={values.productDescription}
@@ -742,12 +814,12 @@ const ProductDetails = () => {
 
             <Col lg={6}>
               <label>
-                Image <span className="text-danger">*</span>
+                Product Image <span className="text-danger">*</span>
               </label>
               <input
-                key={"CategoryImage" + _id}
+                key={"productImage" + _id}
                 type="file"
-                name="CategoryImage"
+                name="productImage"
                 className="form-control"
                 // accept="images/*"
                 accept=".jpg, .jpeg, .png"
@@ -760,13 +832,14 @@ const ProductDetails = () => {
               {values.productImage || photoAdd ? (
                 <img
                   // key={photoAdd}
+                  className="m-2"
                   src={
                     checkImagePhoto
                       ? photoAdd
-                      : `${process.env.REACT_APP_API_URL_ZIYA}/${values.productImage}`
+                      : `${process.env.REACT_APP_API_URL_COFFEE}/${values.productImage}`
                   }
                   width="180"
-                  height="180"
+                  height="200"
                 />
               ) : null}
             </Col>
@@ -778,6 +851,7 @@ const ProductDetails = () => {
                     type="checkbox"
                     name="IsActive"
                     value={IsActive}
+                    checked={IsActive}
                     onChange={handlecheck}
                   />
                   <Label className="form-check-label" htmlFor="activeCheckBox">
@@ -792,7 +866,7 @@ const ProductDetails = () => {
                     name="IsGiftHamper"
                     value={IsGiftHamper}
                     onChange={handlecheckGH}
-                    // checked={IsTopProducts}
+                    checked={IsGiftHamper}
                   />
                   <Label className="form-check-label" htmlFor="activeCheckBox">
                     Is GiftHamper
@@ -808,7 +882,7 @@ const ProductDetails = () => {
                     name="IsSubscriptionProduct"
                     value={IsSubscriptionProduct}
                     onChange={handlecheckSubs}
-                    // checked={IsTopProducts}
+                    checked={IsSubscriptionProduct}
                   />
                   <Label className="form-check-label" htmlFor="activeCheckBox">
                     Subscription Product

@@ -62,7 +62,7 @@ const LoginUserCover = (props) => {
     setFormErrors(validate(values));
 
     axios
-      .post(`${process.env.REACT_APP_API_URL_MARWIZ}/api/login`, values)
+      .post(`${process.env.REACT_APP_API_URL_COFFEE}/api/login`, values)
       .then((res) => {
         console.log(res);
         setLoginUser(res.user);
