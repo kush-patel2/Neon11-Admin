@@ -29,7 +29,7 @@ const Index = () => {
                 </Route>
 
                 <Route>
-                    { localStorage.getItem("ZiyaUser") && authProtectedRoutes.map((route, idx) => (
+                    { localStorage.getItem("RCCoffeeUser") && authProtectedRoutes.map((route, idx) => (
                         <Route
                             path={route.path}
                             element={

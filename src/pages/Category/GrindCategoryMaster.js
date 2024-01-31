@@ -117,18 +117,21 @@ const GrindCategoryMaster = () => {
 
     createGrindCategoryMaster(values)
       .then((res) => {
-        if (res.isOk) {
-          setmodal_list(!modal_list);
+        setmodal_list(!modal_list);
           setValues(initialState);
           fetchCategories();
-        } else {
-          if (res.field === 1) {
-            setErrCN(true);
-            setFormErrors({
-              categoryName: "This grind type is already exists!",
-            });
-          }
-        }
+        // if (res.isOk) {
+        //   setmodal_list(!modal_list);
+        //   setValues(initialState);
+        //   fetchCategories();
+        // } else {
+        //   if (res.field === 1) {
+        //     setErrCN(true);
+        //     setFormErrors({
+        //       categoryName: "This grind type is already exists!",
+        //     });
+        //   }
+        // }
       })
       .catch((error) => {
         console.log(error);
@@ -221,7 +224,7 @@ const GrindCategoryMaster = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_MARWIZ}/api/auth/list-by-params/grindMaster`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/grindMaster`,
         {
           skip: skip,
           per_page: perPage,
@@ -433,19 +436,19 @@ const GrindCategoryMaster = () => {
                 data-choices
                 data-choices-sorting="true"
               >
-                <option>Select drink category</option>
+                <option>Select category</option>
                 {drinkCategories.map((c) => {
                   return (
                     <React.Fragment key={c._id}>
                       {c.IsActive && (
-                        <option value={c._id}>{c.drinkCategory}</option>
+                        <option value={c._id}>{c.categoryName}</option>
                       )}
                     </React.Fragment>
                   );
                 })}
               </select>
               <Label>
-                Select Drink Category <span className="text-danger">*</span>
+                Select Category <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.drinkCategory}</p>
@@ -533,7 +536,7 @@ const GrindCategoryMaster = () => {
                 data-choices
                 data-choices-sorting="true"
               >
-                <option>Select drink category</option>
+                <option>Select category</option>
                 {drinkCategories.map((c) => {
                   return (
                     <React.Fragment key={c._id}>
@@ -545,7 +548,7 @@ const GrindCategoryMaster = () => {
                 })}
               </select>
               <Label>
-                Select Drink Category <span className="text-danger">*</span>
+                Select Category <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.drinkCategory}</p>

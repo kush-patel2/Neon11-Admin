@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import moment from "moment-timezone";
 import UiContent from "../../Components/Common/UiContent";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { Link } from "react-router-dom";
@@ -79,9 +79,7 @@ const FAQ = () => {
     setsortDirection(sortDirection);
   };
 
-  useEffect(() => {
-    // fetchUsers(1); // fetch page 1 of users
-  }, []);
+
 
   useEffect(() => {
     fetchData();
@@ -96,7 +94,7 @@ const FAQ = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_ZIYA}/api/auth/list-by-params/faq`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/faq`,
         {
           skip: skip,
           per_page: perPage,
@@ -134,28 +132,38 @@ const FAQ = () => {
   const columns = [
     {
       name: "Question",
-      selector: (row) => row.question,
+      cell: (row) => row.question,
       sortable: true,
       sortField: "email",
       maxWidth: "280px",
     },
     {
       name: "Answer",
-      selector: (row) => row.answer,
+      cell: (row) => row.answer,
       sortable: true,
       sortField: "email",
       maxWidth: "280px",
     },
     {
       name: "User",
-      selector: (row) => row.userId,
+      cell: (row) => row.userId,
       sortable: true,
       sortField: "email",
       maxWidth: "280px",
     },
     {
       name: "Date",
-      selector: (row) => row.createdAt,
+      selector: (row) => {
+        const dateObject = new Date(row.createdAt);
+
+        return (
+          <React.Fragment>
+            {moment(new Date(dateObject.getTime())).format(
+              "DD-MM-YYYY hh:mm A"
+            )}
+          </React.Fragment>
+        );
+      },
       sortable: true,
       sortField: "createdAt",
       maxWidth: "280px",

@@ -75,7 +75,7 @@ const OrderDetails = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_ZIYA}/api/auth/list-by-params/orders`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/orders`,
         {
           skip: skip,
           per_page: perPage,

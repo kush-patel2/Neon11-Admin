@@ -26,7 +26,7 @@ import {
   removePolicyMaster,
   updatePolicyMaster,
 } from "../../functions/PolicyAndInquiry/PolicyMaster";
-
+import moment from "moment-timezone";
 const initialState = {
   policyName: "",
   policyDesc: "",
@@ -193,7 +193,7 @@ const PolicyMaster = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_MARWIZ}/api/auth/list-by-params/policyMaster`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/policyMaster`,
         {
           skip: skip,
           per_page: perPage,
@@ -240,14 +240,34 @@ const PolicyMaster = () => {
     },
     {
       name: "Policy Date",
-      selector: (row) => row.createdAt,
+      selector: (row) => {
+        const dateObject = new Date(row.createdAt);
+
+        return (
+          <React.Fragment>
+            {moment(new Date(dateObject.getTime())).format(
+              "DD-MM-YYYY hh:mm A"
+            )}
+          </React.Fragment>
+        );
+      },
       sortable: true,
       sortField: "createdAt",
       minWidth: "150px",
     },
     {
       name: "Last Updated Date",
-      selector: (row) => row.updatedAt,
+      selector: (row) => {
+        const dateObject = new Date(row.updatedAt);
+
+        return (
+          <React.Fragment>
+            {moment(new Date(dateObject.getTime())).format(
+              "DD-MM-YYYY hh:mm A"
+            )}
+          </React.Fragment>
+        );
+      },
       sortable: true,
       sortField: "updatedAt",
       minWidth: "150px",
@@ -531,6 +551,7 @@ const PolicyMaster = () => {
                 className="form-check-input"
                 name="IsActive"
                 value={IsActive}
+                checked={IsActive}
                 onChange={handleCheck}
               />
               <Label className="form-check-label">Is Active</Label>

@@ -106,18 +106,21 @@ const DrinkCategoryMaster = () => {
 
       createDrinkCategory(values)
         .then((res) => {
-          if (res.isOk) {
-            setmodal_list(!modal_list);
+          setmodal_list(!modal_list);
             setValues(initialState);
             fetchCategories();
-          } else {
-            if (res.field === 1) {
-              setErrCN(true);
-              setFormErrors({
-                categoryName: "This Category name is already exists!",
-              });
-            }
-          }
+          // if (res.isOk) {
+          //   setmodal_list(!modal_list);
+          //   setValues(initialState);
+          //   fetchCategories();
+          // } else {
+          //   if (res.field === 1) {
+          //     setErrCN(true);
+          //     setFormErrors({
+          //       categoryName: "This Category name is already exists!",
+          //     });
+          //   }
+          // }
         })
         .catch((error) => {
           console.log(error);
@@ -200,7 +203,7 @@ const DrinkCategoryMaster = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_MARWIZ}/api/auth/list-by-params/drinkMaster`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/drinkMaster`,
         {
           skip: skip,
           per_page: perPage,

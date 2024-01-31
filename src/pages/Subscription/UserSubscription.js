@@ -95,7 +95,7 @@ const UserSubscription = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_ZIYA}/api/auth/list-by-params/UserSubscription`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/UserSubscription`,
         {
           skip: skip,
           per_page: perPage,
