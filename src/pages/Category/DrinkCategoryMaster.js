@@ -408,7 +408,7 @@ const DrinkCategoryMaster = () => {
                 value={categoryName}
                 onChange={handleChange}
               />
-              <Label>Category Name </Label>
+              <Label>Category Name <span className="text-danger">*</span></Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )}
@@ -480,7 +480,7 @@ const DrinkCategoryMaster = () => {
                 value={categoryName}
                 onChange={handleChange}
               />
-              <Label>Category Name </Label>
+              <Label>Category Name <span className="text-danger">*</span></Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )}

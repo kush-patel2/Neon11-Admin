@@ -34,7 +34,7 @@ const initialState = {
   isActive: false,
 };
 
-const CountryN = () => {
+const Country = () => {
   const [values, setValues] = useState(initialState);
   const {
     CountryName,
@@ -431,7 +431,7 @@ const CountryN = () => {
                 value={CountryName}
                 onChange={handleChange}
               />
-              <Label>Country Name </Label>
+              <Label>Country <span className="text-danger">*</span> </Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.CountryName}</p>
               )}
@@ -503,7 +503,7 @@ const CountryN = () => {
                 value={CountryName}
                 onChange={handleChange}
               />
-              <Label>Country Name </Label>
+              <Label>Country <span className="text-danger">*</span> </Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.CountryName}</p>
               )}
@@ -608,4 +608,4 @@ const CountryN = () => {
   );
 };
 
-export default CountryN;
+export default Country;

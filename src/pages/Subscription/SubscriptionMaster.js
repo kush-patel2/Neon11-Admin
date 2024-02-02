@@ -407,7 +407,7 @@ const SubscriptionMaster = () => {
                 value={title}
                 onChange={handleChange}
               />
-              <Label>Subscription Title </Label>
+              <Label>Subscription Title <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -423,7 +423,7 @@ const SubscriptionMaster = () => {
                 value={savePercentage}
                 onChange={handleChange}
               />
-              <Label>Save(%) </Label>
+              <Label>Save(%) <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -495,7 +495,7 @@ const SubscriptionMaster = () => {
                 value={title}
                 onChange={handleChange}
               />
-              <Label>Subscription Title </Label>
+              <Label>Subscription Title<span className="text-danger">*</span> </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -511,7 +511,7 @@ const SubscriptionMaster = () => {
                 value={savePercentage}
                 onChange={handleChange}
               />
-              <Label>Save(%) </Label>
+              <Label>Save(%) <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}

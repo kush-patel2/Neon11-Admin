@@ -499,7 +499,7 @@ const City = () => {
                   );
                 })}
               </select>
-              <Label>Select Country</Label>
+              <Label> Country<span className="text-danger">*</span></Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.CountryID}</p>
               )}
@@ -522,7 +522,7 @@ const City = () => {
                   );
                 })}
               </select>
-              <Label>Select State</Label>
+              <Label> State <span className="text-danger">*</span></Label>
               {isSubmit && <p className="text-danger">{formErrors.StateID}</p>}
             </div>
 
@@ -536,7 +536,7 @@ const City = () => {
                 value={CityName}
                 onChange={handleChange}
               />
-              <Label>City Name</Label>
+              <Label>City <span className="text-danger">*</span></Label>
               {isSubmit && <p className="text-danger">{formErrors.CityName}</p>}
             </div>
 
@@ -615,7 +615,7 @@ const City = () => {
                   );
                 })}
               </select>
-              <Label>Select Country</Label>
+              <Label> Country <span className="text-danger">*</span></Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.CountryID}</p>
               )}
@@ -639,7 +639,7 @@ const City = () => {
                   );
                 })}
               </select>
-              <Label>Select State</Label>
+              <Label> State <span className="text-danger">*</span></Label>
               {isSubmit && <p className="text-danger">{formErrors.StateID}</p>}
             </div>
 
@@ -653,7 +653,7 @@ const City = () => {
                 value={CityName}
                 onChange={handleChange}
               />
-              <Label>City Name</Label>
+              <Label>City <span className="text-danger">*</span></Label>
               {isSubmit && <p className="text-danger">{formErrors.CityName}</p>}
             </div>
 

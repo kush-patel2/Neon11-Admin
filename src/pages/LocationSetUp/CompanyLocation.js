@@ -252,7 +252,6 @@ const CompanyLocation = () => {
   const [errSN, setErrSN] = useState(false);
   const [errCN, setErrCN] = useState(false);
   const [errAD, setErrAD] = useState(false);
-  const [errArea, setErrArea] = useState(false);
   const [errLocation, setErrLocation] = useState(false);
   const [errLAT, setErrLAT] = useState(false);
   const [errLONG, setErrLONG] = useState(false);
@@ -280,13 +279,7 @@ const CompanyLocation = () => {
     if (values.Address !== "") {
       setErrAD(false);
     }
-    if (values.Area == "") {
-      errors.Area = "Area is Required!";
-      setErrArea(true);
-    }
-    if (values.Area !== "") {
-      setErrArea(false);
-    }
+    
     if (values.Location == "") {
       errors.Location = "Location is Required!";
       setErrLocation(true);
@@ -331,8 +324,8 @@ const CompanyLocation = () => {
 
   const validClassAdd =
     errAD && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassArea =
-    errArea && isSubmit ? "form-control is-invalid" : "form-control";
+  // const validClassArea =
+  //   errArea && isSubmit ? "form-control is-invalid" : "form-control";
   const validClassLocation =
     errLocation && isSubmit ? "form-control is-invalid" : "form-control";
 
@@ -604,7 +597,7 @@ const CompanyLocation = () => {
                     })}
                   </select>
                   <Label>
-                    Select Country <span className="text-danger">*</span>
+                     Country <span className="text-danger">*</span>
                   </Label>
                   {isSubmit && (
                     <p className="text-danger">{formErrors.CountryID}</p>
@@ -633,7 +626,7 @@ const CompanyLocation = () => {
                     })}
                   </select>
                   <Label>
-                    Select State <span className="text-danger">*</span>
+                     State <span className="text-danger">*</span>
                   </Label>
                   {isSubmit && (
                     <p className="text-danger">{formErrors.StateID}</p>
@@ -664,7 +657,7 @@ const CompanyLocation = () => {
                     })}
                   </select>
                   <Label>
-                    Select City <span className="text-danger">*</span>
+                     City <span className="text-danger">*</span>
                   </Label>
                   {isSubmit && (
                     <p className="text-danger">{formErrors.CityID}</p>
@@ -678,16 +671,16 @@ const CompanyLocation = () => {
                 <div className="form-floating mb-3">
                   <Input
                     type="text"
-                    className={validClassArea}
+                    className="form-control"
                     placeholder="Enter area"
                     name="Area"
                     value={Area}
                     onChange={handleChange}
                   />
                   <Label>
-                    Area <span className="text-danger">*</span>
+                    Area 
                   </Label>
-                  {isSubmit && <p className="text-danger">{formErrors.Area}</p>}
+                  {/* {isSubmit && <p className="text-danger">{formErrors.Area}</p>} */}
                 </div>
               </Col>
 
@@ -702,7 +695,7 @@ const CompanyLocation = () => {
                     onChange={handleChange}
                   />
                   <Label>
-                    Location Name <span className="text-danger">*</span>
+                    Location  <span className="text-danger">*</span>
                   </Label>
                   {isSubmit && (
                     <p className="text-danger">{formErrors.Location}</p>
@@ -769,7 +762,7 @@ const CompanyLocation = () => {
           
             <Col lg={6}>
               <label>
-                Store Logo 
+                Store Logo <span className="text-danger">*</span>
               </label>
 
               <input
@@ -948,17 +941,16 @@ const CompanyLocation = () => {
                 <div className="form-floating mb-3">
                   <Input
                     type="text"
-                    className={validClassArea}
-                    // className="form-control"
+                    className="form-control"
                     placeholder="Enter area"
                     name="Area"
                     value={Area}
                     onChange={handleChange}
                   />
                   <Label>
-                    Area <span className="text-danger">*</span>
+                    Area 
                   </Label>
-                  {isSubmit && <p className="text-danger">{formErrors.Area}</p>}
+                  {/* {isSubmit && <p className="text-danger">{formErrors.Area}</p>} */}
                 </div>
               </Col>
               <Col lg={6}>
@@ -973,7 +965,7 @@ const CompanyLocation = () => {
                     onChange={handleChange}
                   />
                   <Label>
-                    Location Name <span className="text-danger">*</span>
+                    Location <span className="text-danger">*</span>
                   </Label>
                   {isSubmit && (
                     <p className="text-danger">{formErrors.Location}</p>
@@ -1043,7 +1035,7 @@ const CompanyLocation = () => {
           
             <Col lg={6}>
               <label>
-                Store Logo 
+                Store Logo <span className="text-danger">*</span>
               </label>
               <input
                 key={"StoreLogo_" + _id}

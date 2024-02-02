@@ -439,7 +439,7 @@ const Users = () => {
                 value={firstName}
                 onChange={handleChange}
               />
-              <Label>First Name </Label>
+              <Label>First Name <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.firstName}</p>
               )} */}
@@ -454,7 +454,7 @@ const Users = () => {
                 value={lastName}
                 onChange={handleChange}
               />
-              <Label>Last Name </Label>
+              <Label>Last Name <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.firstName}</p>
               )} */}
@@ -469,7 +469,7 @@ const Users = () => {
                 value={Email}
                 onChange={handleChange}
               />
-              <Label>Email </Label>
+              <Label>Email <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.firstName}</p>
               )} */}
@@ -484,7 +484,7 @@ const Users = () => {
                 value={Password}
                 onChange={handleChange}
               />
-              <Label>Password </Label>
+              <Label>Password <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.firstName}</p>
               )} */}
@@ -556,7 +556,7 @@ const Users = () => {
                 value={firstName}
                 onChange={handleChange}
               />
-              <Label>First Name </Label>
+              <Label>First Name<span className="text-danger">*</span> </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.firstName}</p>
               )} */}
@@ -571,7 +571,7 @@ const Users = () => {
                 value={lastName}
                 onChange={handleChange}
               />
-              <Label>Last Name </Label>
+              <Label>Last Name<span className="text-danger">*</span> </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.firstName}</p>
               )} */}
@@ -586,7 +586,7 @@ const Users = () => {
                 value={Email}
                 onChange={handleChange}
               />
-              <Label>Email </Label>
+              <Label>Email <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.firstName}</p>
               )} */}
@@ -601,7 +601,7 @@ const Users = () => {
                 value={Password}
                 onChange={handleChange}
               />
-              <Label>Password </Label>
+              <Label>Password <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.firstName}</p>
               )} */}

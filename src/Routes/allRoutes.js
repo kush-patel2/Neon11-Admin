@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-import CountryN from "../pages/LocationSetUp/Country/CountryN";
+import Country from "../pages/LocationSetUp/Country/Country";
 import City from "../pages/LocationSetUp/City/City";
 import State from "../pages/LocationSetUp/State/State";
 import CompanyLocation from "../pages/LocationSetUp/CompanyLocation";
@@ -26,7 +26,7 @@ import UserProfile from "../pages/Authentication/user-profile";
 const authProtectedRoutes = [
   // { path: "/dashboard", component: <DashboardCrm /> },
   { path: "/profile", component: <UserProfile /> },
-  { path: "/country", component: <CountryN /> },
+  { path: "/country", component: <Country /> },
   { path: "/city", component: <City /> },
   { path: "/state", component: <State /> },
   { path: "/location", component: <CompanyLocation /> },

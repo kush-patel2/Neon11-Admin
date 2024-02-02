@@ -483,7 +483,7 @@ const State = () => {
                   );
                 })}
               </select>
-              <Label>Select Country</Label>
+              <Label> Country<span className="text-danger">*</span></Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.CountryID}</p>
               )}
@@ -498,7 +498,7 @@ const State = () => {
                 value={StateName}
                 onChange={handleChange}
               />
-              <Label>State Name</Label>
+              <Label>State <span className="text-danger">*</span></Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.StateName}</p>
               )}
@@ -578,7 +578,7 @@ const State = () => {
                   );
                 })}
               </select>
-              <Label>Select Country</Label>
+              <Label> Country<span className="text-danger">*</span></Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.CountryID}</p>
               )}
@@ -594,7 +594,7 @@ const State = () => {
                 value={StateName}
                 onChange={handleChange}
               />
-              <Label>State Name</Label>
+              <Label>State <span className="text-danger">*</span></Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.StateName}</p>
               )}
