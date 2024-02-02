@@ -466,7 +466,7 @@ const CompanyLocation = () => {
     },
   ];
 
-  document.title = "Company Location | ZIYA";
+  document.title = "Company Location | RC Henning Coffee Company";
   return (
     <React.Fragment>
       <UiContent />

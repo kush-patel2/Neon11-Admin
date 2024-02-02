@@ -6,25 +6,32 @@ import { useDispatch } from "react-redux";
 import { useProfile } from "../Components/Hooks/UserHooks";
 
 import { logoutUser } from "../store/actions";
+import { boolean } from "yup";
 
 const AuthProtected = (props) => {
-  const dispatch = useDispatch();
-  const { userProfile, loading, token } = useProfile();
-  useEffect(() => {
-    if (userProfile && !loading && token) {
-      setAuthorization(token);
-    } else if (!userProfile && loading && !token) {
-      dispatch(logoutUser());
-    }
-  }, [token, userProfile, loading, dispatch]);
+  // const dispatch = useDispatch();
+  // const { userProfile, loading, token } = useProfile();
+  // useEffect(() => {
+  //   if (userProfile && !loading && token) {
+  //     setAuthorization(token);
+  //   } else if (!userProfile && loading && !token) {
+  //     dispatch(logoutUser());
+  //   }
+  // }, [token, userProfile, loading, dispatch]);
 
   /*
     redirect is un-auth access protected routes via url
   */
 
-  if (!userProfile && loading && !token) {
+  // if (!userProfile && loading && !token) {
+  //   return (
+  //     <Navigate to={{ pathname: "/login", state: { from: props.location } }} />
+  //   );
+  // }
+
+  if (!localStorage.getItem("RCCoffeeUser"))  {
     return (
-      <Navigate to={{ pathname: "/login", state: { from: props.location } }} />
+      <Navigate to= "/" />
     );
   }
 

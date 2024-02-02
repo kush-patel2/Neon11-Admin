@@ -4,7 +4,6 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap
 
 //import images
 import avatar1 from "../../assets/images/users/avatar-1.jpg";
-// import logoZiya from "../../assets/images/logo/ziya-logo-original.png";
 import logo from "../../assets/images/logo/RC-logo-png.png";
 
 const ProfileDropdown = () => {

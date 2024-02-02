@@ -29,13 +29,13 @@ const Index = () => {
                 </Route>
 
                 <Route>
-                    { localStorage.getItem("RCCoffeeUser") && authProtectedRoutes.map((route, idx) => (
+                    {authProtectedRoutes.map((route, idx) => (
                         <Route
                             path={route.path}
                             element={
-                                // <AuthProtected>
+                                <AuthProtected>
                                     <VerticalLayout>{route.component}</VerticalLayout>
-                                // </AuthProtected>
+                             </AuthProtected>
                             }
                             key={idx}
                             exact={true}

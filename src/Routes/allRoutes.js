@@ -21,9 +21,11 @@ import SubscriptionMaster from "../pages/Subscription/SubscriptionMaster";
 import PromocodeMaster from "../pages/Subscription/PromocodeMaster";
 import ProductDetails from "../pages/Products/ProductsDetails";
 import OrderDetails from "../pages/Products/Orders";
+import UserProfile from "../pages/Authentication/user-profile";
 
 const authProtectedRoutes = [
   // { path: "/dashboard", component: <DashboardCrm /> },
+  { path: "/profile", component: <UserProfile /> },
   { path: "/country", component: <CountryN /> },
   { path: "/city", component: <City /> },
   { path: "/state", component: <State /> },

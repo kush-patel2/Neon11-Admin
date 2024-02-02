@@ -7,7 +7,6 @@ import logoSm from "../assets/images/logo-sm.png";
 import logoDark from "../assets/images/logo-dark.png";
 import logoLight from "../assets/images/logo-light.png";
 
-// import logoZiya from "../assets/images/logo/ziya-logo-original.png";
 import logo from "../assets/images/logo/RC-logo-png.png";
 
 //import Components

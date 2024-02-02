@@ -361,7 +361,7 @@ const State = () => {
     },
   ];
 
-  document.title = "State | ZIYA";
+  document.title = "State | RC Henning Coffee Company";
   return (
     <React.Fragment>
       <UiContent />

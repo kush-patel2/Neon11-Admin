@@ -23,7 +23,7 @@ import { useFormik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 
 import avatar from "../../assets/images/users/avatar-1.jpg";
-import logoZiya from "../../assets/images/logo/ziya-logo-original.png";
+import logo from "../../assets/images/logo/RC-logo-png.png";
 
 // actions
 import { editProfile, resetProfileFlag } from "../../store/actions";
@@ -31,10 +31,10 @@ import { editProfile, resetProfileFlag } from "../../store/actions";
 const UserProfile = () => {
   const dispatch = useDispatch();
 
-  const [email, setemail] = useState("admin@gmail.com");
+  const [email, setemail] = useState("admin@rccoffee.in");
   const [idx, setidx] = useState("1");
 
-  const [userName, setUserName] = useState("Ziya");
+  const [userName, setUserName] = useState("RC Henning Coffee Company");
 
   const { user, success, error } = useSelector(state => ({
     user: state.Profile.user,
@@ -80,7 +80,7 @@ const UserProfile = () => {
     }
   });
 
-  document.title = "Profile | ZIYA";
+  document.title = "Profile | RC Henning Coffee Company";
   return (
     <React.Fragment>
       <div className="page-content">
@@ -95,7 +95,7 @@ const UserProfile = () => {
                   <div className="d-flex">
                     <div className="mx-3">
                       <img
-                        src={logoZiya}
+                        src={logo}
                         alt=""
                         className="avatar-md rounded-circle img-thumbnail"
                       />

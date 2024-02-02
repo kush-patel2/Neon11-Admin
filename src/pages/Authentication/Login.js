@@ -77,20 +77,6 @@ const Login = (props) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const handleSignIn = () => {
-    if (
-      validation.values.email === "ziyajewelers@gmail.com" &&
-      validation.values.password === "12345678"
-    ) {
-      localStorage.setItem("RCCoffeeUser", true);
-      window.location.replace("/manage-users");
-      setShowError(false);
-    } else {
-      // Display the error alert
-      setShowError(true);
-      toast.error("Authentication failed!");
-    }
-  };
 
   const login = () => {
     setIsSubmit(true);
