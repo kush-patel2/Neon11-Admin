@@ -14,12 +14,9 @@ import {
 } from "reactstrap";
 import { Alert } from "react-bootstrap";
 
-import ParticlesAuth from "../AuthenticationInner/ParticlesAuth";
-// import logo from "../../assets/images/logo/ziya-logo-favicon.png";
 import logo from "../../assets/images/logo/RC-logo-png.png";
 
 import { ToastContainer, toast } from "react-toastify";
-import { listZiyaLogin } from "../../functions/ZiyaLogin";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 
@@ -29,16 +26,9 @@ import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 
-//Social Media Imports
-import { GoogleLogin } from "react-google-login";
-// import TwitterLogin from "react-twitter-auth"
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 // actions
 import { loginUser, socialLogin, resetLoginFlag } from "../../store/actions";
 
-import logoLight from "../../assets/images/logo-light.png";
-//Import config
-import { facebook, google } from "../../config";
 
 import withRouter from "../../Components/Common/withRouter";
 import axios from "axios";
