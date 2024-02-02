@@ -154,7 +154,7 @@ const VerticalLayout = (props) => {
             </li>
             <li className="nav-item">
               <Link to="/location" className="nav-link">
-                 Locations
+                 Company Location
               </Link>
             </li>
           </ul>
@@ -179,7 +179,7 @@ const VerticalLayout = (props) => {
           <ul className="nav nav-sm flex-column test">
             <li className="nav-item">
               <Link className="nav-link menu-link" to="/drink-category">
-                <span data-key="t-apps"> Drink Category  </span>
+                <span data-key="t-apps">Products Category  </span>
               </Link>
             </li>
             <li className="nav-item">

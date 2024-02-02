@@ -416,6 +416,12 @@ const CompanyLocation = () => {
       sortField: "countryname",
     },
     {
+      name: "State",
+      selector: (row) => row.statename,
+      sortable: true,
+      sortField: "statename",
+    },
+    {
       name: "Location Name",
       cell: (row) => row.Address,
       sortable: true,

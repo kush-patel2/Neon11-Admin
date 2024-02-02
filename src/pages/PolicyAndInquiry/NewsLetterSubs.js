@@ -131,7 +131,7 @@ const NewsletterSubs = () => {
 
   const columns = [
     {
-      name: "Email",
+      name: "Subscribed Email",
       selector: (row) => row.email,
       sortable: true,
       sortField: "email",

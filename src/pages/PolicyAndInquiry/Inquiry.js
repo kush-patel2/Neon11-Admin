@@ -162,7 +162,7 @@ const Inquiry = () => {
       xWidth: "400px",
     },
     {
-      name: "Date",
+      name: "Date & Time",
       selector: (row) => {
         const dateObject = new Date(row.createdAt);
 

@@ -146,13 +146,13 @@ const FAQ = () => {
     },
     {
       name: "User",
-      cell: (row) => row.userId,
+      cell: (row) => row.user.firstName,
       sortable: true,
-      sortField: "email",
+      sortField: "row.user.firstName",
       maxWidth: "280px",
     },
     {
-      name: "Date",
+      name: "Date & Time",
       selector: (row) => {
         const dateObject = new Date(row.createdAt);
 

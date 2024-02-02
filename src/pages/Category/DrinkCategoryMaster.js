@@ -292,7 +292,7 @@ const DrinkCategoryMaster = () => {
     },
   ];
 
-  document.title = "Drink Category Master | RC Henning Coffee Company";
+  document.title = "Products Category | RC Henning Coffee Company";
 
   return (
     <React.Fragment>
@@ -300,7 +300,7 @@ const DrinkCategoryMaster = () => {
         <Container fluid>
           <BreadCrumb
             maintitle="Category"
-            title="Drink Category"
+            title="Products Category"
             pageTitle="Category"
           />
           <Row>
@@ -309,7 +309,7 @@ const DrinkCategoryMaster = () => {
                 <CardHeader>
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" sm={6} lg={4} md={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">Drink Category</h2>
+                      <h2 className="card-title mb-0 fs-4 mt-2">Products Category</h2>
                     </Col>
 
                     <Col sm={6} lg={4} md={6}>

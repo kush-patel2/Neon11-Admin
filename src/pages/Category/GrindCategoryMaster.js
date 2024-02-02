@@ -238,6 +238,7 @@ const GrindCategoryMaster = () => {
         if (response.length > 0) {
           let res = response[0];
           setLoading(false);
+          console.log("res grind", res.data);
           setCategories(res.data);
           setTotalRows(res.count);
         } else if (response.length === 0) {
@@ -262,10 +263,10 @@ const GrindCategoryMaster = () => {
   };
   const col = [
     {
-      name: "Drink Category",
-      selector: (row) => row.drinkCategory,
+      name: "Product Category",
+      selector: (row) => row.category.categoryName,
       sortable: true,
-      sortField: "drinkCategory",
+      sortField: "row.category.categoryName",
       minWidth: "150px",
     },
     {
@@ -448,7 +449,7 @@ const GrindCategoryMaster = () => {
                 })}
               </select>
               <Label>
-                Select Category <span className="text-danger">*</span>
+                Product Category <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.drinkCategory}</p>
@@ -465,7 +466,7 @@ const GrindCategoryMaster = () => {
                 value={grindType}
                 onChange={handleChange}
               />
-              <Label>Grind Type</Label>
+              <Label>Grind Type <span className="text-danger">*</span></Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.grindType}</p>
               )}
@@ -541,14 +542,14 @@ const GrindCategoryMaster = () => {
                   return (
                     <React.Fragment key={c._id}>
                       {c.IsActive && (
-                        <option value={c._id}>{c.drinkCategory}</option>
+                        <option value={c._id}>{c.categoryName}</option>
                       )}
                     </React.Fragment>
                   );
                 })}
               </select>
               <Label>
-                Select Category <span className="text-danger">*</span>
+                Product Category <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.drinkCategory}</p>
@@ -565,7 +566,7 @@ const GrindCategoryMaster = () => {
                 value={grindType}
                 onChange={handleChange}
               />
-              <Label>Grind Type</Label>
+              <Label>Grind Type <span className="text-danger">*</span> </Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.grindType}</p>
               )}

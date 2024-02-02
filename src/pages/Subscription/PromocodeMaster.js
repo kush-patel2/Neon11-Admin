@@ -228,7 +228,7 @@ const PromocodeMaster = () => {
       minWidth: "150px",
     },
     {
-      name: " Date",
+      name: "Date & Time",
       selector: (row) => {
         const dateObject = new Date(row.createdAt);
 
@@ -407,7 +407,7 @@ const PromocodeMaster = () => {
                 value={code}
                 onChange={handleChange}
               />
-              <Label>Promocode </Label>
+              <Label>Promocode<span className="text-danger">*</span> </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -423,7 +423,7 @@ const PromocodeMaster = () => {
                 value={savePercentage}
                 onChange={handleChange}
               />
-              <Label>Save(%) </Label>
+              <Label>Save(%)<span className="text-danger">*</span> </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -495,7 +495,7 @@ const PromocodeMaster = () => {
                 value={code}
                 onChange={handleChange}
               />
-              <Label>Promocode </Label>
+              <Label>Promocode <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -511,7 +511,7 @@ const PromocodeMaster = () => {
                 value={savePercentage}
                 onChange={handleChange}
               />
-              <Label>Save(%) </Label>
+              <Label>Save(%) <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}

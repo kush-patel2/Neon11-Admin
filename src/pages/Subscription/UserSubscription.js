@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import moment from "moment-timezone";
 import UiContent from "../../Components/Common/UiContent";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import {
@@ -158,6 +158,23 @@ const UserSubscription = () => {
       sortable: true,
       rtField: "remark",
       xWidth: "400px",
+    },
+    {
+      name: "Date & Time",
+      selector: (row) => {
+        const dateObject = new Date(row.createdAt);
+
+        return (
+          <React.Fragment>
+            {moment(new Date(dateObject.getTime())).format(
+              "DD-MM-YYYY hh:mm A"
+            )}
+          </React.Fragment>
+        );
+      },
+      sortable: true,
+      sortField: "createdAt",
+      minWidth: "150px",
     },
     {
       name: "Action",

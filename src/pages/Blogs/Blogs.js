@@ -250,14 +250,14 @@ const Blogs = () => {
 
     {
       name: " Written By",
-      cell: (row) => row.userId,
+      cell: (row) => row.user.firstName,
       sortable: true,
-      sortField: "userId",
+      sortField: "row.user.firstName",
       minWidth: "150px",
     },
 
     {
-      name: " Date",
+      name: "Date & Time",
       selector: (row) => {
         const dateObject = new Date(row.createdAt);
 
@@ -430,7 +430,7 @@ const Blogs = () => {
                 value={blogTitle}
                 onChange={handleChange}
               />
-              <Label>Blog Title </Label>
+              <Label>Blog Title <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -446,7 +446,7 @@ const Blogs = () => {
                 value={blogDesc}
                 onChange={handleChange}
               />
-              <Label>Blog Description </Label>
+              <Label>Blog Description<span className="text-danger">*</span> </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -518,7 +518,7 @@ const Blogs = () => {
                 value={blogTitle}
                 onChange={handleChange}
               />
-              <Label>Blog Title </Label>
+              <Label>Blog Title<span className="text-danger">*</span> </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -534,7 +534,7 @@ const Blogs = () => {
                 value={blogDesc}
                 onChange={handleChange}
               />
-              <Label>Blog Description </Label>
+              <Label>Blog Description <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}

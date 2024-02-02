@@ -435,7 +435,7 @@ const PolicyMaster = () => {
                 value={policyName}
                 onChange={handleChange}
               />
-              <Label>Policy Name </Label>
+              <Label>Policy Name<span className="text-danger">*</span> </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -446,12 +446,12 @@ const PolicyMaster = () => {
                 type="textarea"
                 className="form-control"
                 placeholder="Enter Policy Description..."
-                required
+                style={{ height:"150px" }}
                 name="policyDesc"
                 value={policyDesc}
                 onChange={handleChange}
               />
-              <Label>Policy Description </Label>
+              <Label>Policy Description <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -523,7 +523,7 @@ const PolicyMaster = () => {
                 value={policyName}
                 onChange={handleChange}
               />
-              <Label>Policy Name </Label>
+              <Label>Policy Name <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -534,12 +534,12 @@ const PolicyMaster = () => {
                 type="textarea"
                 className="form-control"
                 placeholder="Enter Policy Description..."
-                required
+                style={{ height:"150px" }}
                 name="policyDesc"
                 value={policyDesc}
                 onChange={handleChange}
               />
-              <Label>Policy Description </Label>
+              <Label>Policy Description <span className="text-danger">*</span></Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}

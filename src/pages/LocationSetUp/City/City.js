@@ -313,14 +313,6 @@ const City = () => {
 
   const col = [
     {
-      name: "City Name",
-      selector: (row) => row.CityName,
-      sortable: true,
-      sortField: "CityName",
-      minWidth: "180px",
-    },
-
-    {
       name: "Country",
       selector: (row) => row.countryname,
       sortable: true,
@@ -331,6 +323,13 @@ const City = () => {
       selector: (row) => row.statename,
       sortable: true,
       sortField: "statename",
+    },
+    {
+      name: "City",
+      selector: (row) => row.CityName,
+      sortable: true,
+      sortField: "CityName",
+      minWidth: "180px",
     },
 
     {

@@ -74,10 +74,10 @@ const ProductDetails = () => {
 
   const columns = [
     {
-      name: "Category",
-      selector: (row) => row.category,
+      name: "Product Category",
+      selector: (row) => row.category.categoryName,
       sortable: true,
-      sortField: "category",
+      sortField: "row.category.categoryName",
       minWidth: "150px",
     },
     {
@@ -552,7 +552,7 @@ const ProductDetails = () => {
                 })}
               </select>
               <Label>
-                Select Drink Category <span className="text-danger">*</span>
+                Product Category <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.drinkCategory}</p>
@@ -750,7 +750,7 @@ const ProductDetails = () => {
                 })}
               </select>
               <Label>
-                Select Drink Category <span className="text-danger">*</span>
+                Product Category <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
                 <p className="text-danger">{formErrors.drinkCategory}</p>
