@@ -8,7 +8,7 @@ import CompanyLocation from "../pages/LocationSetUp/CompanyLocation";
 
 import Login from "../pages/Authentication/Login";
 
-import DrinkCategoryMaster from "../pages/Category/DrinkCategoryMaster";
+import CategoryMaster from "../pages/Category/CategoryMaster";
 import GrindCategoryMaster from "../pages/Category/GrindCategoryMaster";
 import Blogs from "../pages/Blogs/Blogs";
 import Inquiry from "../pages/PolicyAndInquiry/Inquiry";
@@ -32,7 +32,7 @@ const authProtectedRoutes = [
   { path: "/location", component: <CompanyLocation /> },
 
   { path: "/manage-users", component: <Users /> },
-  { path: "/drink-category", component: <DrinkCategoryMaster /> },
+  { path: "/category", component: <CategoryMaster /> },
   { path: "/grind-category", component: <GrindCategoryMaster /> },
   { path: "/blogs", component: <Blogs /> },
   { path: "/inquiry", component: <Inquiry /> },
@@ -50,9 +50,9 @@ const authProtectedRoutes = [
   {
     path: "/",
     exact: true,
-    component: <Navigate to="/drink-category" />,
+    component: <Navigate to="/category" />,
   },
-  { path: "*", component: <Navigate to="/drink-category" /> },
+  { path: "*", component: <Navigate to="/category" /> },
 ];
 
 const publicRoutes = [

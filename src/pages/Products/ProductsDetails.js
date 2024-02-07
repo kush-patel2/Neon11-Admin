@@ -24,7 +24,7 @@ import {
   removeProductsDetails,
   updateProductsDetails,
 } from "../../functions/Products/ProductsDetails";
-import { listDrinkCategory } from "../../functions/Category/DrinkCategoryMaster";
+import { listCategory } from "../../functions/Category/CategoryMaster";
 
 const ProductDetails = () => {
   const [formErrors, setFormErrors] = useState({});
@@ -256,7 +256,7 @@ const ProductDetails = () => {
   }, [category]);
 
   const loadDrinkCategories = () => {
-    listDrinkCategory().then((res) => setDrinkCategories(res));
+    listCategory().then((res) => setDrinkCategories(res));
   };
 
   const handleClick = (e) => {
@@ -555,7 +555,7 @@ const ProductDetails = () => {
                 Product Category <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.drinkCategory}</p>
+                <p className="text-danger">{formErrors.Category}</p>
               )}
             </div>
             <Row>
@@ -753,7 +753,7 @@ const ProductDetails = () => {
                 Product Category <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.drinkCategory}</p>
+                <p className="text-danger">{formErrors.Category}</p>
               )}
             </div>
             <Row>
