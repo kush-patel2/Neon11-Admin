@@ -26,17 +26,17 @@ import {
   removeGrindCategoryMaster,
   updateGrindCategoryMaster,
 } from "../../functions/Category/GrindCategoryMaster";
-import { listDrinkCategory } from "../../functions/Category/DrinkCategoryMaster";
+import { listCategory } from "../../functions/Category/CategoryMaster";
 
 const initialState = {
-  drinkCategory: "",
+  Category: "",
   grindType: "",
   IsActive: false,
 };
 
 const GrindCategoryMaster = () => {
   const [values, setValues] = useState(initialState);
-  const { drinkCategory, grindType, IsActive } = values;
+  const { Category, grindType, IsActive } = values;
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
@@ -54,10 +54,10 @@ const GrindCategoryMaster = () => {
 
   useEffect(() => {
     loadDrinkCategories();
-  }, [drinkCategory]);
+  }, [Category]);
 
   const loadDrinkCategories = () => {
-    listDrinkCategory().then((res) => setDrinkCategories(res));
+    listCategory().then((res) => setDrinkCategories(res));
   };
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const GrindCategoryMaster = () => {
         console.log(res);
         setValues({
           ...values,
-          drinkCategory: res.drinkCategory,
+          Category: res.Category,
           grindType: res.grindType,
           IsActive: res.IsActive,
         });
@@ -171,11 +171,11 @@ const GrindCategoryMaster = () => {
   const validate = (values) => {
     const errors = {};
 
-    if (values.drinkCategory === "") {
-      errors.drinkCategory = "Category Name is required!";
+    if (values.Category === "") {
+      errors.Category = "Category Name is required!";
       setErrCN(true);
     }
-    if (values.drinkCategory !== "") {
+    if (values.Category !== "") {
       setErrCN(false);
     }
 
@@ -430,10 +430,10 @@ const GrindCategoryMaster = () => {
           <ModalBody>
             <div className="form-floating  mb-3">
               <select
-                name="drinkCategory"
+                name="Category"
                 className={validClassCategoryName}
                 onChange={handleChange}
-                value={drinkCategory}
+                value={Category}
                 data-choices
                 data-choices-sorting="true"
               >
@@ -452,7 +452,7 @@ const GrindCategoryMaster = () => {
                 Product Category <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.drinkCategory}</p>
+                <p className="text-danger">{formErrors.Category}</p>
               )}
             </div>
 
@@ -530,10 +530,10 @@ const GrindCategoryMaster = () => {
           <ModalBody>
             <div className="form-floating  mb-3">
               <select
-                name="drinkCategory"
+                name="Category"
                 className={validClassCategoryName}
                 onChange={handleChange}
-                value={drinkCategory}
+                value={Category}
                 data-choices
                 data-choices-sorting="true"
               >
@@ -552,7 +552,7 @@ const GrindCategoryMaster = () => {
                 Product Category <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.drinkCategory}</p>
+                <p className="text-danger">{formErrors.Category}</p>
               )}
             </div>
 

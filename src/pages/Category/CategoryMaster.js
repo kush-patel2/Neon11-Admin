@@ -21,19 +21,18 @@ import axios from "axios";
 import DataTable from "react-data-table-component";
 
 import {
-  createDrinkCategory,
-  getDrinkCategory,
-  listDrinkCategory,
-  removeDrinkCategory,
-  updateDrinkCategory,
-} from "../../functions/Category/DrinkCategoryMaster";
+  createCategory,
+  getCategory,
+  removeCategory,
+  updateCategory,
+} from "../../functions/Category/CategoryMaster";
 
 const initialState = {
   categoryName: "",
   IsActive: false,
 };
 
-const DrinkCategoryMaster = () => {
+const CategoryMaster = () => {
   const [values, setValues] = useState(initialState);
   const { categoryName, IsActive } = values;
   const [formErrors, setFormErrors] = useState({});
@@ -74,7 +73,7 @@ const DrinkCategoryMaster = () => {
     setmodal_edit(!modal_edit);
     setIsSubmit(false);
     set_Id(_id);
-    getDrinkCategory(_id)
+    getCategory(_id)
       .then((res) => {
         console.log(res);
         setValues({
@@ -104,7 +103,7 @@ const DrinkCategoryMaster = () => {
     setFormErrors(erros);
     setIsSubmit(true);
 
-      createDrinkCategory(values)
+      createCategory(values)
         .then((res) => {
           setmodal_list(!modal_list);
             setValues(initialState);
@@ -129,7 +128,7 @@ const DrinkCategoryMaster = () => {
 
   const handleDelete = (e) => {
     e.preventDefault();
-    removeDrinkCategory(remove_id)
+    removeCategory(remove_id)
       .then((res) => {
         setmodal_delete(!modal_delete);
         fetchCategories();
@@ -146,7 +145,7 @@ const DrinkCategoryMaster = () => {
     setIsSubmit(true);
 
     if (Object.keys(erros).length === 0) {
-      updateDrinkCategory(_id, values)
+      updateCategory(_id, values)
         .then((res) => {
           setmodal_edit(!modal_edit);
           fetchCategories();
@@ -203,7 +202,7 @@ const DrinkCategoryMaster = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/drinkMaster`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/categoryMaster`,
         {
           skip: skip,
           per_page: perPage,
@@ -585,4 +584,4 @@ const DrinkCategoryMaster = () => {
   );
 };
 
-export default DrinkCategoryMaster;
+export default CategoryMaster;
