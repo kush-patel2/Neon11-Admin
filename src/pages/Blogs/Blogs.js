@@ -34,7 +34,7 @@ const initialState = {
   blogImage: "",
   likes: [],
   comments: [],
-  userId: localStorage.getItem('RCCoffeeUser'),
+  userId: localStorage.getItem('RCCoffeeAdmin'),
   IsActive: false,
 };
 
