@@ -24,7 +24,7 @@ import {
   removeProductsDetails,
   updateProductsDetails,
 } from "../../functions/Products/ProductsDetails";
-import { listDrinkCategory } from "../../functions/Category/DrinkCategoryMaster";
+import { listCategory } from "../../functions/Category/CategoryMaster";
 
 const ProductDetails = () => {
   const [formErrors, setFormErrors] = useState({});
@@ -294,7 +294,7 @@ const ProductDetails = () => {
   }, [category]);
 
   const loadDrinkCategories = () => {
-    listDrinkCategory().then((res) => setDrinkCategories(res));
+    listCategory().then((res) => setDrinkCategories(res));
   };
 
   const handleClick = (e) => {
