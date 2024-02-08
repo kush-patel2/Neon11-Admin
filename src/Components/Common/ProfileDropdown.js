@@ -13,7 +13,7 @@ const ProfileDropdown = () => {
     }));
 
     const handleLogout = () => {
-        localStorage.removeItem("RCCoffeeUser");
+        localStorage.removeItem("RCCoffeeAdmin");
     
         window.location.replace("/");
       };

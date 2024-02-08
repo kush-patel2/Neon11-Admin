@@ -29,7 +29,7 @@ const AuthProtected = (props) => {
   //   );
   // }
 
-  if (!localStorage.getItem("RCCoffeeUser"))  {
+  if (!localStorage.getItem("RCCoffeeAdmin"))  {
     return (
       <Navigate to= "/" />
     );
