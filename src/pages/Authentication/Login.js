@@ -29,13 +29,13 @@ import { useFormik } from "formik";
 // actions
 import { loginUser, socialLogin, resetLoginFlag } from "../../store/actions";
 
-
 import withRouter from "../../Components/Common/withRouter";
 import axios from "axios";
 
 const initialState = {
   Email: "",
   Password: "",
+  UserType: "admin",
 };
 
 const Login = (props) => {
@@ -76,7 +76,6 @@ const Login = (props) => {
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
-
 
   const login = () => {
     setIsSubmit(true);

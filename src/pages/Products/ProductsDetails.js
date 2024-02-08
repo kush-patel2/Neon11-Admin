@@ -38,6 +38,7 @@ const ProductDetails = () => {
     productImage: "",
     productDescription: "",
     price: "",
+    weight: "",
     IsActive: false,
     IsSubscriptionProduct: false,
     IsGiftHamper: false,
@@ -58,6 +59,7 @@ const ProductDetails = () => {
     productDescription,
     productImage,
     price,
+    weight,
     IsActive,
     IsGiftHamper,
     IsSubscriptionProduct,
@@ -184,35 +186,71 @@ const ProductDetails = () => {
     setLoading(false);
   };
 
-  // const [errCN, setErrCN] = useState(false);
-  // const [errPI, setErrPI] = useState(false);
+  const [errPN, setErrPN] = useState(false);
+  const [errCN, setErrCN] = useState(false);
+  const [errPI, setErrPI] = useState(false);
+  const [errwt, setErrwt] = useState(false);
+  const [errPr, setErrPr] = useState(false);
 
-  // const validate = (values) => {
-  //   const errors = {};
-  //   if (values.Category === "") {
-  //     errors.Category = "Category Name is required";
-  //     setErrCN(true);
-  //   }
-  //   if (values.Category !== "") {
-  //     setErrCN(false);
-  //   }
+  const validate = (values) => {
+    const errors = {};
+    if (values.category === "") {
+      errors.category = "Category Name is required";
+      setErrCN(true);
+    }
+    if (values.category !== "") {
+      setErrCN(false);
+    }
 
-  //   if (values.CategoryImage === "") {
-  //     errors.CategoryImage = "Category Image is required";
-  //     setErrPI(true);
-  //   }
+    if (values.productName === "") {
+      errors.productName = "Product Name is required";
+      setErrPN(true);
+    }
 
-  //   if (values.CategoryImage !== "") {
-  //     setErrPI(false);
-  //   }
+    if (values.productName !== "") {
+      setErrPN(false);
+    }
 
-  //   return errors;
-  // };
+    if (values.weight === "") {
+      errors.weight = "Weight is required";
+      setErrwt(true);
+    }
 
-  // const validClassCategory =
-  //   errCN && isSubmit ? "form-control is-invalid" : "form-control";
-  // const validClassPI =
-  //   errPI && isSubmit ? "form-control is-invalid" : "form-control";
+    if (values.weight !== "") {
+      setErrwt(false);
+    }
+
+    if (values.price === "") {
+      errors.price = "Price is required";
+      setErrPr(true);
+    }
+
+    if (values.price !== "") {
+      setErrPr(false);
+    }
+
+    if (values.productImage === "") {
+      errors.productImage = "Product Image is required";
+      setErrPI(true);
+    }
+
+    if (values.productImage !== "") {
+      setErrPI(false);
+    }
+
+    return errors;
+  };
+
+  const validClassCategory =
+    errCN && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassPN =
+    errPN && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClasswt =
+    errwt && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassPr =
+    errPr && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassPI =
+    errPI && isSubmit ? "form-control is-invalid" : "form-control";
 
   const [modal_delete, setmodal_delete] = useState(false);
 
@@ -261,35 +299,36 @@ const ProductDetails = () => {
 
   const handleClick = (e) => {
     e.preventDefault();
-    // let errors = validate(values);
-    // setFormErrors(errors);
+    let errors = validate(values);
+    setFormErrors(errors);
     setIsSubmit(true);
-    // if (Object.keys(errors).length === 0) {
-    const formdata = new FormData();
+    if (Object.keys(errors).length === 0) {
+      const formdata = new FormData();
 
-    formdata.append("myFile", values.productImage);
-    formdata.append("category", values.category);
-    formdata.append("productName", values.productName);
-    formdata.append("productDescription", values.productDescription);
-    formdata.append("price", values.price);
-    formdata.append("IsActive", values.IsActive);
-    formdata.append("IsGiftHamper", values.IsGiftHamper);
-    formdata.append("IsSubscriptionProduct", values.IsSubscriptionProduct);
+      formdata.append("myFile", values.productImage);
+      formdata.append("category", values.category);
+      formdata.append("productName", values.productName);
+      formdata.append("productDescription", values.productDescription);
+      formdata.append("price", values.price);
+      formdata.append("weight", values.weight);
+      formdata.append("IsActive", values.IsActive);
+      formdata.append("IsGiftHamper", values.IsGiftHamper);
+      formdata.append("IsSubscriptionProduct", values.IsSubscriptionProduct);
 
-    createProductsDetails(formdata)
-      .then((res) => {
-        setModalList(!modal_list);
-        setValues(initialState);
-        setCheckImagePhoto(false);
-        setPhotoAdd("");
-        setIsSubmit(false);
-        setFormErrors({});
-        fetchProducts();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    // }
+      createProductsDetails(formdata)
+        .then((res) => {
+          setModalList(!modal_list);
+          setValues(initialState);
+          setCheckImagePhoto(false);
+          setPhotoAdd("");
+          setIsSubmit(false);
+          setFormErrors({});
+          fetchProducts();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   const tog_list = () => {
@@ -323,6 +362,7 @@ const ProductDetails = () => {
     formdata.append("productName", values.productName);
     formdata.append("productDescription", values.productDescription);
     formdata.append("price", values.price);
+    formdata.append("weight", values.weight);
     formdata.append("IsActive", values.IsActive);
     formdata.append("IsGiftHamper", values.IsGiftHamper);
     formdata.append("IsSubscriptionProduct", values.IsSubscriptionProduct);
@@ -374,6 +414,7 @@ const ProductDetails = () => {
           productImage: res.productImage,
           productDescription: res.productDescription,
           price: res.price,
+          weight: res.weight,
           IsActive: res.IsActive,
           IsGiftHamper: res.IsGiftHamper,
           IsSubscriptionProduct: res.IsSubscriptionProduct,
@@ -531,39 +572,41 @@ const ProductDetails = () => {
         </ModalHeader>
         <form>
           <ModalBody>
-            <div className="form-floating  mb-3">
-              <select
-                name="category"
-                className="form-control"
-                onChange={handleChange}
-                value={category}
-                data-choices
-                data-choices-sorting="true"
-              >
-                <option>Select Category</option>
-                {drinkCategories.map((c) => {
-                  return (
-                    <React.Fragment key={c._id}>
-                      {c.IsActive && (
-                        <option value={c._id}>{c.categoryName}</option>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </select>
-              <Label>
-                Product Category <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.Category}</p>
-              )}
-            </div>
             <Row>
+              <Col lg={6}>
+                <div className="form-floating  mb-3">
+                  <select
+                    name="category"
+                    className={validClassCategory}
+                    onChange={handleChange}
+                    value={category}
+                    data-choices
+                    data-choices-sorting="true"
+                  >
+                    <option>Select Category</option>
+                    {drinkCategories.map((c) => {
+                      return (
+                        <React.Fragment key={c._id}>
+                          {c.IsActive && (
+                            <option value={c._id}>{c.categoryName}</option>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                  </select>
+                  <Label>
+                    Product Category <span className="text-danger">*</span>
+                  </Label>
+                  {isSubmit && (
+                    <p className="text-danger">{formErrors.category}</p>
+                  )}
+                </div>
+              </Col>
               <Col lg={6}>
                 <div className="form-floating mb-3">
                   <input
                     type="text"
-                    className="form-control"
+                    className={validClassPN}
                     placeholder="Enter product name"
                     required
                     name="productName"
@@ -574,14 +617,18 @@ const ProductDetails = () => {
                     Product Name
                     <span className="text-danger">*</span>
                   </label>
-                  {/* {isSubmit && <p className="text-danger">{formErrors.Category}</p>} */}
+                  {isSubmit && (
+                    <p className="text-danger">{formErrors.productName}</p>
+                  )}
                 </div>
               </Col>
+            </Row>
+            <Row>
               <Col lg={6}>
                 <div className="form-floating mb-3">
                   <input
                     type="number"
-                    className="form-control"
+                    className={validClassPr}
                     placeholder="Enter product price"
                     required
                     name="price"
@@ -592,7 +639,30 @@ const ProductDetails = () => {
                     Price ($)
                     <span className="text-danger">*</span>
                   </label>
-                  {/* {isSubmit && <p className="text-danger">{formErrors.Category}</p>} */}
+                  {isSubmit && (
+                    <p className="text-danger">{formErrors.price}</p>
+                  )}
+                </div>
+              </Col>
+
+              <Col lg={6}>
+                <div className="form-floating mb-3">
+                  <input
+                    type="text"
+                    className={validClasswt}
+                    placeholder="Enter product weight"
+                    required
+                    name="weight"
+                    value={values.weight}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="role-field" className="form-label">
+                    weight (lbs/ounces)
+                    <span className="text-danger">*</span>
+                  </label>
+                  {isSubmit && (
+                    <p className="text-danger">{formErrors.weight}</p>
+                  )}
                 </div>
               </Col>
             </Row>
@@ -622,14 +692,14 @@ const ProductDetails = () => {
               <input
                 type="file"
                 name="productImage"
-                className="form-control"
+                className={validClassPI}
                 // accept="images/*"
                 accept=".jpg, .jpeg, .png"
                 onChange={PhotoUpload}
               />
-              {/* {isSubmit && (
-                <p className="text-danger">{formErrors.CategoryImage}</p>
-              )} */}
+              {isSubmit && (
+                <p className="text-danger">{formErrors.productImage}</p>
+              )}
               {checkImagePhoto ? (
                 <img
                   //   src={image ?? myImage}
@@ -729,39 +799,41 @@ const ProductDetails = () => {
         </ModalHeader>
         <form>
           <ModalBody>
-          <div className="form-floating  mb-3">
-              <select
-                name="category"
-                className="form-control"
-                onChange={handleChange}
-                value={category}
-                data-choices
-                data-choices-sorting="true"
-              >
-                <option>Select Category</option>
-                {drinkCategories.map((c) => {
-                  return (
-                    <React.Fragment key={c._id}>
-                      {c.IsActive && (
-                        <option value={c._id}>{c.categoryName}</option>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </select>
-              <Label>
-                Product Category <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.Category}</p>
-              )}
-            </div>
             <Row>
+              <Col lg={6}>
+                <div className="form-floating  mb-3">
+                  <select
+                    name="category"
+                    className={validClassCategory}
+                    onChange={handleChange}
+                    value={category}
+                    data-choices
+                    data-choices-sorting="true"
+                  >
+                    <option>Select Category</option>
+                    {drinkCategories.map((c) => {
+                      return (
+                        <React.Fragment key={c._id}>
+                          {c.IsActive && (
+                            <option value={c._id}>{c.categoryName}</option>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                  </select>
+                  <Label>
+                    Product Category <span className="text-danger">*</span>
+                  </Label>
+                  {isSubmit && (
+                    <p className="text-danger">{formErrors.category}</p>
+                  )}
+                </div>
+              </Col>
               <Col lg={6}>
                 <div className="form-floating mb-3">
                   <input
                     type="text"
-                    className="form-control"
+                    className={validClassPN}
                     placeholder="Enter product name"
                     required
                     name="productName"
@@ -772,14 +844,18 @@ const ProductDetails = () => {
                     Product Name
                     <span className="text-danger">*</span>
                   </label>
-                  {/* {isSubmit && <p className="text-danger">{formErrors.Category}</p>} */}
+                  {isSubmit && (
+                    <p className="text-danger">{formErrors.productName}</p>
+                  )}
                 </div>
               </Col>
+            </Row>
+            <Row>
               <Col lg={6}>
                 <div className="form-floating mb-3">
                   <input
                     type="number"
-                    className="form-control"
+                    className={validClassPr}
                     placeholder="Enter product price"
                     required
                     name="price"
@@ -790,7 +866,29 @@ const ProductDetails = () => {
                     Price ($)
                     <span className="text-danger">*</span>
                   </label>
-                  {/* {isSubmit && <p className="text-danger">{formErrors.Category}</p>} */}
+                  {isSubmit && (
+                    <p className="text-danger">{formErrors.price}</p>
+                  )}
+                </div>
+              </Col>
+              <Col lg={6}>
+                <div className="form-floating mb-3">
+                  <input
+                    type="text"
+                    className={validClasswt}
+                    placeholder="Enter product weight"
+                    required
+                    name="weight"
+                    value={values.weight}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="role-field" className="form-label">
+                    weight (lbs/ounces)
+                    <span className="text-danger">*</span>
+                  </label>
+                  {isSubmit && (
+                    <p className="text-danger">{formErrors.weight}</p>
+                  )}
                 </div>
               </Col>
             </Row>
@@ -820,14 +918,14 @@ const ProductDetails = () => {
                 key={"productImage" + _id}
                 type="file"
                 name="productImage"
-                className="form-control"
+                className={validClassPI}
                 // accept="images/*"
                 accept=".jpg, .jpeg, .png"
                 onChange={PhotoUpload}
               />
-              {/* {isSubmit && (
-                <p className="text-danger">{formErrors.CategoryImage}</p>
-              )} */}
+              {isSubmit && (
+                <p className="text-danger">{formErrors.productImage}</p>
+              )}
 
               {values.productImage || photoAdd ? (
                 <img
