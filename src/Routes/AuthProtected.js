@@ -29,10 +29,9 @@ const AuthProtected = (props) => {
   //   );
   // }
 
-  if (!localStorage.getItem("RCCoffeeAdmin"))  {
-    return (
-      <Navigate to= "/" />
-    );
+  if (!localStorage.getItem("RCCoffeeAdmin")) {
+    return <Navigate to="/" />;
+
   }
 
   return <>{props.children}</>;
@@ -42,8 +41,13 @@ const AccessRoute = ({ component: Component, ...rest }) => {
   return (
     <Route
       {...rest}
-      render={props => {
-        return (<> <Component {...props} /> </>);
+      render={(props) => {
+        return (
+          <>
+            {" "}
+            <Component {...props} />{" "}
+          </>
+        );
       }}
     />
   );
