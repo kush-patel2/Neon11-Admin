@@ -31,6 +31,7 @@ const AuthProtected = (props) => {
 
   if (!localStorage.getItem("RCCoffeeAdmin")) {
     return <Navigate to="/" />;
+
   }
 
   return <>{props.children}</>;

@@ -18,9 +18,9 @@ const ProfileDropdown = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("RCCoffeeAdmin");
-
     window.location.replace("/");
   };
+
 
   const [userName, setUserName] = useState("Admin");
 
