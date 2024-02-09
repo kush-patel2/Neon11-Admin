@@ -22,6 +22,7 @@ import PromocodeMaster from "../pages/Subscription/PromocodeMaster";
 import ProductDetails from "../pages/Products/ProductsDetails";
 import OrderDetails from "../pages/Products/Orders";
 import UserProfile from "../pages/Authentication/user-profile";
+import Banner from "../pages/CMS/Banner";
 
 const authProtectedRoutes = [
   // { path: "/dashboard", component: <DashboardCrm /> },
@@ -35,6 +36,7 @@ const authProtectedRoutes = [
   { path: "/category", component: <CategoryMaster /> },
   { path: "/grind-category", component: <GrindCategoryMaster /> },
   { path: "/blogs", component: <Blogs /> },
+  { path: "/banner", component: <Banner /> },
   { path: "/inquiry", component: <Inquiry /> },
   { path: "/newsletter-subscription", component: <NewsletterSubs /> },
   { path: "/policy-master", component: <PolicyMaster /> },

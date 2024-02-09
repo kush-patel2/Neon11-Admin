@@ -5,6 +5,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Form,
   Col,
   Container,
   ListGroup,
@@ -20,12 +21,15 @@ import {
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import axios from "axios";
 import DataTable from "react-data-table-component";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 import {
   createBlogs,
   getBlogs,
   removeBlogs,
   updateBlogs,
+  uploadImage,
 } from "../../functions/Blogs/Blogs";
 
 const initialState = {
@@ -34,7 +38,7 @@ const initialState = {
   blogImage: "",
   likes: [],
   comments: [],
-  userId: localStorage.getItem('RCCoffeeUser'),
+  userId: localStorage.getItem("RCCoffeeAdmin"),
   IsActive: false,
 };
 
@@ -44,6 +48,9 @@ const Blogs = () => {
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
+
+  const [showForm, setShowForm] = useState(false);
+  const [updateForm, setUpdateForm] = useState(false);
 
   const [query, setQuery] = useState("");
 
@@ -58,6 +65,35 @@ const Blogs = () => {
       console.log("no errors");
     }
   }, [formErrors, isSubmit]);
+
+  // function uploadAdapter(loader) {
+  //   return {
+  //     upload: () => {
+  //       return new Promise((resolve, reject) => {
+  //         const body = new FormData();
+  //         loader.file
+  //           .then((file) => {
+  //             body.append("uploadImg", file);
+  //             uploadImage(body)
+  //               .then((res) => {
+  //                 console.log(res.url);
+  //                 resolve({
+  //                   default: `${process.env.REACT_APP_API_URL_MARWIZ}/uploads/blogImages/${res.url}`,
+  //                 });
+  //               })
+  //               .catch((err) => console.log(err));
+  //           })
+  //           .catch((err) => reject(err));
+  //       });
+  //     },
+  //   };
+  // }
+
+  // function uploadPlugin(editor) {
+  //   editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+  //     return uploadAdapter(loader);
+  //   };
+  // }
 
   const [modal_list, setmodal_list] = useState(false);
   const tog_list = () => {
@@ -74,7 +110,10 @@ const Blogs = () => {
 
   const [modal_edit, setmodal_edit] = useState(false);
   const handleTog_edit = (_id) => {
-    setmodal_edit(!modal_edit);
+    // setmodal_edit(!modal_edit);
+    setIsSubmit(false);
+    setUpdateForm(true);
+
     setIsSubmit(false);
     set_Id(_id);
     getBlogs(_id)
@@ -84,6 +123,7 @@ const Blogs = () => {
           ...values,
           blogTitle: res.blogTitle,
           blogDesc: res.blogDesc,
+          blogImage: res.blogImage,
           likes: res.likes,
           comments: res.comments,
           userId: res.userId,
@@ -106,24 +146,37 @@ const Blogs = () => {
   const handleClick = (e) => {
     e.preventDefault();
     setFormErrors({});
-    // let erros = validate(values);
-    // setFormErrors(erros);
+    let errors = validate(values);
+    setFormErrors(errors);
     setIsSubmit(true);
+    console.log("valu", likes);
+    if (Object.keys(errors).length === 0) {
+      const formdata = new FormData();
 
-    // if (Object.keys(errors).length === 0) {
-      createBlogs(values)
+      formdata.append("myFile", values.blogImage);
+      formdata.append("blogTitle", values.blogTitle);
+      formdata.append("blogDesc", values.blogDesc);
+      formdata.append("IsActive", values.IsActive);
+      formdata.append("comments", values.comments);
+      formdata.append("likes", values.likes);
+      formdata.append("userId", values.userId);
+
+      createBlogs(formdata)
         .then((res) => {
           console.log(res);
-          setmodal_list(!modal_list);
+          // setmodal_list(!modal_list);
+          setShowForm(false);
           setValues(initialState);
           setIsSubmit(false);
+          setCheckImagePhoto(false);
+          setPhotoAdd("");
           setFormErrors({});
           fetchCategories();
         })
         .catch((err) => {
           console.log(err);
         });
-    // }
+    }
   };
 
   const handleDelete = (e) => {
@@ -140,38 +193,79 @@ const Blogs = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    // let erros = validate(values);
-    // setFormErrors(erros);
+    let erros = validate(values);
+    setFormErrors(erros);
     setIsSubmit(true);
 
-    // if (Object.keys(erros).length === 0) {
-    updateBlogs(_id, values)
-      .then((res) => {
-        setmodal_edit(!modal_edit);
-        fetchCategories();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    // }
+    if (Object.keys(erros).length === 0) {
+      const formdata = new FormData();
+
+      formdata.append("myFile", values.blogImage);
+      formdata.append("blogTitle", values.blogTitle);
+      formdata.append("blogDesc", values.blogDesc);
+      formdata.append("IsActive", values.IsActive);
+      formdata.append("comments", values.comments);
+      formdata.append("likes", values.likes);
+      formdata.append("userId", values.userId);
+
+      updateBlogs(_id, formdata)
+        .then((res) => {
+          // setmodal_edit(!modal_edit);
+          setPhotoAdd("");
+          setUpdateForm(false);
+
+          setCheckImagePhoto(false);
+          setValues(initialState);
+          fetchCategories();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
-  //   const validate = (values) => {
-  //     const errors = {};
+  const [errBT, setErrBT] = useState(false);
+  const [errBD, setErrBD] = useState(false);
+  const [errBI, setErrBI] = useState(false);
 
-  //     if (values.categoryName === "") {
-  //       errors.categoryName = "Category Name is required!";
-  //       setErrCN(true);
-  //     }
-  //     if (values.categoryName !== "") {
-  //       setErrCN(false);
-  //     }
+  const validate = (values) => {
+    const errors = {};
 
-  //     return errors;
-  //   };
+    if (values.blogTitle === "") {
+      errors.blogTitle = "Blog Title is required!";
+      setErrBT(true);
+    }
+    if (values.blogTitle !== "") {
+      setErrBT(false);
+    }
 
-  //   const validClassCategoryName =
-  //     errCN && isSubmit ? "form-control is-invalid" : "form-control";
+    if (values.blogDesc === "") {
+      errors.blogDesc = "Blog Description is required!";
+      setErrBD(true);
+    }
+    if (values.blogDesc !== "") {
+      setErrBD(false);
+    }
+
+    if (values.blogImage === "") {
+      errors.blogImage = "Blog Image is required!";
+      setErrBI(true);
+    }
+    if (values.blogImage !== "") {
+      setErrBI(false);
+    }
+
+    return errors;
+  };
+
+  const validClassBT =
+    errBT && isSubmit ? "form-control is-invalid" : "form-control";
+
+  const validClassBD =
+    errBD && isSubmit ? "form-control is-invalid" : "form-control";
+
+  const validClassBI =
+    errBI && isSubmit ? "form-control is-invalid" : "form-control";
 
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
@@ -231,12 +325,48 @@ const Blogs = () => {
     setPageNo(page);
   };
 
+  const [photoAdd, setPhotoAdd] = useState();
+  const [checkImagePhoto, setCheckImagePhoto] = useState(false);
+
+  const PhotoUpload = (e) => {
+    if (e.target.files.length > 0) {
+      const image = new Image();
+
+      let imageurl = URL.createObjectURL(e.target.files[0]);
+      console.log("img", e.target.files[0]);
+
+      setPhotoAdd(imageurl);
+      setValues({ ...values, blogImage: e.target.files[0] });
+      setCheckImagePhoto(true);
+    }
+  };
+
   const handlePerRowsChange = async (newPerPage, page) => {
     // setPageNo(page);
     setPerPage(newPerPage);
   };
   const handleFilter = (e) => {
     setFilter(e.target.checked);
+  };
+
+  const handleAddCancel = (e) => {
+    e.preventDefault();
+    setIsSubmit(false);
+    setPhotoAdd("");
+    setCheckImagePhoto(false);
+    setShowForm(false);
+    setUpdateForm(false);
+    setValues(initialState);
+  };
+
+  const handleUpdateCancel = (e) => {
+    e.preventDefault();
+    setIsSubmit(false);
+    setPhotoAdd("");
+    setUpdateForm(false);
+    setShowForm(false);
+    setCheckImagePhoto(false);
+    setValues(initialState);
   };
 
   const col = [
@@ -325,277 +455,479 @@ const Blogs = () => {
       <div className="page-content">
         <Container fluid>
           <BreadCrumb maintitle="Blogs" title="Blogs" pageTitle="Blogs" />
+
           <Row>
             <Col lg={12}>
               <Card>
                 <CardHeader>
                   <Row className="g-4 mb-1">
-                    <Col className="col-sm" sm={6} lg={4} md={6}>
+                    <Col className="col-sm" lg={4} md={6} sm={6}>
                       <h2 className="card-title mb-0 fs-4 mt-2">Blogs</h2>
                     </Col>
-
-                    <Col sm={6} lg={4} md={6}>
-                      <div className="text-end mt-2">
-                        <Input
-                          type="checkbox"
-                          className="form-check-input"
-                          name="filter"
-                          value={filter}
-                          defaultChecked={true}
-                          onChange={handleFilter}
-                        />
-                        <Label className="form-check-label ms-2">Active</Label>
+                    <Col lg={4} md={6} sm={6}>
+                      <div
+                        style={{
+                          display: showForm || updateForm ? "none" : "",
+                        }}
+                      >
+                        <div className="text-end mt-1">
+                          <Input
+                            type="checkbox"
+                            className="form-check-input"
+                            name="filter"
+                            value={filter}
+                            defaultChecked={true}
+                            onChange={handleFilter}
+                          />
+                          <Label className="form-check-label ms-2">
+                            Active
+                          </Label>
+                        </div>
                       </div>
                     </Col>
-                    <Col className="col-sm-auto" sm={12} lg={4} md={12}>
+                    <Col className="col-sm-auto" lg={4} md={12} sm={12}>
                       <div className="d-flex justify-content-sm-end">
-                        <div className="ms-2">
-                          <Button
-                            color="success"
-                            className="add-btn me-1"
-                            onClick={() => tog_list()}
-                            id="create-btn"
-                          >
-                            <i className="ri-add-line align-bottom me-1"></i>
-                            Add
-                          </Button>
+                        {/* add btn */}
+                        <div
+                          style={{
+                            display: showForm || updateForm ? "none" : "",
+                          }}
+                        >
+                          <Row>
+                            <Col lg={12}>
+                              <div className="d-flex justify-content-sm-end">
+                                <div>
+                                  <Button
+                                    color="success"
+                                    className="add-btn me-1"
+                                    onClick={() => {
+                                      setShowForm(!showForm);
+                                      setValues(initialState);
+                                      // setFileId(Math.random() * 100000);
+                                    }}
+                                    // onClick={() => tog_list()}
+                                    // id="create-btn"
+                                  >
+                                    <i className="ri-add-line align-bottom me-1"></i>
+                                    Add
+                                  </Button>
+                                </div>
+                              </div>
+                            </Col>
+                          </Row>
                         </div>
-                        <div className="search-box ms-2">
+
+                        {/* update list btn */}
+
+                        <div
+                          style={{
+                            display: showForm || updateForm ? "" : "none",
+                          }}
+                        >
+                          <Row>
+                            <Col lg={12}>
+                              <div className="text-end">
+                                <button
+                                  className="btn bg-success text-light mb-3 "
+                                  onClick={() => {
+                                    setValues(initialState);
+                                    setShowForm(false);
+                                    setUpdateForm(false);
+                                    // setFileId(Math.random() * 100000);
+                                  }}
+                                >
+                                  <i class="ri-list-check align-bottom me-1"></i>{" "}
+                                  List
+                                </button>
+                              </div>
+                            </Col>
+                          </Row>
+                          {/* </div> */}
+                        </div>
+
+                        {/* search */}
+                        <div
+                          className="search-box ms-2"
+                          style={{
+                            display: showForm || updateForm ? "none" : "",
+                          }}
+                        >
                           <input
-                            type="text"
                             className="form-control search"
                             placeholder="Search..."
                             onChange={(e) => setQuery(e.target.value)}
                           />
-                          <i className="ri-search-line search-icon"></i>
+                          <i className="ri-search-line search-icon "></i>
                         </div>
                       </div>
                     </Col>
                   </Row>
                 </CardHeader>
 
-                <CardBody>
-                  <div id="customerList">
-                    <div className="table-responsive table-card mt-1 mb-1 text-right">
-                      <DataTable
-                        columns={col}
-                        data={blogs}
-                        progressPending={loading}
-                        sortServer
-                        onSort={(column, sortDirection, sortedRows) => {
-                          handleSort(column, sortDirection);
-                        }}
-                        pagination
-                        paginationServer
-                        paginationTotalRows={totalRows}
-                        paginationRowsPerPageOptions={[10, 50, 100, totalRows]}
-                        onChangeRowsPerPage={handlePerRowsChange}
-                        onChangePage={handlePageChange}
-                      />
+                {/* ADD FORM  */}
+                <div
+                  style={{
+                    display: showForm && !updateForm ? "block" : "none",
+                  }}
+                >
+                  <CardBody>
+                    <React.Fragment>
+                      <Col xxl={12}>
+                        <Card className="">
+                          {/* <PreviewCardHeader title="Billing Product Form" /> */}
+                          <CardBody>
+                            <div className="live-preview">
+                              <Form>
+                                <Row>
+                                  <Col lg={6}>
+                                    <div className="form-floating mb-3">
+                                      <Input
+                                        type="text"
+                                        className={validClassBT}
+                                        placeholder="Enter blog title"
+                                        required
+                                        name="blogTitle"
+                                        value={blogTitle}
+                                        onChange={handleChange}
+                                      />
+                                      <Label>
+                                        Blog Title{" "}
+                                        <span className="text-danger">*</span>
+                                      </Label>
+                                      {isSubmit && (
+                                        <p className="text-danger">
+                                          {formErrors.blogTitle}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={12}>
+                                    <Card>
+                                      <Label>
+                                        Blog Description
+                                        <span className="text-danger">*</span>
+                                      </Label>
+                                      <CardBody>
+                                        {/* <Form method="post"> */}
+                                        <CKEditor
+                                          key={"blogDesc" + _id}
+                                          editor={ClassicEditor}
+                                          data={blogDesc}
+                                          // config={{
+                                          //   extraPlugins: [uploadPlugin],
+                                          // }}
+                                          onChange={(event, editor) => {
+                                            const data = editor.getData();
+                                            // handleChange();
+                                            setValues({
+                                              ...values,
+                                              blogDesc: data,
+                                            });
+                                            console.log(blogDesc);
+                                          }}
+                                        />
+                                        {isSubmit && (
+                                          <p className="text-danger">
+                                            {formErrors.blogDesc}
+                                          </p>
+                                        )}
+                                      </CardBody>
+                                    </Card>
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <label>
+                                      Blog Image{" "}
+                                      <span className="text-danger">*</span>
+                                    </label>
+
+                                    <input
+                                      type="file"
+                                      name="blogImage"
+                                      className={validClassBI}
+                                      // accept="images/*"
+                                      accept=".jpg, .jpeg, .png"
+                                      onChange={PhotoUpload}
+                                    />
+                                    {isSubmit && (
+                                      <p className="text-danger">
+                                        {formErrors.blogImage}
+                                      </p>
+                                    )}
+                                    {checkImagePhoto ? (
+                                      <img
+                                        //   src={image ?? myImage}
+                                        className="m-2"
+                                        src={photoAdd}
+                                        alt="Profile"
+                                        width="180"
+                                        height="200"
+                                      />
+                                    ) : null}
+                                  </Col>
+
+                                  <div className="mt-5">
+                                    <Col lg={6}>
+                                      <div className="form-check mb-2">
+                                        <Input
+                                          type="checkbox"
+                                          name="IsActive"
+                                          value={IsActive}
+                                          onChange={handleCheck}
+                                          checked={IsActive}
+                                        />
+                                        <Label
+                                          className="form-check-label"
+                                          htmlFor="activeCheckBox"
+                                        >
+                                          Is Active
+                                        </Label>
+                                      </div>
+                                    </Col>
+                                  </div>
+
+                                  <Col lg={12}>
+                                    <div className="hstack gap-2 justify-content-end">
+                                      <button
+                                        type="submit"
+                                        className="btn btn-success  m-1"
+                                        id="add-btn"
+                                        onClick={handleClick}
+                                      >
+                                        Submit
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className="btn btn-outline-danger m-1"
+                                        onClick={handleAddCancel}
+                                      >
+                                        Cancel
+                                      </button>
+                                    </div>
+                                  </Col>
+                                </Row>
+                              </Form>
+                            </div>
+                          </CardBody>{" "}
+                        </Card>
+                      </Col>
+                    </React.Fragment>
+                  </CardBody>
+                </div>
+
+                {/* UPDATE FORM  */}
+                <div
+                  style={{
+                    display: !showForm && updateForm ? "block" : "none",
+                  }}
+                >
+                  <CardBody>
+                    <React.Fragment>
+                      <Col xxl={12}>
+                        <Card className="">
+                          <CardBody>
+                            <div className="live-preview">
+                              <Form>
+                                <Row>
+                                  <Col lg={6}>
+                                    <div className="form-floating mb-3">
+                                      <Input
+                                        type="text"
+                                        className={validClassBT}
+                                        placeholder="Enter blog title"
+                                        required
+                                        name="blogTitle"
+                                        value={blogTitle}
+                                        onChange={handleChange}
+                                      />
+                                      <Label>
+                                        Blog Title{" "}
+                                        <span className="text-danger">*</span>
+                                      </Label>
+                                      {isSubmit && (
+                                        <p className="text-danger">
+                                          {formErrors.blogTitle}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={12}>
+                                    <Card>
+                                      <Label>
+                                        Blog Description
+                                        <span className="text-danger">*</span>
+                                      </Label>
+                                      <CardBody>
+                                        {/* <Form method="post"> */}
+                                        <CKEditor
+                                          key={"blogDesc" + _id}
+                                          editor={ClassicEditor}
+                                          data={blogDesc}
+                                          // config={{
+                                          //   extraPlugins: [uploadPlugin],
+                                          // }}
+                                          onChange={(event, editor) => {
+                                            const data = editor.getData();
+                                            // handleChange();
+                                            setValues({
+                                              ...values,
+                                              blogDesc: data,
+                                            });
+                                            console.log(blogDesc);
+                                          }}
+                                        />
+                                        {isSubmit && (
+                                          <p className="text-danger">
+                                            {formErrors.blogDesc}
+                                          </p>
+                                        )}
+                                      </CardBody>
+                                    </Card>
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <label>
+                                      Product Image{" "}
+                                      <span className="text-danger">*</span>
+                                    </label>
+                                    <input
+                                      key={"blogImage" + _id}
+                                      type="file"
+                                      name="blogImage"
+                                      className={validClassBI}
+                                      // accept="images/*"
+                                      accept=".jpg, .jpeg, .png"
+                                      onChange={PhotoUpload}
+                                    />
+                                    {isSubmit && (
+                                      <p className="text-danger">
+                                        {formErrors.blogImage}
+                                      </p>
+                                    )}
+
+                                    {values.blogImage || photoAdd ? (
+                                      <img
+                                        // key={photoAdd}
+                                        className="m-2"
+                                        src={
+                                          checkImagePhoto
+                                            ? photoAdd
+                                            : `${process.env.REACT_APP_API_URL_COFFEE}/${values.blogImage}`
+                                        }
+                                        width="180"
+                                        height="200"
+                                      />
+                                    ) : null}
+                                  </Col>
+
+                                  <div className="mt-5">
+                                    <Col lg={6}>
+                                      <div className="form-check mb-2">
+                                        <Input
+                                          type="checkbox"
+                                          name="IsActive"
+                                          value={IsActive}
+                                          onChange={handleCheck}
+                                          checked={IsActive}
+                                        />
+                                        <Label
+                                          className="form-check-label"
+                                          htmlFor="activeCheckBox"
+                                        >
+                                          Is Active
+                                        </Label>
+                                      </div>
+                                    </Col>
+                                  </div>
+
+                                  <Col lg={12}>
+                                    <div className="text-end">
+                                      <button
+                                        type="submit"
+                                        className=" btn btn-success m-1"
+                                        id="add-btn"
+                                        onClick={handleUpdate}
+                                      >
+                                        Update
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className="btn btn-outline-danger m-1"
+                                        onClick={handleUpdateCancel}
+                                      >
+                                        Cancel
+                                      </button>
+                                    </div>
+                                  </Col>
+                                </Row>
+                              </Form>
+                            </div>
+                          </CardBody>
+                        </Card>
+                      </Col>
+                    </React.Fragment>
+                  </CardBody>
+                </div>
+
+                {/* list */}
+                <div
+                  style={{
+                    display: showForm || updateForm ? "none" : "block",
+                  }}
+                >
+                  <CardBody>
+                    <div>
+                      <div className="table-responsive table-card mt-1 mb-1 text-right">
+                        <DataTable
+                          columns={col}
+                          data={blogs}
+                          progressPending={loading}
+                          sortServer
+                          onSort={(column, sortDirection, sortedRows) => {
+                            handleSort(column, sortDirection);
+                          }}
+                          pagination
+                          paginationServer
+                          paginationTotalRows={totalRows}
+                          paginationRowsPerPageOptions={[
+                            10,
+                            50,
+                            100,
+                            totalRows,
+                          ]}
+                          onChangeRowsPerPage={handlePerRowsChange}
+                          onChangePage={handlePageChange}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </CardBody>
+                  </CardBody>
+                </div>
               </Card>
             </Col>
           </Row>
         </Container>
       </div>
 
-      {/* Add Modal */}
-      <Modal
-        isOpen={modal_list}
-        toggle={() => {
-          tog_list();
-        }}
-        centered
-      >
-        <ModalHeader
-          className="bg-light p-3"
-          toggle={() => {
-            setmodal_list(false);
-            setIsSubmit(false);
-          }}
-        >
-          Add Blog
-        </ModalHeader>
-        <form>
-          <ModalBody>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className="form-control"
-                placeholder="Enter blog title"
-                required
-                name="blogTitle"
-                value={blogTitle}
-                onChange={handleChange}
-              />
-              <Label>Blog Title <span className="text-danger">*</span></Label>
-              {/* {isSubmit && (
-                <p className="text-danger">{formErrors.categoryName}</p>
-              )} */}
-            </div>
-
-            <div className="form-floating mb-3">
-              <Input
-                type="textarea"
-                className="form-control"
-                placeholder="Enter Blog Description..."
-                style={{ height: "150px" }}
-                name="blogDesc"
-                value={blogDesc}
-                onChange={handleChange}
-              />
-              <Label>Blog Description<span className="text-danger">*</span> </Label>
-              {/* {isSubmit && (
-                <p className="text-danger">{formErrors.categoryName}</p>
-              )} */}
-            </div>
-
-            <div className="form-check mb-2">
-              <Input
-                type="checkbox"
-                className="form-check-input"
-                name="IsActive"
-                value={IsActive}
-                onChange={handleCheck}
-              />
-              <Label className="form-check-label">Is Active</Label>
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <div className="hstack gap-2 justify-content-end">
-              <button
-                type="submit"
-                className="btn btn-success"
-                id="add-btn"
-                onClick={handleClick}
-              >
-                Submit
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline-danger"
-                onClick={() => {
-                  setmodal_list(false);
-                  setValues(initialState);
-                  setIsSubmit(false);
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          </ModalFooter>
-        </form>
-      </Modal>
-
-      {/* Edit Modal */}
-      <Modal
-        isOpen={modal_edit}
-        toggle={() => {
-          handleTog_edit();
-        }}
-        centered
-      >
-        <ModalHeader
-          className="bg-light p-3"
-          toggle={() => {
-            setmodal_edit(false);
-            setIsSubmit(false);
-          }}
-        >
-          Edit Blog
-        </ModalHeader>
-        <form>
-          <ModalBody>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className="form-control"
-                placeholder="Enter blog title"
-                required
-                name="blogTitle"
-                value={blogTitle}
-                onChange={handleChange}
-              />
-              <Label>Blog Title<span className="text-danger">*</span> </Label>
-              {/* {isSubmit && (
-                <p className="text-danger">{formErrors.categoryName}</p>
-              )} */}
-            </div>
-
-            <div className="form-floating mb-3">
-              <Input
-                type="textarea"
-                className="form-control"
-                placeholder="Enter Blog Description..."
-                style={{ height: "150px" }}
-                name="blogDesc"
-                value={blogDesc}
-                onChange={handleChange}
-              />
-              <Label>Blog Description <span className="text-danger">*</span></Label>
-              {/* {isSubmit && (
-                <p className="text-danger">{formErrors.categoryName}</p>
-              )} */}
-            </div>
-
-            <div className="form-check mb-2">
-              <Input
-                type="checkbox"
-                className="form-check-input"
-                name="IsActive"
-                value={IsActive}
-                checked={IsActive}
-                onChange={handleCheck}
-              />
-              <Label className="form-check-label">Is Active</Label>
-            </div>
-          </ModalBody>
-
-          <ModalFooter>
-            <div className="hstack gap-2 justify-content-end">
-              <button
-                type="submit"
-                className="btn btn-success"
-                id="add-btn"
-                onClick={handleUpdate}
-              >
-                Update
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-outline-danger"
-                onClick={() => {
-                  setmodal_edit(false);
-                  setIsSubmit(false);
-                  setFormErrors({});
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          </ModalFooter>
-        </form>
-      </Modal>
-
-      {/* Remove Modal */}
+      {/*Remove Modal*/}
       <Modal
         isOpen={modal_delete}
         toggle={() => {
           tog_delete();
+          setValues([]);
         }}
         centered
       >
         <ModalHeader
           className="bg-light p-3"
           toggle={() => {
-            setmodal_delete(false);
+            setmodal_delete(!modal_delete);
           }}
         >
-          Remove Blog
+          <span style={{ marginRight: "210px" }}>Remove Blog</span>
         </ModalHeader>
+
         <form>
           <ModalBody>
             <div className="mt-2 text-center">
@@ -623,13 +955,12 @@ const Blogs = () => {
               >
                 Remove
               </button>
-
               <button
                 type="button"
                 className="btn btn-outline-danger"
                 onClick={() => setmodal_delete(false)}
               >
-                Cancel
+                Close
               </button>
             </div>
           </ModalFooter>

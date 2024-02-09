@@ -154,7 +154,7 @@ const VerticalLayout = (props) => {
             </li>
             <li className="nav-item">
               <Link to="/location" className="nav-link">
-                 Company Location
+                Company Location
               </Link>
             </li>
           </ul>
@@ -172,14 +172,11 @@ const VerticalLayout = (props) => {
         >
           <span data-key="t-apps"> Category Master</span>
         </Link>
-        <Collapse
-          className="menu-dropdown"
-          isOpen={category}
-        >
+        <Collapse className="menu-dropdown" isOpen={category}>
           <ul className="nav nav-sm flex-column test">
             <li className="nav-item">
               <Link className="nav-link menu-link" to="/category">
-                <span data-key="t-apps">Products Category  </span>
+                <span data-key="t-apps">Products Category </span>
               </Link>
             </li>
             <li className="nav-item">
@@ -235,10 +232,7 @@ const VerticalLayout = (props) => {
         >
           <span data-key="t-apps"> Subscription Master </span>
         </Link>
-        <Collapse
-          className="menu-dropdown"
-          isOpen={subs}
-        >
+        <Collapse className="menu-dropdown" isOpen={subs}>
           <ul className="nav nav-sm flex-column test">
             <li className="nav-item">
               <Link className="nav-link menu-link" to="/subscription-master">
@@ -300,10 +294,7 @@ const VerticalLayout = (props) => {
         >
           <span data-key="t-apps"> Policy and Promos</span>
         </Link>
-        <Collapse
-          className="menu-dropdown"
-          isOpen={policy}
-        >
+        <Collapse className="menu-dropdown" isOpen={policy}>
           <ul className="nav nav-sm flex-column test">
             <li className="nav-item">
               <Link to="/policy-master" className="nav-link">
@@ -321,7 +312,7 @@ const VerticalLayout = (props) => {
           <ul className="nav nav-sm flex-column test">
             <li className="nav-item">
               <Link to="/faqs" className="nav-link">
-                FAQs 
+                FAQs
               </Link>
             </li>
           </ul>
@@ -334,7 +325,11 @@ const VerticalLayout = (props) => {
         </Link>
       </li>
 
-
+      <li className="nav-item">
+        <Link className="nav-link menu-link" to="/banner">
+          <span data-key="t-apps">Banner </span>
+        </Link>
+      </li>
     </React.Fragment>
   );
 };

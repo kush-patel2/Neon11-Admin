@@ -7,6 +7,7 @@ import {
   CardBody,
   CardHeader,
   Col,
+  Form,
   Container,
   Modal,
   ModalBody,
@@ -39,9 +40,14 @@ const ProductDetails = () => {
     productDescription: "",
     price: "",
     weight: "",
+    unit: "",
     IsActive: false,
     IsSubscriptionProduct: false,
     IsGiftHamper: false,
+    isSize: false,
+    isDrink: false,
+    isMilk: false,
+    isOutOfStock: false,
   };
 
   const [remove_id, setRemove_id] = useState("");
@@ -60,9 +66,14 @@ const ProductDetails = () => {
     productImage,
     price,
     weight,
+    unit,
     IsActive,
     IsGiftHamper,
     IsSubscriptionProduct,
+    isSize,
+    isDrink,
+    isMilk,
+    isOutOfStock,
   } = values;
 
   const [loading, setLoading] = useState(false);
@@ -72,6 +83,8 @@ const ProductDetails = () => {
   const [column, setcolumn] = useState();
   const [sortDirection, setsortDirection] = useState();
 
+  const [showForm, setShowForm] = useState(false);
+  const [updateForm, setUpdateForm] = useState(false);
   const [data, setData] = useState([]);
 
   const columns = [
@@ -190,6 +203,8 @@ const ProductDetails = () => {
   const [errCN, setErrCN] = useState(false);
   const [errPI, setErrPI] = useState(false);
   const [errwt, setErrwt] = useState(false);
+  const [errut, setErrut] = useState(false);
+
   const [errPr, setErrPr] = useState(false);
 
   const validate = (values) => {
@@ -219,6 +234,14 @@ const ProductDetails = () => {
     if (values.weight !== "") {
       setErrwt(false);
     }
+    if (values.unit === "") {
+      errors.unit = "unit is required";
+      setErrut(true);
+    }
+
+    if (values.unit !== "") {
+      setErrut(false);
+    }
 
     if (values.price === "") {
       errors.price = "Price is required";
@@ -242,6 +265,8 @@ const ProductDetails = () => {
   };
 
   const validClassCategory =
+    errCN && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassUnit =
     errCN && isSubmit ? "form-control is-invalid" : "form-control";
   const validClassPN =
     errPN && isSubmit ? "form-control is-invalid" : "form-control";
@@ -275,6 +300,26 @@ const ProductDetails = () => {
     setValues({ ...values, IsSubscriptionProduct: e.target.checked });
   };
 
+  const handlecheckDrink = (e) => {
+    console.log(e.target.checked);
+    setValues({ ...values, isDrink: e.target.checked });
+  };
+
+  const handlecheckSize = (e) => {
+    console.log(e.target.checked);
+    setValues({ ...values, isSize: e.target.checked });
+  };
+
+  const handlecheckMilk = (e) => {
+    console.log(e.target.checked);
+    setValues({ ...values, isMilk: e.target.checked });
+  };
+
+  const handlecheckOutStock = (e) => {
+    console.log(e.target.checked);
+    setValues({ ...values, isOutOfStock: e.target.checked });
+  };
+
   const [modal_list, setModalList] = useState(false);
 
   useEffect(() => {
@@ -284,6 +329,8 @@ const ProductDetails = () => {
   }, [formErrors, isSubmit]);
 
   const handleChange = (e) => {
+    console.log("ee", e.target.value);
+    console.log("ee name", e.target.name);
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
@@ -311,13 +358,20 @@ const ProductDetails = () => {
       formdata.append("productDescription", values.productDescription);
       formdata.append("price", values.price);
       formdata.append("weight", values.weight);
+      formdata.append("unit", values.unit);
+
       formdata.append("IsActive", values.IsActive);
       formdata.append("IsGiftHamper", values.IsGiftHamper);
       formdata.append("IsSubscriptionProduct", values.IsSubscriptionProduct);
+      formdata.append("isDrink", values.isDrink);
+      formdata.append("isMilk", values.isMilk);
+      formdata.append("isSize", values.isSize);
+      formdata.append("isOutOfStock", values.isOutOfStock);
 
       createProductsDetails(formdata)
         .then((res) => {
-          setModalList(!modal_list);
+          // setModalList(!modal_list);
+          setShowForm(false);
           setValues(initialState);
           setCheckImagePhoto(false);
           setPhotoAdd("");
@@ -363,14 +417,21 @@ const ProductDetails = () => {
     formdata.append("productDescription", values.productDescription);
     formdata.append("price", values.price);
     formdata.append("weight", values.weight);
+    formdata.append("unit", values.unit);
     formdata.append("IsActive", values.IsActive);
     formdata.append("IsGiftHamper", values.IsGiftHamper);
     formdata.append("IsSubscriptionProduct", values.IsSubscriptionProduct);
+    formdata.append("isDrink", values.isDrink);
+    formdata.append("isMilk", values.isMilk);
+    formdata.append("isSize", values.isSize);
+    formdata.append("isOutOfStock", values.isOutOfStock);
 
     updateProductsDetails(_id, formdata)
       .then((res) => {
-        setmodal_edit(!modal_edit);
+        // setmodal_edit(!modal_edit);
         setPhotoAdd("");
+        setUpdateForm(false);
+
         fetchProducts();
         setCheckImagePhoto(false);
         setValues(initialState);
@@ -386,7 +447,9 @@ const ProductDetails = () => {
     setIsSubmit(false);
     setPhotoAdd("");
     setCheckImagePhoto(false);
-    setModalList(false);
+    // setModalList(false);
+    setShowForm(false);
+    setUpdateForm(false);
     setValues(initialState);
   };
 
@@ -394,14 +457,18 @@ const ProductDetails = () => {
     e.preventDefault();
     setIsSubmit(false);
     setPhotoAdd("");
+    setUpdateForm(false);
+    setShowForm(false);
+
     setCheckImagePhoto(false);
-    setmodal_edit(false);
     setValues(initialState);
   };
 
   const handleTog_edit = (_id) => {
-    setmodal_edit(!modal_edit);
+    // setmodal_edit(!modal_edit);
     setIsSubmit(false);
+    setUpdateForm(true);
+
     set_Id(_id);
     console.log(_id);
     setFormErrors(false);
@@ -415,9 +482,14 @@ const ProductDetails = () => {
           productDescription: res.productDescription,
           price: res.price,
           weight: res.weight,
+          unit: res.unit,
           IsActive: res.IsActive,
           IsGiftHamper: res.IsGiftHamper,
           IsSubscriptionProduct: res.IsSubscriptionProduct,
+          isDrink: res.isDrink,
+          isMilk: res.isMilk,
+          isSize: res.isSize,
+          isOutOfStock: res.isOutOfStock,
         });
       })
       .catch((err) => {
@@ -472,11 +544,10 @@ const ProductDetails = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          {/* Render Breadcrumb */}
           <BreadCrumb
             maintitle="Product Master"
-            title="Product Details "
-            pageTitle="Product Master "
+            title="Product Details"
+            pageTitle="Product Master"
           />
 
           <Row>
@@ -490,526 +561,868 @@ const ProductDetails = () => {
                       </h2>
                     </Col>
                     <Col lg={4} md={6} sm={6}>
-                      <div className="text-end mt-1">
-                        <Input
-                          type="checkbox"
-                          className="form-check-input"
-                          name="filter"
-                          value={filter}
-                          defaultChecked={true}
-                          onChange={handleFilter}
-                        />
-                        <Label className="form-check-label ms-2">Active</Label>
+                      <div
+                        style={{
+                          display: showForm || updateForm ? "none" : "",
+                        }}
+                      >
+                        <div className="text-end mt-1">
+                          <Input
+                            type="checkbox"
+                            className="form-check-input"
+                            name="filter"
+                            value={filter}
+                            defaultChecked={true}
+                            onChange={handleFilter}
+                          />
+                          <Label className="form-check-label ms-2">
+                            Active
+                          </Label>
+                        </div>
                       </div>
                     </Col>
                     <Col className="col-sm-auto" lg={4} md={12} sm={12}>
                       <div className="d-flex justify-content-sm-end">
-                        <div>
-                          <Button
-                            color="success"
-                            className="add-btn me-1"
-                            onClick={() => tog_list()}
-                            id="create-btn"
-                          >
-                            <i className="ri-add-line align-bottom me-1"></i>
-                            Add
-                          </Button>
+                        {/* add btn */}
+                        <div
+                          style={{
+                            display: showForm || updateForm ? "none" : "",
+                          }}
+                        >
+                          <Row>
+                            <Col lg={12}>
+                              <div className="d-flex justify-content-sm-end">
+                                <div>
+                                  <Button
+                                    color="success"
+                                    className="add-btn me-1"
+                                    onClick={() => {
+                                      setShowForm(!showForm);
+                                      setValues(initialState);
+                                      // setFileId(Math.random() * 100000);
+                                    }}
+                                    // onClick={() => tog_list()}
+                                    // id="create-btn"
+                                  >
+                                    <i className="ri-add-line align-bottom me-1"></i>
+                                    Add
+                                  </Button>
+                                </div>
+                              </div>
+                            </Col>
+                          </Row>
                         </div>
-                        <div className="search-box ms-2">
+
+                        {/* update list btn */}
+
+                        <div
+                          style={{
+                            display: showForm || updateForm ? "" : "none",
+                          }}
+                        >
+                          <Row>
+                            <Col lg={12}>
+                              <div className="text-end">
+                                <button
+                                  className="btn bg-success text-light mb-3 "
+                                  onClick={() => {
+                                    setValues(initialState);
+                                    setShowForm(false);
+                                    setUpdateForm(false);
+                                    // setFileId(Math.random() * 100000);
+                                  }}
+                                >
+                                  <i class="ri-list-check align-bottom me-1"></i>{" "}
+                                  List
+                                </button>
+                              </div>
+                            </Col>
+                          </Row>
+                          {/* </div> */}
+                        </div>
+
+                        {/* search */}
+                        <div
+                          className="search-box ms-2"
+                          style={{
+                            display: showForm || updateForm ? "none" : "",
+                          }}
+                        >
                           <input
-                            // type="text"
                             className="form-control search"
                             placeholder="Search..."
                             onChange={(e) => setQuery(e.target.value)}
                           />
-                          <i className="ri-search-line search-icon"></i>
+                          <i className="ri-search-line search-icon "></i>
                         </div>
                       </div>
                     </Col>
                   </Row>
                 </CardHeader>
-                <CardBody>
-                  <div>
-                    <div className="table-responsive table-card mt-1 mb-1 text-right">
-                      <DataTable
-                        columns={columns}
-                        data={data}
-                        progressPending={loading}
-                        sortServer
-                        onSort={(column, sortDirection, sortedRows) => {
-                          handleSort(column, sortDirection);
-                        }}
-                        pagination
-                        paginationServer
-                        paginationTotalRows={totalRows}
-                        paginationRowsPerPageOptions={[10, 50, 100, totalRows]}
-                        onChangeRowsPerPage={handlePerRowsChange}
-                        onChangePage={handlePageChange}
-                      />
+
+                {/* ADD FORM  */}
+                <div
+                  style={{
+                    display: showForm && !updateForm ? "block" : "none",
+                  }}
+                >
+                  <CardBody>
+                    <React.Fragment>
+                      <Col xxl={12}>
+                        <Card className="">
+                          {/* <PreviewCardHeader title="Billing Product Form" /> */}
+                          <CardBody>
+                            <div className="live-preview">
+                              <Form>
+                                <Row>
+                                  <Row>
+                                    <Col lg={6}>
+                                      <div className="form-floating  mb-3">
+                                        <select
+                                          name="category"
+                                          className={validClassCategory}
+                                          onChange={handleChange}
+                                          value={category}
+                                          data-choices
+                                          data-choices-sorting="true"
+                                        >
+                                          <option>Select Category</option>
+                                          {drinkCategories.map((c) => {
+                                            return (
+                                              <React.Fragment key={c._id}>
+                                                {c.IsActive && (
+                                                  <option value={c._id}>
+                                                    {c.categoryName}
+                                                  </option>
+                                                )}
+                                              </React.Fragment>
+                                            );
+                                          })}
+                                        </select>
+                                        <Label>
+                                          Product Category{" "}
+                                          <span className="text-danger">*</span>
+                                        </Label>
+                                        {isSubmit && (
+                                          <p className="text-danger">
+                                            {formErrors.category}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </Col>
+                                    <Col lg={6}>
+                                      <div className="form-floating mb-3">
+                                        <input
+                                          type="text"
+                                          className={validClassPN}
+                                          placeholder="Enter product name"
+                                          required
+                                          name="productName"
+                                          value={values.productName}
+                                          onChange={handleChange}
+                                        />
+                                        <label
+                                          htmlFor="role-field"
+                                          className="form-label"
+                                        >
+                                          Product Name
+                                          <span className="text-danger">*</span>
+                                        </label>
+                                        {isSubmit && (
+                                          <p className="text-danger">
+                                            {formErrors.productName}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </Col>
+                                  </Row>
+                                  <Col lg={4}>
+                                    <div className="form-floating mb-3">
+                                      <input
+                                        type="number"
+                                        className={validClassPr}
+                                        placeholder="Enter product price"
+                                        required
+                                        name="price"
+                                        value={values.price}
+                                        onChange={handleChange}
+                                      />
+                                      <label
+                                        htmlFor="role-field"
+                                        className="form-label"
+                                      >
+                                        Price ($)
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      {isSubmit && (
+                                        <p className="text-danger">
+                                          {formErrors.price}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </Col>
+                                  <Col lg={4}>
+                                    <div className="form-floating mb-3">
+                                      <input
+                                        type="number"
+                                        className={validClasswt}
+                                        placeholder="Enter product weight"
+                                        required
+                                        name="weight"
+                                        value={values.weight}
+                                        onChange={handleChange}
+                                      />
+                                      <label
+                                        htmlFor="role-field"
+                                        className="form-label"
+                                      >
+                                        weight (lbs/ounces)
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      {isSubmit && (
+                                        <p className="text-danger">
+                                          {formErrors.weight}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </Col>
+                                  <Col lg={4}>
+                                    <div className="form-floating mb-3">
+                                      <select
+                                        name="unit"
+                                        className={validClassUnit}
+                                        onChange={handleChange}
+                                        value={unit}
+                                        data-choices
+                                        data-choices-sorting="true"
+                                      >
+                                        <option>Select Unit </option>
+                                        <option value="lbs">Lbs</option>
+                                        <option value="ounces">Ounces</option>
+                                      </select>
+                                      <Label>
+                                        Unit{" "}
+                                        <span className="text-danger">*</span>
+                                      </Label>
+                                      {isSubmit && (
+                                        <p className="text-danger">
+                                          {formErrors.unit}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </Col>
+                                  <Col>
+                                    <div className="form-floating mb-3">
+                                      <input
+                                        type="textarea"
+                                        className="form-control"
+                                        placeholder="Enter product description..."
+                                        name="productDescription"
+                                        rows="5"
+                                        style={{ height: "150px" }}
+                                        value={values.productDescription}
+                                        onChange={handleChange}
+                                      />
+
+                                      <label
+                                        htmlFor="role-field"
+                                        className="form-label"
+                                      >
+                                        Description
+                                      </label>
+                                    </div>
+                                  </Col>
+                                  <Col lg={6}>
+                                    <label>
+                                      Product Image{" "}
+                                      <span className="text-danger">*</span>
+                                    </label>
+
+                                    <input
+                                      type="file"
+                                      name="productImage"
+                                      className={validClassPI}
+                                      // accept="images/*"
+                                      accept=".jpg, .jpeg, .png"
+                                      onChange={PhotoUpload}
+                                    />
+                                    {isSubmit && (
+                                      <p className="text-danger">
+                                        {formErrors.productImage}
+                                      </p>
+                                    )}
+                                    {checkImagePhoto ? (
+                                      <img
+                                        //   src={image ?? myImage}
+                                        className="m-2"
+                                        src={photoAdd}
+                                        alt="Profile"
+                                        width="180"
+                                        height="200"
+                                      />
+                                    ) : null}
+                                  </Col>
+                                  <Col lg={6}>
+                                    <div className="form-check mb-2 mt-2">
+                                      <Input
+                                        type="checkbox"
+                                        name="IsGiftHamper"
+                                        value={IsGiftHamper}
+                                        onChange={handlecheckGH}
+                                        // checked={IsTopProducts}
+                                      />
+                                      <Label
+                                        className="form-check-label"
+                                        htmlFor="activeCheckBox"
+                                      >
+                                        Is Gift Hamper
+                                      </Label>
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <div className="form-check mb-2 mt-2">
+                                      <Input
+                                        type="checkbox"
+                                        name="IsSubscriptionProduct"
+                                        value={IsSubscriptionProduct}
+                                        onChange={handlecheckSubs}
+                                        // checked={IsTopProducts}
+                                      />
+                                      <Label
+                                        className="form-check-label"
+                                        htmlFor="activeCheckBox"
+                                      >
+                                        Subscription Product
+                                      </Label>
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <div className="form-check mb-2 mt-2">
+                                      <Input
+                                        type="checkbox"
+                                        name="isDrink"
+                                        value={isDrink}
+                                        onChange={handlecheckDrink}
+                                        // checked={IsTopProducts}
+                                      />
+                                      <Label
+                                        className="form-check-label"
+                                        htmlFor="activeCheckBox"
+                                      >
+                                        is Drink
+                                      </Label>
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <div className="form-check mb-2 mt-2">
+                                      <Input
+                                        type="checkbox"
+                                        name="isMilk"
+                                        value={isMilk}
+                                        onChange={handlecheckMilk}
+                                        // checked={IsTopProducts}
+                                      />
+                                      <Label
+                                        className="form-check-label"
+                                        htmlFor="activeCheckBox"
+                                      >
+                                        is Milk
+                                      </Label>
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <div className="form-check mb-2 mt-2">
+                                      <Input
+                                        type="checkbox"
+                                        name="isSize"
+                                        value={isSize}
+                                        onChange={handlecheckSize}
+                                        // checked={IsTopProducts}
+                                      />
+                                      <Label
+                                        className="form-check-label"
+                                        htmlFor="activeCheckBox"
+                                      >
+                                        is Size
+                                      </Label>
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <div className="form-check mb-2 mt-2">
+                                      <Input
+                                        type="checkbox"
+                                        name="isOutOfStock"
+                                        value={isOutOfStock}
+                                        onChange={handlecheckOutStock}
+                                        // checked={IsTopProducts}
+                                      />
+                                      <Label
+                                        className="form-check-label"
+                                        htmlFor="activeCheckBox"
+                                      >
+                                        Out Of Stock
+                                      </Label>
+                                    </div>
+                                  </Col>
+
+                                  <div className="mt-5">
+                                    <Col lg={6}>
+                                      <div className="form-check mb-2">
+                                        <Input
+                                          type="checkbox"
+                                          name="IsActive"
+                                          value={IsActive}
+                                          onChange={handlecheck}
+                                          checked={IsActive}
+                                        />
+                                        <Label
+                                          className="form-check-label"
+                                          htmlFor="activeCheckBox"
+                                        >
+                                          Is Active
+                                        </Label>
+                                      </div>
+                                    </Col>
+                                  </div>
+
+                                  <Col lg={12}>
+                                    <div className="hstack gap-2 justify-content-end">
+                                      <button
+                                        type="submit"
+                                        className="btn btn-success  m-1"
+                                        id="add-btn"
+                                        onClick={handleClick}
+                                      >
+                                        Submit
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className="btn btn-outline-danger m-1"
+                                        onClick={handleAddCancel}
+                                      >
+                                        Cancel
+                                      </button>
+                                    </div>
+                                  </Col>
+                                </Row>
+                              </Form>
+                            </div>
+                          </CardBody>{" "}
+                        </Card>
+                      </Col>
+                    </React.Fragment>
+                  </CardBody>
+                </div>
+
+                {/* UPDATE FORM  */}
+                <div
+                  style={{
+                    display: !showForm && updateForm ? "block" : "none",
+                  }}
+                >
+                  <CardBody>
+                    <React.Fragment>
+                      <Col xxl={12}>
+                        <Card className="">
+                          <CardBody>
+                            <div className="live-preview">
+                              <Form>
+                                <Row>
+                                  <Row>
+                                    <Col lg={6}>
+                                      <div className="form-floating  mb-3">
+                                        <select
+                                          name="category"
+                                          className={validClassCategory}
+                                          onChange={handleChange}
+                                          value={category}
+                                          data-choices
+                                          data-choices-sorting="true"
+                                        >
+                                          <option>Select Category</option>
+                                          {drinkCategories.map((c) => {
+                                            return (
+                                              <React.Fragment key={c._id}>
+                                                {c.IsActive && (
+                                                  <option value={c._id}>
+                                                    {c.categoryName}
+                                                  </option>
+                                                )}
+                                              </React.Fragment>
+                                            );
+                                          })}
+                                        </select>
+                                        <Label>
+                                          Product Category{" "}
+                                          <span className="text-danger">*</span>
+                                        </Label>
+                                        {isSubmit && (
+                                          <p className="text-danger">
+                                            {formErrors.category}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </Col>
+                                    <Col lg={6}>
+                                      <div className="form-floating mb-3">
+                                        <input
+                                          type="text"
+                                          className={validClassPN}
+                                          placeholder="Enter product name"
+                                          required
+                                          name="productName"
+                                          value={values.productName}
+                                          onChange={handleChange}
+                                        />
+                                        <label
+                                          htmlFor="role-field"
+                                          className="form-label"
+                                        >
+                                          Product Name
+                                          <span className="text-danger">*</span>
+                                        </label>
+                                        {isSubmit && (
+                                          <p className="text-danger">
+                                            {formErrors.productName}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </Col>
+                                  </Row>
+                                  <Col lg={4}>
+                                    <div className="form-floating mb-3">
+                                      <input
+                                        type="number"
+                                        className={validClassPr}
+                                        placeholder="Enter product price"
+                                        required
+                                        name="price"
+                                        value={values.price}
+                                        onChange={handleChange}
+                                      />
+                                      <label
+                                        htmlFor="role-field"
+                                        className="form-label"
+                                      >
+                                        Price ($)
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      {isSubmit && (
+                                        <p className="text-danger">
+                                          {formErrors.price}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </Col>
+                                  <Col lg={4}>
+                                    <div className="form-floating mb-3">
+                                      <input
+                                        type="number"
+                                        className={validClasswt}
+                                        placeholder="Enter product weight"
+                                        required
+                                        name="weight"
+                                        value={values.weight}
+                                        onChange={handleChange}
+                                      />
+                                      <label
+                                        htmlFor="role-field"
+                                        className="form-label"
+                                      >
+                                        weight (lbs/ounces)
+                                        <span className="text-danger">*</span>
+                                      </label>
+                                      {isSubmit && (
+                                        <p className="text-danger">
+                                          {formErrors.weight}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={4}>
+                                    <div className="form-floating mb-3">
+                                      <select
+                                        name="unit"
+                                        className={validClassUnit}
+                                        onChange={handleChange}
+                                        value={unit}
+                                        data-choices
+                                        data-choices-sorting="true"
+                                      >
+                                        <option>Select Unit </option>
+                                        <option value="lbs">Lbs</option>
+                                        <option value="ounces">Ounces</option>
+                                      </select>
+                                      <Label>
+                                        Unit{" "}
+                                        <span className="text-danger">*</span>
+                                      </Label>
+                                      {isSubmit && (
+                                        <p className="text-danger">
+                                          {formErrors.unit}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </Col>
+                                  <Col lg={6}>
+                                    <div className="form-floating mb-3 mt-4">
+                                      <input
+                                        type="textarea"
+                                        className="form-control"
+                                        placeholder="Enter product description..."
+                                        name="productDescription"
+                                        rows="5"
+                                        style={{ height: "150px" }}
+                                        value={values.productDescription}
+                                        onChange={handleChange}
+                                      />
+
+                                      <label
+                                        htmlFor="role-field"
+                                        className="form-label"
+                                      >
+                                        Description
+                                      </label>
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <label>
+                                      Product Image{" "}
+                                      <span className="text-danger">*</span>
+                                    </label>
+                                    <input
+                                      key={"productImage" + _id}
+                                      type="file"
+                                      name="productImage"
+                                      className={validClassPI}
+                                      // accept="images/*"
+                                      accept=".jpg, .jpeg, .png"
+                                      onChange={PhotoUpload}
+                                    />
+                                    {isSubmit && (
+                                      <p className="text-danger">
+                                        {formErrors.productImage}
+                                      </p>
+                                    )}
+
+                                    {values.productImage || photoAdd ? (
+                                      <img
+                                        // key={photoAdd}
+                                        className="m-2"
+                                        src={
+                                          checkImagePhoto
+                                            ? photoAdd
+                                            : `${process.env.REACT_APP_API_URL_COFFEE}/${values.productImage}`
+                                        }
+                                        width="180"
+                                        height="200"
+                                      />
+                                    ) : null}
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <div className="form-check mb-2 mt-2">
+                                      <Input
+                                        type="checkbox"
+                                        name="IsGiftHamper"
+                                        value={IsGiftHamper}
+                                        onChange={handlecheckGH}
+                                        checked={IsGiftHamper}
+                                      />
+                                      <Label
+                                        className="form-check-label"
+                                        htmlFor="activeCheckBox"
+                                      >
+                                        Is Gift Hamper
+                                      </Label>
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <div className="form-check mb-2 mt-2">
+                                      <Input
+                                        type="checkbox"
+                                        name="IsSubscriptionProduct"
+                                        value={IsSubscriptionProduct}
+                                        onChange={handlecheckSubs}
+                                        checked={IsSubscriptionProduct}
+                                      />
+                                      <Label
+                                        className="form-check-label"
+                                        htmlFor="activeCheckBox"
+                                      >
+                                        Subscription Product
+                                      </Label>
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <div className="form-check mb-2 mt-2">
+                                      <Input
+                                        type="checkbox"
+                                        name="isDrink"
+                                        value={isDrink}
+                                        onChange={handlecheckDrink}
+                                        checked={isDrink}
+                                      />
+                                      <Label
+                                        className="form-check-label"
+                                        htmlFor="activeCheckBox"
+                                      >
+                                        is Drink
+                                      </Label>
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <div className="form-check mb-2 mt-2">
+                                      <Input
+                                        type="checkbox"
+                                        name="isMilk"
+                                        value={isMilk}
+                                        onChange={handlecheckMilk}
+                                        checked={isMilk}
+                                      />
+                                      <Label
+                                        className="form-check-label"
+                                        htmlFor="activeCheckBox"
+                                      >
+                                        is Milk
+                                      </Label>
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <div className="form-check mb-2 mt-2">
+                                      <Input
+                                        type="checkbox"
+                                        name="isSize"
+                                        value={isSize}
+                                        onChange={handlecheckSize}
+                                        checked={isSize}
+                                      />
+                                      <Label
+                                        className="form-check-label"
+                                        htmlFor="activeCheckBox"
+                                      >
+                                        is Size
+                                      </Label>
+                                    </div>
+                                  </Col>
+
+                                  <Col lg={6}>
+                                    <div className="form-check mb-2 mt-2">
+                                      <Input
+                                        type="checkbox"
+                                        name="isOutOfStock"
+                                        value={isOutOfStock}
+                                        onChange={handlecheckOutStock}
+                                        checked={isOutOfStock}
+                                      />
+                                      <Label
+                                        className="form-check-label"
+                                        htmlFor="activeCheckBox"
+                                      >
+                                        is Out Of Stock
+                                      </Label>
+                                    </div>
+                                  </Col>
+
+                                  <div className="mt-5">
+                                    <Col lg={6}>
+                                      <div className="form-check mb-2">
+                                        <Input
+                                          type="checkbox"
+                                          name="IsActive"
+                                          value={IsActive}
+                                          onChange={handlecheck}
+                                          checked={IsActive}
+                                        />
+                                        <Label
+                                          className="form-check-label"
+                                          htmlFor="activeCheckBox"
+                                        >
+                                          Is Active
+                                        </Label>
+                                      </div>
+                                    </Col>
+                                  </div>
+
+                                  <Col lg={12}>
+                                    <div className="text-end">
+                                      <button
+                                        type="submit"
+                                        className=" btn btn-success m-1"
+                                        id="add-btn"
+                                        onClick={handleUpdate}
+                                      >
+                                        Update
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className="btn btn-outline-danger m-1"
+                                        onClick={handleUpdateCancel}
+                                      >
+                                        Cancel
+                                      </button>
+                                    </div>
+                                  </Col>
+                                </Row>
+                              </Form>
+                            </div>
+                          </CardBody>
+                        </Card>
+                      </Col>
+                    </React.Fragment>
+                  </CardBody>
+                </div>
+
+                {/* list */}
+                <div
+                  style={{
+                    display: showForm || updateForm ? "none" : "block",
+                  }}
+                >
+                  <CardBody>
+                    <div>
+                      <div className="table-responsive table-card mt-1 mb-1 text-right">
+                        <DataTable
+                          columns={columns}
+                          data={data}
+                          progressPending={loading}
+                          sortServer
+                          onSort={(column, sortDirection, sortedRows) => {
+                            handleSort(column, sortDirection);
+                          }}
+                          pagination
+                          paginationServer
+                          paginationTotalRows={totalRows}
+                          paginationRowsPerPageOptions={[
+                            10,
+                            50,
+                            100,
+                            totalRows,
+                          ]}
+                          onChangeRowsPerPage={handlePerRowsChange}
+                          onChangePage={handlePageChange}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </CardBody>
+                  </CardBody>
+                </div>
               </Card>
             </Col>
           </Row>
         </Container>
       </div>
-      <Modal
-        isOpen={modal_list}
-        toggle={() => {
-          tog_list();
-        }}
-        centered
-      >
-        <ModalHeader
-          className="bg-light p-3"
-          toggle={() => {
-            setModalList(false);
-            setValues([]);
-          }}
-        >
-          Add Product
-        </ModalHeader>
-        <form>
-          <ModalBody>
-            <Row>
-              <Col lg={6}>
-                <div className="form-floating  mb-3">
-                  <select
-                    name="category"
-                    className={validClassCategory}
-                    onChange={handleChange}
-                    value={category}
-                    data-choices
-                    data-choices-sorting="true"
-                  >
-                    <option>Select Category</option>
-                    {drinkCategories.map((c) => {
-                      return (
-                        <React.Fragment key={c._id}>
-                          {c.IsActive && (
-                            <option value={c._id}>{c.categoryName}</option>
-                          )}
-                        </React.Fragment>
-                      );
-                    })}
-                  </select>
-                  <Label>
-                    Product Category <span className="text-danger">*</span>
-                  </Label>
-                  {isSubmit && (
-                    <p className="text-danger">{formErrors.category}</p>
-                  )}
-                </div>
-              </Col>
-              <Col lg={6}>
-                <div className="form-floating mb-3">
-                  <input
-                    type="text"
-                    className={validClassPN}
-                    placeholder="Enter product name"
-                    required
-                    name="productName"
-                    value={values.productName}
-                    onChange={handleChange}
-                  />
-                  <label htmlFor="role-field" className="form-label">
-                    Product Name
-                    <span className="text-danger">*</span>
-                  </label>
-                  {isSubmit && (
-                    <p className="text-danger">{formErrors.productName}</p>
-                  )}
-                </div>
-              </Col>
-            </Row>
-            <Row>
-              <Col lg={6}>
-                <div className="form-floating mb-3">
-                  <input
-                    type="number"
-                    className={validClassPr}
-                    placeholder="Enter product price"
-                    required
-                    name="price"
-                    value={values.price}
-                    onChange={handleChange}
-                  />
-                  <label htmlFor="role-field" className="form-label">
-                    Price ($)
-                    <span className="text-danger">*</span>
-                  </label>
-                  {isSubmit && (
-                    <p className="text-danger">{formErrors.price}</p>
-                  )}
-                </div>
-              </Col>
 
-              <Col lg={6}>
-                <div className="form-floating mb-3">
-                  <input
-                    type="text"
-                    className={validClasswt}
-                    placeholder="Enter product weight"
-                    required
-                    name="weight"
-                    value={values.weight}
-                    onChange={handleChange}
-                  />
-                  <label htmlFor="role-field" className="form-label">
-                    weight (lbs/ounces)
-                    <span className="text-danger">*</span>
-                  </label>
-                  {isSubmit && (
-                    <p className="text-danger">{formErrors.weight}</p>
-                  )}
-                </div>
-              </Col>
-            </Row>
-
-            <div className="form-floating mb-3">
-              <input
-                type="textarea"
-                className="form-control"
-                placeholder="Enter product description..."
-                name="productDescription"
-                rows="5"
-                style={{ height: "150px" }}
-                value={values.productDescription}
-                onChange={handleChange}
-              />
-
-              <label htmlFor="role-field" className="form-label">
-                Description
-              </label>
-            </div>
-
-            <Col lg={6}>
-              <label>
-                Product Image <span className="text-danger">*</span>
-              </label>
-
-              <input
-                type="file"
-                name="productImage"
-                className={validClassPI}
-                // accept="images/*"
-                accept=".jpg, .jpeg, .png"
-                onChange={PhotoUpload}
-              />
-              {isSubmit && (
-                <p className="text-danger">{formErrors.productImage}</p>
-              )}
-              {checkImagePhoto ? (
-                <img
-                  //   src={image ?? myImage}
-                  className="m-2"
-                  src={photoAdd}
-                  alt="Profile"
-                  width="180"
-                  height="200"
-                />
-              ) : null}
-            </Col>
-
-            <Row>
-              <Col lg={6}>
-                <div className="form-check mb-2 mt-2">
-                  <Input
-                    type="checkbox"
-                    name="IsActive"
-                    value={IsActive}
-                    onChange={handlecheck}
-                  />
-                  <Label className="form-check-label" htmlFor="activeCheckBox">
-                    Is Active
-                  </Label>
-                </div>
-              </Col>
-              <Col lg={6}>
-                <div className="form-check mb-2 mt-2">
-                  <Input
-                    type="checkbox"
-                    name="IsGiftHamper"
-                    value={IsGiftHamper}
-                    onChange={handlecheckGH}
-                    // checked={IsTopProducts}
-                  />
-                  <Label className="form-check-label" htmlFor="activeCheckBox">
-                    Is GiftHamper
-                  </Label>
-                </div>
-              </Col>
-            </Row>
-            <Row>
-              <Col lg={6}>
-                <div className="form-check mb-2 mt-2">
-                  <Input
-                    type="checkbox"
-                    name="IsSubscriptionProduct"
-                    value={IsSubscriptionProduct}
-                    onChange={handlecheckSubs}
-                    // checked={IsTopProducts}
-                  />
-                  <Label className="form-check-label" htmlFor="activeCheckBox">
-                    Subscription Product
-                  </Label>
-                </div>
-              </Col>
-            </Row>
-          </ModalBody>
-          <ModalFooter>
-            <div className="hstack gap-2 justify-content-end">
-              <button
-                type="submit"
-                className="btn btn-success  m-1"
-                id="add-btn"
-                onClick={handleClick}
-              >
-                Submit
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline-danger m-1"
-                onClick={handleAddCancel}
-              >
-                Cancel
-              </button>
-            </div>
-          </ModalFooter>
-        </form>
-      </Modal>
-
-      {/* Edit Modal */}
-      <Modal
-        isOpen={modal_edit}
-        toggle={() => {
-          handleTog_edit();
-          setValues([]);
-        }}
-        centered
-      >
-        <ModalHeader
-          className="bg-light p-3"
-          toggle={() => {
-            setmodal_edit(false);
-          }}
-        >
-          Edit Product
-        </ModalHeader>
-        <form>
-          <ModalBody>
-            <Row>
-              <Col lg={6}>
-                <div className="form-floating  mb-3">
-                  <select
-                    name="category"
-                    className={validClassCategory}
-                    onChange={handleChange}
-                    value={category}
-                    data-choices
-                    data-choices-sorting="true"
-                  >
-                    <option>Select Category</option>
-                    {drinkCategories.map((c) => {
-                      return (
-                        <React.Fragment key={c._id}>
-                          {c.IsActive && (
-                            <option value={c._id}>{c.categoryName}</option>
-                          )}
-                        </React.Fragment>
-                      );
-                    })}
-                  </select>
-                  <Label>
-                    Product Category <span className="text-danger">*</span>
-                  </Label>
-                  {isSubmit && (
-                    <p className="text-danger">{formErrors.category}</p>
-                  )}
-                </div>
-              </Col>
-              <Col lg={6}>
-                <div className="form-floating mb-3">
-                  <input
-                    type="text"
-                    className={validClassPN}
-                    placeholder="Enter product name"
-                    required
-                    name="productName"
-                    value={values.productName}
-                    onChange={handleChange}
-                  />
-                  <label htmlFor="role-field" className="form-label">
-                    Product Name
-                    <span className="text-danger">*</span>
-                  </label>
-                  {isSubmit && (
-                    <p className="text-danger">{formErrors.productName}</p>
-                  )}
-                </div>
-              </Col>
-            </Row>
-            <Row>
-              <Col lg={6}>
-                <div className="form-floating mb-3">
-                  <input
-                    type="number"
-                    className={validClassPr}
-                    placeholder="Enter product price"
-                    required
-                    name="price"
-                    value={values.price}
-                    onChange={handleChange}
-                  />
-                  <label htmlFor="role-field" className="form-label">
-                    Price ($)
-                    <span className="text-danger">*</span>
-                  </label>
-                  {isSubmit && (
-                    <p className="text-danger">{formErrors.price}</p>
-                  )}
-                </div>
-              </Col>
-              <Col lg={6}>
-                <div className="form-floating mb-3">
-                  <input
-                    type="text"
-                    className={validClasswt}
-                    placeholder="Enter product weight"
-                    required
-                    name="weight"
-                    value={values.weight}
-                    onChange={handleChange}
-                  />
-                  <label htmlFor="role-field" className="form-label">
-                    weight (lbs/ounces)
-                    <span className="text-danger">*</span>
-                  </label>
-                  {isSubmit && (
-                    <p className="text-danger">{formErrors.weight}</p>
-                  )}
-                </div>
-              </Col>
-            </Row>
-
-            <div className="form-floating mb-3">
-              <input
-                type="textarea"
-                className="form-control"
-                placeholder="Enter product description..."
-                name="productDescription"
-                rows="5"
-                style={{ height: "150px" }}
-                value={values.productDescription}
-                onChange={handleChange}
-              />
-
-              <label htmlFor="role-field" className="form-label">
-                Description
-              </label>
-            </div>
-
-            <Col lg={6}>
-              <label>
-                Product Image <span className="text-danger">*</span>
-              </label>
-              <input
-                key={"productImage" + _id}
-                type="file"
-                name="productImage"
-                className={validClassPI}
-                // accept="images/*"
-                accept=".jpg, .jpeg, .png"
-                onChange={PhotoUpload}
-              />
-              {isSubmit && (
-                <p className="text-danger">{formErrors.productImage}</p>
-              )}
-
-              {values.productImage || photoAdd ? (
-                <img
-                  // key={photoAdd}
-                  className="m-2"
-                  src={
-                    checkImagePhoto
-                      ? photoAdd
-                      : `${process.env.REACT_APP_API_URL_COFFEE}/${values.productImage}`
-                  }
-                  width="180"
-                  height="200"
-                />
-              ) : null}
-            </Col>
-
-            <Row>
-              <Col lg={6}>
-                <div className="form-check mb-2 mt-2">
-                  <Input
-                    type="checkbox"
-                    name="IsActive"
-                    value={IsActive}
-                    checked={IsActive}
-                    onChange={handlecheck}
-                  />
-                  <Label className="form-check-label" htmlFor="activeCheckBox">
-                    Is Active
-                  </Label>
-                </div>
-              </Col>
-              <Col lg={6}>
-                <div className="form-check mb-2 mt-2">
-                  <Input
-                    type="checkbox"
-                    name="IsGiftHamper"
-                    value={IsGiftHamper}
-                    onChange={handlecheckGH}
-                    checked={IsGiftHamper}
-                  />
-                  <Label className="form-check-label" htmlFor="activeCheckBox">
-                    Is GiftHamper
-                  </Label>
-                </div>
-              </Col>
-            </Row>
-            <Row>
-              <Col lg={6}>
-                <div className="form-check mb-2 mt-2">
-                  <Input
-                    type="checkbox"
-                    name="IsSubscriptionProduct"
-                    value={IsSubscriptionProduct}
-                    onChange={handlecheckSubs}
-                    checked={IsSubscriptionProduct}
-                  />
-                  <Label className="form-check-label" htmlFor="activeCheckBox">
-                    Subscription Product
-                  </Label>
-                </div>
-              </Col>
-            </Row>
-          </ModalBody>
-          <ModalFooter>
-            <div className="hstack gap-2 justify-content-end">
-              <button
-                type="submit"
-                className=" btn btn-success m-1"
-                id="add-btn"
-                onClick={handleUpdate}
-              >
-                Update
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline-danger m-1"
-                onClick={handleUpdateCancel}
-              >
-                Cancel
-              </button>
-            </div>
-          </ModalFooter>
-        </form>
-      </Modal>
       {/*Remove Modal*/}
       <Modal
         isOpen={modal_delete}

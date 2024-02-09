@@ -110,9 +110,9 @@ const OrderDetails = () => {
   const columns = [
     {
       name: "User",
-      selector: (row) => row.userId,
+      selector: (row) => row.username,
       sortable: true,
-      sortField: "userId",
+      sortField: "username",
       maxWidth: "280px",
     },
     {
@@ -131,23 +131,23 @@ const OrderDetails = () => {
     },
     {
       name: "Country",
-      cell: (row) => row.country,
+      cell: (row) => row.countryname,
       sortable: true,
-      rtField: "country",
+      rtField: "countryname",
       xWidth: "400px",
     },
     {
       name: "State",
-      cell: (row) => row.state,
+      cell: (row) => row.statename,
       sortable: true,
-      rtField: "state",
+      rtField: "statename",
       xWidth: "400px",
     },
     {
       name: "City",
-      cell: (row) => row.city,
+      cell: (row) => row.cityname,
       sortable: true,
-      rtField: "city",
+      rtField: "cityname",
       xWidth: "400px",
     },
     {

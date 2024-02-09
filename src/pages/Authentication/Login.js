@@ -87,7 +87,7 @@ const Login = (props) => {
         if (res.isOk) {
           console.log(" login", res);
 
-          localStorage.setItem("RCCoffeeUser", res.data._id);
+          localStorage.setItem("RCCoffeeAdmin", res.data._id);
 
           // createLoginHistory(res.usermp.StakeHolderID, res.usermp.CompanyName);
 
