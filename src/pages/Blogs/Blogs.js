@@ -67,34 +67,34 @@ const Blogs = () => {
     }
   }, [formErrors, isSubmit]);
 
-  // function uploadAdapter(loader) {
-  //   return {
-  //     upload: () => {
-  //       return new Promise((resolve, reject) => {
-  //         const body = new FormData();
-  //         loader.file
-  //           .then((file) => {
-  //             body.append("uploadImg", file);
-  //             uploadImage(body)
-  //               .then((res) => {
-  //                 console.log(res.url);
-  //                 resolve({
-  //                   default: `${process.env.REACT_APP_API_URL_MARWIZ}/uploads/blogImages/${res.url}`,
-  //                 });
-  //               })
-  //               .catch((err) => console.log(err));
-  //           })
-  //           .catch((err) => reject(err));
-  //       });
-  //     },
-  //   };
-  // }
+  function uploadAdapter(loader) {
+    return {
+      upload: () => {
+        return new Promise((resolve, reject) => {
+          const body = new FormData();
+          loader.file
+            .then((file) => {
+              body.append("uploadImg", file);
+              uploadImage(body)
+                .then((res) => {
+                  console.log("res", res.url);
+                  resolve({
+                    default: `${process.env.REACT_APP_API_URL_COFFEE}/uploads/BannerCKImages/${res.url}`,
+                  });
+                })
+                .catch((err) => console.log(err));
+            })
+            .catch((err) => reject(err));
+        });
+      },
+    };
+  }
 
-  // function uploadPlugin(editor) {
-  //   editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
-  //     return uploadAdapter(loader);
-  //   };
-  // }
+  function uploadPlugin(editor) {
+    editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+      return uploadAdapter(loader);
+    };
+  }
 
   const [modal_list, setmodal_list] = useState(false);
   const tog_list = () => {
@@ -130,6 +130,8 @@ const Blogs = () => {
           userId: res.userId,
           IsActive: res.IsActive,
         });
+        console.log("res img", res.blogImage);
+        console.log("res img", values.blogImage);
       })
       .catch((err) => {
         console.log(err);
@@ -615,9 +617,9 @@ const Blogs = () => {
                                           key={"blogDesc" + _id}
                                           editor={ClassicEditor}
                                           data={blogDesc}
-                                          // config={{
-                                          //   extraPlugins: [uploadPlugin],
-                                          // }}
+                                          config={{
+                                            extraPlugins: [uploadPlugin],
+                                          }}
                                           onChange={(event, editor) => {
                                             const data = editor.getData();
                                             // handleChange();
@@ -766,9 +768,9 @@ const Blogs = () => {
                                           key={"blogDesc" + _id}
                                           editor={ClassicEditor}
                                           data={blogDesc}
-                                          // config={{
-                                          //   extraPlugins: [uploadPlugin],
-                                          // }}
+                                          config={{
+                                            extraPlugins: [uploadPlugin],
+                                          }}
                                           onChange={(event, editor) => {
                                             const data = editor.getData();
                                             // handleChange();
@@ -776,7 +778,7 @@ const Blogs = () => {
                                               ...values,
                                               blogDesc: data,
                                             });
-                                            console.log(blogDesc);
+                                            console.log("f", blogDesc);
                                           }}
                                         />
                                         {isSubmit && (
@@ -790,7 +792,7 @@ const Blogs = () => {
 
                                   <Col lg={6}>
                                     <label>
-                                      Product Image{" "}
+                                      Blog Image{" "}
                                       <span className="text-danger">*</span>
                                     </label>
                                     <input

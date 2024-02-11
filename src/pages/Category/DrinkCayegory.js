@@ -21,43 +21,41 @@ import axios from "axios";
 import DataTable from "react-data-table-component";
 
 import {
-  createGrindCategoryMaster,
-  getGrindCategoryMaster,
-  removeGrindCategoryMaster,
-  updateGrindCategoryMaster,
-} from "../../functions/Category/GrindCategoryMaster";
-import { listCategory } from "../../functions/Category/CategoryMaster";
+  createDrinkCategory,
+  getDrinkCategory,
+  removeDrinkCategory,
+  updateDrinkCategory,
+} from "../../functions/Category/DrinkCategory";
 
+import { listCategory } from "../../functions/Category/CategoryMaster";
 const initialState = {
   Category: "",
-  grindType: "",
+  type: "",
   IsActive: false,
 };
 
-const GrindCategoryMaster = () => {
+const DrinkCategory = () => {
   const [values, setValues] = useState(initialState);
-  const { Category, grindType, IsActive } = values;
+  const { type, Category, IsActive } = values;
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
-
-  const [errCN, setErrCN] = useState(false); //drink category
-  const [errGT, setErrGT] = useState(false); // grind type
 
   const [query, setQuery] = useState("");
 
   const [_id, set_Id] = useState("");
   const [remove_id, setRemove_id] = useState("");
 
-  const [categories, setCategories] = useState([]);
   const [drinkCategories, setDrinkCategories] = useState([]);
 
+  const [Categories, setCategories] = useState([]);
+
   useEffect(() => {
-    loadDrinkCategories();
+    loadCategories();
   }, [Category]);
 
-  const loadDrinkCategories = () => {
-    listCategory().then((res) => setDrinkCategories(res));
+  const loadCategories = () => {
+    listCategory().then((res) => setCategories(res));
   };
 
   useEffect(() => {
@@ -85,13 +83,13 @@ const GrindCategoryMaster = () => {
     setmodal_edit(!modal_edit);
     setIsSubmit(false);
     set_Id(_id);
-    getGrindCategoryMaster(_id)
+    getDrinkCategory(_id)
       .then((res) => {
         console.log(res);
         setValues({
           ...values,
+          type: res.type,
           Category: res.Category,
-          grindType: res.grindType,
           IsActive: res.IsActive,
         });
       })
@@ -111,36 +109,27 @@ const GrindCategoryMaster = () => {
   const handleClick = (e) => {
     e.preventDefault();
     setFormErrors({});
+    console.log("country", values);
     let erros = validate(values);
     setFormErrors(erros);
     setIsSubmit(true);
-
-    createGrindCategoryMaster(values)
-      .then((res) => {
-        setmodal_list(!modal_list);
-        setValues(initialState);
-        fetchCategories();
-        // if (res.isOk) {
-        //   setmodal_list(!modal_list);
-        //   setValues(initialState);
-        //   fetchCategories();
-        // } else {
-        //   if (res.field === 1) {
-        //     setErrCN(true);
-        //     setFormErrors({
-        //       categoryName: "This grind type is already exists!",
-        //     });
-        //   }
-        // }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (Object.keys(erros).length === 0) {
+      createDrinkCategory(values)
+        .then((res) => {
+          console.log("res in milk", res);
+          setmodal_list(!modal_list);
+          setValues(initialState);
+          fetchCategories();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const handleDelete = (e) => {
     e.preventDefault();
-    removeGrindCategoryMaster(remove_id)
+    removeDrinkCategory(remove_id)
       .then((res) => {
         setmodal_delete(!modal_delete);
         fetchCategories();
@@ -157,7 +146,7 @@ const GrindCategoryMaster = () => {
     setIsSubmit(true);
 
     if (Object.keys(erros).length === 0) {
-      updateGrindCategoryMaster(_id, values)
+      updateDrinkCategory(_id, values)
         .then((res) => {
           setmodal_edit(!modal_edit);
           fetchCategories();
@@ -167,6 +156,9 @@ const GrindCategoryMaster = () => {
         });
     }
   };
+
+  const [errCN, setErrCN] = useState(false);
+  const [errTP, setErrTP] = useState(false);
 
   const validate = (values) => {
     const errors = {};
@@ -179,12 +171,12 @@ const GrindCategoryMaster = () => {
       setErrCN(false);
     }
 
-    if (values.grindType === "") {
-      errors.grindType = "Grind type is required!";
-      setErrGT(true);
+    if (values.type === "") {
+      errors.type = "Drink Type is required!";
+      setErrTP(true);
     }
-    if (values.grindType !== "") {
-      setErrGT(false);
+    if (values.type !== "") {
+      setErrTP(false);
     }
 
     return errors;
@@ -192,8 +184,8 @@ const GrindCategoryMaster = () => {
 
   const validClassCategoryName =
     errCN && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassGrindType =
-    errGT && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassType =
+    errTP && isSubmit ? "form-control is-invalid" : "form-control";
 
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
@@ -224,7 +216,7 @@ const GrindCategoryMaster = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/grindMaster`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/drink-category`,
         {
           skip: skip,
           per_page: perPage,
@@ -238,11 +230,10 @@ const GrindCategoryMaster = () => {
         if (response.length > 0) {
           let res = response[0];
           setLoading(false);
-          console.log("res grind", res.data);
-          setCategories(res.data);
+          setDrinkCategories(res.data);
           setTotalRows(res.count);
         } else if (response.length === 0) {
-          setCategories([]);
+          setDrinkCategories([]);
         }
         // console.log(res);
       });
@@ -263,19 +254,20 @@ const GrindCategoryMaster = () => {
   };
   const col = [
     {
-      name: "Product Category",
+      name: "Category Name",
       selector: (row) => row.category,
       sortable: true,
       sortField: "category",
       minWidth: "150px",
     },
     {
-      name: "Grind Category",
-      selector: (row) => row.grindType,
+      name: "Drink Type",
+      selector: (row) => row.type,
       sortable: true,
-      sortField: "grindType",
+      sortField: "type",
       minWidth: "150px",
     },
+
     {
       name: "Status",
       selector: (row) => {
@@ -320,16 +312,16 @@ const GrindCategoryMaster = () => {
     },
   ];
 
-  document.title = "Grind Category Master | RC Henning Coffee Company";
+  document.title = "Products Category | RC Henning Coffee Company";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           <BreadCrumb
-            maintitle="Category"
-            title="Grind Category"
-            pageTitle="Category"
+            maintitle="Drink Category"
+            title="Products Category"
+            pageTitle="Drink Category"
           />
           <Row>
             <Col lg={12}>
@@ -338,7 +330,7 @@ const GrindCategoryMaster = () => {
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" sm={6} lg={4} md={6}>
                       <h2 className="card-title mb-0 fs-4 mt-2">
-                        Grind Category
+                        Drink Category
                       </h2>
                     </Col>
 
@@ -387,7 +379,7 @@ const GrindCategoryMaster = () => {
                     <div className="table-responsive table-card mt-1 mb-1 text-right">
                       <DataTable
                         columns={col}
-                        data={categories}
+                        data={drinkCategories}
                         progressPending={loading}
                         sortServer
                         onSort={(column, sortDirection, sortedRows) => {
@@ -424,7 +416,7 @@ const GrindCategoryMaster = () => {
             setIsSubmit(false);
           }}
         >
-          Add Grind Category
+          Add Drink Category
         </ModalHeader>
         <form>
           <ModalBody>
@@ -438,7 +430,7 @@ const GrindCategoryMaster = () => {
                 data-choices-sorting="true"
               >
                 <option>Select category</option>
-                {drinkCategories.map((c) => {
+                {Categories.map((c) => {
                   return (
                     <React.Fragment key={c._id}>
                       {c.IsActive && (
@@ -449,7 +441,7 @@ const GrindCategoryMaster = () => {
                 })}
               </select>
               <Label>
-                Product Category <span className="text-danger">*</span>
+                Category <span className="text-danger">*</span>
               </Label>
               {isSubmit && <p className="text-danger">{formErrors.Category}</p>}
             </div>
@@ -457,19 +449,17 @@ const GrindCategoryMaster = () => {
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassGrindType}
-                placeholder="Enter Grind Type"
+                className={validClassType}
+                placeholder="Enter Category Name"
                 required
-                name="grindType"
-                value={grindType}
+                name="type"
+                value={type}
                 onChange={handleChange}
               />
               <Label>
-                Grind Type <span className="text-danger">*</span>
+                Drink Type <span className="text-danger">*</span>
               </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.grindType}</p>
-              )}
+              {isSubmit && <p className="text-danger">{formErrors.type}</p>}
             </div>
 
             <div className="form-check mb-2">
@@ -524,7 +514,7 @@ const GrindCategoryMaster = () => {
             setIsSubmit(false);
           }}
         >
-          Edit Grind Category
+          Edit Category
         </ModalHeader>
         <form>
           <ModalBody>
@@ -538,7 +528,7 @@ const GrindCategoryMaster = () => {
                 data-choices-sorting="true"
               >
                 <option>Select category</option>
-                {drinkCategories.map((c) => {
+                {Categories.map((c) => {
                   return (
                     <React.Fragment key={c._id}>
                       {c.IsActive && (
@@ -549,7 +539,7 @@ const GrindCategoryMaster = () => {
                 })}
               </select>
               <Label>
-                Product Category <span className="text-danger">*</span>
+                Category <span className="text-danger">*</span>
               </Label>
               {isSubmit && <p className="text-danger">{formErrors.Category}</p>}
             </div>
@@ -557,19 +547,17 @@ const GrindCategoryMaster = () => {
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassGrindType}
-                placeholder="Enter Grind Type"
+                className={validClassType}
+                placeholder="Enter Category Name"
                 required
-                name="grindType"
-                value={grindType}
+                name="type"
+                value={type}
                 onChange={handleChange}
               />
               <Label>
-                Grind Type <span className="text-danger">*</span>{" "}
+                Drink Type <span className="text-danger">*</span>
               </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.grindType}</p>
-              )}
+              {isSubmit && <p className="text-danger">{formErrors.type}</p>}
             </div>
 
             <div className="form-check mb-2">
@@ -626,7 +614,7 @@ const GrindCategoryMaster = () => {
             setmodal_delete(false);
           }}
         >
-          Remove Grind Category
+          Remove Drink Category
         </ModalHeader>
         <form>
           <ModalBody>
@@ -671,4 +659,4 @@ const GrindCategoryMaster = () => {
   );
 };
 
-export default GrindCategoryMaster;
+export default DrinkCategory;
