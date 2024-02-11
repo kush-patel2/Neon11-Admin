@@ -23,6 +23,10 @@ import ProductDetails from "../pages/Products/ProductsDetails";
 import OrderDetails from "../pages/Products/Orders";
 import UserProfile from "../pages/Authentication/user-profile";
 import Banner from "../pages/CMS/Banner";
+import EnergyCategory from "../pages/Category/EnergyCategory";
+import SizeCategory from "../pages/Category/SizeCategory";
+import DrinkCategory from "../pages/Category/DrinkCayegory";
+import MilkCategory from "../pages/Category/MilkCategory";
 
 const authProtectedRoutes = [
   // { path: "/dashboard", component: <DashboardCrm /> },
@@ -35,6 +39,12 @@ const authProtectedRoutes = [
   { path: "/manage-users", component: <Users /> },
   { path: "/category", component: <CategoryMaster /> },
   { path: "/grind-category", component: <GrindCategoryMaster /> },
+
+  { path: "/milk-category", component: <MilkCategory /> },
+  { path: "/drink-category", component: <DrinkCategory /> },
+  { path: "/size-category", component: <SizeCategory /> },
+  { path: "/energy-category", component: <EnergyCategory /> },
+
   { path: "/blogs", component: <Blogs /> },
   { path: "/banner", component: <Banner /> },
   { path: "/inquiry", component: <Inquiry /> },
