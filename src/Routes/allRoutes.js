@@ -27,6 +27,8 @@ import EnergyCategory from "../pages/Category/EnergyCategory";
 import SizeCategory from "../pages/Category/SizeCategory";
 import DrinkCategory from "../pages/Category/DrinkCayegory";
 import MilkCategory from "../pages/Category/MilkCategory";
+import ProductRatecard from "../pages/Products/ProductRatecard";
+import CompanyDetails from "../pages/Setup/CompanyDetails";
 
 const authProtectedRoutes = [
   // { path: "/dashboard", component: <DashboardCrm /> },
@@ -37,6 +39,8 @@ const authProtectedRoutes = [
   { path: "/location", component: <CompanyLocation /> },
 
   { path: "/manage-users", component: <Users /> },
+  { path: "/company-details", component: <CompanyDetails /> },
+
   { path: "/category", component: <CategoryMaster /> },
   { path: "/grind-category", component: <GrindCategoryMaster /> },
 
@@ -57,6 +61,8 @@ const authProtectedRoutes = [
   { path: "/promocode-master", component: <PromocodeMaster /> },
 
   { path: "/product-details", component: <ProductDetails /> },
+  { path: "/product-ratecard", component: <ProductRatecard /> },
+
   { path: "/order-details", component: <OrderDetails /> },
 
   {
