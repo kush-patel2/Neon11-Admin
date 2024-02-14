@@ -83,6 +83,7 @@ const Banner = () => {
           bannerImage: res.bannerImage,
           IsActive: res.IsActive,
         });
+        console.log("res", values.Title);
       })
       .catch((err) => {
         console.log(err);
