@@ -38,16 +38,12 @@ const ProductDetails = () => {
     productName: "",
     productImage: "",
     productDescription: "",
-    price: "",
-    weight: "",
-    unit: "",
     IsActive: false,
     IsSubscriptionProduct: false,
     IsGiftHamper: false,
     isSize: false,
     isDrink: false,
     isMilk: false,
-    isOutOfStock: false,
   };
 
   const [remove_id, setRemove_id] = useState("");
@@ -73,7 +69,6 @@ const ProductDetails = () => {
     isSize,
     isDrink,
     isMilk,
-    isOutOfStock,
   } = values;
 
   const [loading, setLoading] = useState(false);
@@ -102,17 +97,10 @@ const ProductDetails = () => {
       sortField: "productName",
       minWidth: "150px",
     },
-    // {
-    //   name: "Image",
-    //   selector: (row) => row.productImage,
-    //   sortable: true,
-    //   sortField: "productImage",
-    //   minWidth: "150px",
-    // },
     {
       name: "Gift Hamper",
       selector: (row) => {
-        return <p>{row.IsGiftHamper ? "YES" : "NO"}</p>;
+        return <p>{row.IsGiftHamper ? "Yes" : "No"}</p>;
       },
       sortable: false,
       sortField: "IsGiftHamper",
@@ -120,7 +108,7 @@ const ProductDetails = () => {
     {
       name: "Subscription",
       selector: (row) => {
-        return <p>{row.IsSubscriptionProduct ? "YES" : "NO"}</p>;
+        return <p>{row.IsSubscriptionProduct ? "Yes" : "No"}</p>;
       },
       sortable: false,
       sortField: "IsSubscriptionProduct",
@@ -226,31 +214,9 @@ const ProductDetails = () => {
       setErrPN(false);
     }
 
-    if (values.weight === "") {
-      errors.weight = "Weight is required";
-      setErrwt(true);
-    }
+  
 
-    if (values.weight !== "") {
-      setErrwt(false);
-    }
-    if (values.unit === "") {
-      errors.unit = "unit is required";
-      setErrut(true);
-    }
-
-    if (values.unit !== "") {
-      setErrut(false);
-    }
-
-    if (values.price === "") {
-      errors.price = "Price is required";
-      setErrPr(true);
-    }
-
-    if (values.price !== "") {
-      setErrPr(false);
-    }
+ 
 
     if (values.productImage === "") {
       errors.productImage = "Product Image is required";
@@ -329,8 +295,6 @@ const ProductDetails = () => {
   }, [formErrors, isSubmit]);
 
   const handleChange = (e) => {
-    console.log("ee", e.target.value);
-    console.log("ee name", e.target.name);
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
@@ -356,9 +320,6 @@ const ProductDetails = () => {
       formdata.append("category", values.category);
       formdata.append("productName", values.productName);
       formdata.append("productDescription", values.productDescription);
-      formdata.append("price", values.price);
-      formdata.append("weight", values.weight);
-      formdata.append("unit", values.unit);
 
       formdata.append("IsActive", values.IsActive);
       formdata.append("IsGiftHamper", values.IsGiftHamper);
@@ -366,7 +327,6 @@ const ProductDetails = () => {
       formdata.append("isDrink", values.isDrink);
       formdata.append("isMilk", values.isMilk);
       formdata.append("isSize", values.isSize);
-      formdata.append("isOutOfStock", values.isOutOfStock);
 
       createProductsDetails(formdata)
         .then((res) => {
@@ -415,16 +375,12 @@ const ProductDetails = () => {
     formdata.append("category", values.category);
     formdata.append("productName", values.productName);
     formdata.append("productDescription", values.productDescription);
-    formdata.append("price", values.price);
-    formdata.append("weight", values.weight);
-    formdata.append("unit", values.unit);
     formdata.append("IsActive", values.IsActive);
     formdata.append("IsGiftHamper", values.IsGiftHamper);
     formdata.append("IsSubscriptionProduct", values.IsSubscriptionProduct);
     formdata.append("isDrink", values.isDrink);
     formdata.append("isMilk", values.isMilk);
     formdata.append("isSize", values.isSize);
-    formdata.append("isOutOfStock", values.isOutOfStock);
 
     updateProductsDetails(_id, formdata)
       .then((res) => {
@@ -480,16 +436,12 @@ const ProductDetails = () => {
           productName: res.productName,
           productImage: res.productImage,
           productDescription: res.productDescription,
-          price: res.price,
-          weight: res.weight,
-          unit: res.unit,
           IsActive: res.IsActive,
           IsGiftHamper: res.IsGiftHamper,
           IsSubscriptionProduct: res.IsSubscriptionProduct,
           isDrink: res.isDrink,
           isMilk: res.isMilk,
           isSize: res.isSize,
-          isOutOfStock: res.isOutOfStock,
         });
       })
       .catch((err) => {
@@ -736,81 +688,7 @@ const ProductDetails = () => {
                                       </div>
                                     </Col>
                                   </Row>
-                                  <Col lg={4}>
-                                    <div className="form-floating mb-3">
-                                      <input
-                                        type="number"
-                                        className={validClassPr}
-                                        placeholder="Enter product price"
-                                        required
-                                        name="price"
-                                        value={values.price}
-                                        onChange={handleChange}
-                                      />
-                                      <label
-                                        htmlFor="role-field"
-                                        className="form-label"
-                                      >
-                                        Price ($)
-                                        <span className="text-danger">*</span>
-                                      </label>
-                                      {isSubmit && (
-                                        <p className="text-danger">
-                                          {formErrors.price}
-                                        </p>
-                                      )}
-                                    </div>
-                                  </Col>
-                                  <Col lg={4}>
-                                    <div className="form-floating mb-3">
-                                      <input
-                                        type="number"
-                                        className={validClasswt}
-                                        placeholder="Enter product weight"
-                                        required
-                                        name="weight"
-                                        value={values.weight}
-                                        onChange={handleChange}
-                                      />
-                                      <label
-                                        htmlFor="role-field"
-                                        className="form-label"
-                                      >
-                                        weight (lbs/ounces)
-                                        <span className="text-danger">*</span>
-                                      </label>
-                                      {isSubmit && (
-                                        <p className="text-danger">
-                                          {formErrors.weight}
-                                        </p>
-                                      )}
-                                    </div>
-                                  </Col>
-                                  <Col lg={4}>
-                                    <div className="form-floating mb-3">
-                                      <select
-                                        name="unit"
-                                        className={validClassUnit}
-                                        onChange={handleChange}
-                                        value={unit}
-                                        data-choices
-                                        data-choices-sorting="true"
-                                      >
-                                        <option>Select Unit </option>
-                                        <option value="lbs">Lbs</option>
-                                        <option value="ounces">Ounces</option>
-                                      </select>
-                                      <Label>
-                                        Unit{" "}
-                                        <span className="text-danger">*</span>
-                                      </Label>
-                                      {isSubmit && (
-                                        <p className="text-danger">
-                                          {formErrors.unit}
-                                        </p>
-                                      )}
-                                    </div>
-                                  </Col>
+                                 
                                   <Col>
                                     <div className="form-floating mb-3">
                                       <input
@@ -952,23 +830,7 @@ const ProductDetails = () => {
                                     </div>
                                   </Col>
 
-                                  <Col lg={6}>
-                                    <div className="form-check mb-2 mt-2">
-                                      <Input
-                                        type="checkbox"
-                                        name="isOutOfStock"
-                                        value={isOutOfStock}
-                                        onChange={handlecheckOutStock}
-                                        // checked={IsTopProducts}
-                                      />
-                                      <Label
-                                        className="form-check-label"
-                                        htmlFor="activeCheckBox"
-                                      >
-                                        Out Of Stock
-                                      </Label>
-                                    </div>
-                                  </Col>
+                                 
 
                                   <div className="mt-5">
                                     <Col lg={6}>
@@ -1094,82 +956,7 @@ const ProductDetails = () => {
                                       </div>
                                     </Col>
                                   </Row>
-                                  <Col lg={4}>
-                                    <div className="form-floating mb-3">
-                                      <input
-                                        type="number"
-                                        className={validClassPr}
-                                        placeholder="Enter product price"
-                                        required
-                                        name="price"
-                                        value={values.price}
-                                        onChange={handleChange}
-                                      />
-                                      <label
-                                        htmlFor="role-field"
-                                        className="form-label"
-                                      >
-                                        Price ($)
-                                        <span className="text-danger">*</span>
-                                      </label>
-                                      {isSubmit && (
-                                        <p className="text-danger">
-                                          {formErrors.price}
-                                        </p>
-                                      )}
-                                    </div>
-                                  </Col>
-                                  <Col lg={4}>
-                                    <div className="form-floating mb-3">
-                                      <input
-                                        type="number"
-                                        className={validClasswt}
-                                        placeholder="Enter product weight"
-                                        required
-                                        name="weight"
-                                        value={values.weight}
-                                        onChange={handleChange}
-                                      />
-                                      <label
-                                        htmlFor="role-field"
-                                        className="form-label"
-                                      >
-                                        weight (lbs/ounces)
-                                        <span className="text-danger">*</span>
-                                      </label>
-                                      {isSubmit && (
-                                        <p className="text-danger">
-                                          {formErrors.weight}
-                                        </p>
-                                      )}
-                                    </div>
-                                  </Col>
-
-                                  <Col lg={4}>
-                                    <div className="form-floating mb-3">
-                                      <select
-                                        name="unit"
-                                        className={validClassUnit}
-                                        onChange={handleChange}
-                                        value={unit}
-                                        data-choices
-                                        data-choices-sorting="true"
-                                      >
-                                        <option>Select Unit </option>
-                                        <option value="lbs">Lbs</option>
-                                        <option value="ounces">Ounces</option>
-                                      </select>
-                                      <Label>
-                                        Unit{" "}
-                                        <span className="text-danger">*</span>
-                                      </Label>
-                                      {isSubmit && (
-                                        <p className="text-danger">
-                                          {formErrors.unit}
-                                        </p>
-                                      )}
-                                    </div>
-                                  </Col>
+                                  
                                   <Col lg={6}>
                                     <div className="form-floating mb-3 mt-4">
                                       <input
@@ -1313,24 +1100,6 @@ const ProductDetails = () => {
                                         htmlFor="activeCheckBox"
                                       >
                                         is Size
-                                      </Label>
-                                    </div>
-                                  </Col>
-
-                                  <Col lg={6}>
-                                    <div className="form-check mb-2 mt-2">
-                                      <Input
-                                        type="checkbox"
-                                        name="isOutOfStock"
-                                        value={isOutOfStock}
-                                        onChange={handlecheckOutStock}
-                                        checked={isOutOfStock}
-                                      />
-                                      <Label
-                                        className="form-check-label"
-                                        htmlFor="activeCheckBox"
-                                      >
-                                        is Out Of Stock
                                       </Label>
                                     </div>
                                   </Col>
