@@ -32,20 +32,15 @@ import {
   uploadImage,
 } from "../../functions/Blogs/Blogs";
 
-const initialState = {
-  blogTitle: "",
-  blogDesc: "",
-  blogImage: "",
-  likes: [],
-  comments: [],
-  userId: localStorage.getItem("RCCoffeeAdmin"),
-
-  IsActive: false,
-};
-
 const Blogs = () => {
-  const [values, setValues] = useState(initialState);
-  const { blogTitle, blogDesc, likes, comments, userId, IsActive } = values;
+  const [blogTitle, setblogTitle] = useState("");
+  const [blogDesc, setblogDesc] = useState("");
+  const [blogImage, setblogImage] = useState("");
+  const [likes, setlikes] = useState([]);
+  const [comments, setcomments] = useState([]);
+  const [userId, setuserId] = useState(localStorage.getItem("RCCoffeeAdmin"));
+  const [IsActive, setIsActive] = useState(false);
+
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
@@ -96,13 +91,6 @@ const Blogs = () => {
     };
   }
 
-  const [modal_list, setmodal_list] = useState(false);
-  const tog_list = () => {
-    setmodal_list(!modal_list);
-    setValues(initialState);
-    setIsSubmit(false);
-  };
-
   const [modal_delete, setmodal_delete] = useState(false);
   const tog_delete = (_id) => {
     setmodal_delete(!modal_delete);
@@ -119,57 +107,52 @@ const Blogs = () => {
     set_Id(_id);
     getBlogs(_id)
       .then((res) => {
-        console.log(res);
-        setValues({
-          ...values,
-          blogTitle: res.blogTitle,
-          blogDesc: res.blogDesc,
-          blogImage: res.blogImage,
-          likes: res.likes,
-          comments: res.comments,
-          userId: res.userId,
-          IsActive: res.IsActive,
-        });
-        console.log("res img", res.blogImage);
-        console.log("res img", values.blogImage);
+        console.log("res", res);
+
+        setblogTitle(res.blogTitle);
+        setblogDesc(res.blogDesc);
+        setblogImage(res.blogImage);
+        setlikes(res.likes);
+        setcomments(res.comments);
+        setuserId(res.userId);
+        setIsActive(res.IsActive);
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const handleChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value });
-  };
-
-  const handleCheck = (e) => {
-    setValues({ ...values, IsActive: e.target.checked });
-  };
-
   const handleClick = (e) => {
     e.preventDefault();
     setFormErrors({});
-    let errors = validate(values);
+    let errors = validate(blogTitle, blogDesc, blogImage);
     setFormErrors(errors);
     setIsSubmit(true);
-    console.log("valu", likes);
+
     if (Object.keys(errors).length === 0) {
       const formdata = new FormData();
 
-      formdata.append("myFile", values.blogImage);
-      formdata.append("blogTitle", values.blogTitle);
-      formdata.append("blogDesc", values.blogDesc);
-      formdata.append("IsActive", values.IsActive);
-      formdata.append("comments", values.comments);
-      formdata.append("likes", values.likes);
-      formdata.append("userId", values.userId);
+      formdata.append("myFile", blogImage);
+      formdata.append("blogTitle", blogTitle);
+      formdata.append("blogDesc", blogDesc);
+      formdata.append("IsActive", IsActive);
+      formdata.append("comments", comments);
+      formdata.append("likes", likes);
+      formdata.append("userId", localStorage.getItem("RCCoffeeAdmin"));
 
       createBlogs(formdata)
         .then((res) => {
           console.log(res);
           // setmodal_list(!modal_list);
           setShowForm(false);
-          setValues(initialState);
+          // setValues(initialState);
+          setblogDesc("");
+          setblogTitle("");
+          setlikes([]);
+          setcomments([]);
+          setuserId("");
+          setIsActive(false);
+          setblogImage("");
           setIsSubmit(false);
           setCheckImagePhoto(false);
           setPhotoAdd("");
@@ -196,20 +179,20 @@ const Blogs = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    let erros = validate(values);
+    let erros = validate(blogTitle, blogDesc, blogImage);
     setFormErrors(erros);
     setIsSubmit(true);
 
     if (Object.keys(erros).length === 0) {
       const formdata = new FormData();
 
-      formdata.append("myFile", values.blogImage);
-      formdata.append("blogTitle", values.blogTitle);
-      formdata.append("blogDesc", values.blogDesc);
-      formdata.append("IsActive", values.IsActive);
-      formdata.append("comments", values.comments);
-      formdata.append("likes", values.likes);
-      formdata.append("userId", values.userId);
+      formdata.append("myFile", blogImage);
+      formdata.append("blogTitle", blogTitle);
+      formdata.append("blogDesc", blogDesc);
+      formdata.append("IsActive", IsActive);
+      formdata.append("comments", comments);
+      formdata.append("likes", likes);
+      formdata.append("userId", userId);
 
       updateBlogs(_id, formdata)
         .then((res) => {
@@ -218,7 +201,14 @@ const Blogs = () => {
           setUpdateForm(false);
 
           setCheckImagePhoto(false);
-          setValues(initialState);
+          // setValues(initialState);
+          setblogDesc("");
+          setblogTitle("");
+          setlikes([]);
+          setcomments([]);
+          setuserId("");
+          setIsActive(false);
+          setblogImage("");
           fetchCategories();
         })
         .catch((err) => {
@@ -231,30 +221,30 @@ const Blogs = () => {
   const [errBD, setErrBD] = useState(false);
   const [errBI, setErrBI] = useState(false);
 
-  const validate = (values) => {
+  const validate = (blogDesc, blogTitle, blogImage) => {
     const errors = {};
 
-    if (values.blogTitle === "") {
+    if (blogTitle === "") {
       errors.blogTitle = "Blog Title is required!";
       setErrBT(true);
     }
-    if (values.blogTitle !== "") {
+    if (blogTitle !== "") {
       setErrBT(false);
     }
 
-    if (values.blogDesc === "") {
+    if (blogDesc === "") {
       errors.blogDesc = "Blog Description is required!";
       setErrBD(true);
     }
-    if (values.blogDesc !== "") {
+    if (blogDesc !== "") {
       setErrBD(false);
     }
 
-    if (values.blogImage === "") {
+    if (blogImage === "") {
       errors.blogImage = "Blog Image is required!";
       setErrBI(true);
     }
-    if (values.blogImage !== "") {
+    if (blogImage !== "") {
       setErrBI(false);
     }
 
@@ -339,7 +329,8 @@ const Blogs = () => {
       console.log("img", e.target.files[0]);
 
       setPhotoAdd(imageurl);
-      setValues({ ...values, blogImage: e.target.files[0] });
+      // setValues({ ...values, blogImage: e.target.files[0] });
+      setblogImage(e.target.files[0]);
       setCheckImagePhoto(true);
     }
   };
@@ -359,7 +350,14 @@ const Blogs = () => {
     setCheckImagePhoto(false);
     setShowForm(false);
     setUpdateForm(false);
-    setValues(initialState);
+    // setValues(initialState);
+    setblogDesc("");
+    setblogTitle("");
+    setlikes([]);
+    setcomments([]);
+    setuserId("");
+    setIsActive(false);
+    setblogImage("");
   };
 
   const handleUpdateCancel = (e) => {
@@ -369,7 +367,14 @@ const Blogs = () => {
     setUpdateForm(false);
     setShowForm(false);
     setCheckImagePhoto(false);
-    setValues(initialState);
+    // setValues(initialState);
+    setblogDesc("");
+    setblogTitle("");
+    setlikes([]);
+    setcomments([]);
+    setuserId("");
+    setIsActive(false);
+    setblogImage("");
   };
 
   const col = [
@@ -505,7 +510,14 @@ const Blogs = () => {
                                     className="add-btn me-1"
                                     onClick={() => {
                                       setShowForm(!showForm);
-                                      setValues(initialState);
+                                      // setValues(initialState);
+                                      setblogDesc("");
+                                      setblogTitle("");
+                                      setlikes([]);
+                                      setcomments([]);
+                                      setuserId("");
+                                      setIsActive(false);
+                                      setblogImage("");
                                       // setFileId(Math.random() * 100000);
                                     }}
                                     // onClick={() => tog_list()}
@@ -533,7 +545,14 @@ const Blogs = () => {
                                 <button
                                   className="btn bg-success text-light mb-3 "
                                   onClick={() => {
-                                    setValues(initialState);
+                                    // setValues(initialState);
+                                    setblogDesc("");
+                                    setblogTitle("");
+                                    setlikes([]);
+                                    setcomments([]);
+                                    setuserId("");
+                                    setIsActive(false);
+                                    setblogImage("");
                                     setShowForm(false);
                                     setUpdateForm(false);
                                     // setFileId(Math.random() * 100000);
@@ -585,13 +604,16 @@ const Blogs = () => {
                                   <Col lg={6}>
                                     <div className="form-floating mb-3">
                                       <Input
+                                        key={"blogTitle_" + _id}
                                         type="text"
                                         className={validClassBT}
                                         placeholder="Enter blog title"
                                         required
                                         name="blogTitle"
                                         value={blogTitle}
-                                        onChange={handleChange}
+                                        onChange={(e) => {
+                                          setblogTitle(e.target.value);
+                                        }}
                                       />
                                       <Label>
                                         Blog Title{" "}
@@ -614,7 +636,7 @@ const Blogs = () => {
                                       <CardBody>
                                         {/* <Form method="post"> */}
                                         <CKEditor
-                                          key={"blogDesc" + _id}
+                                          key={"blogDesc_" + _id}
                                           editor={ClassicEditor}
                                           data={blogDesc}
                                           config={{
@@ -622,11 +644,8 @@ const Blogs = () => {
                                           }}
                                           onChange={(event, editor) => {
                                             const data = editor.getData();
-                                            // handleChange();
-                                            setValues({
-                                              ...values,
-                                              blogDesc: data,
-                                            });
+
+                                            setblogDesc(data);
                                             console.log(blogDesc);
                                           }}
                                         />
@@ -645,7 +664,8 @@ const Blogs = () => {
                                       <span className="text-danger">*</span>
                                     </label>
 
-                                    <input
+                                    <Input
+                                      key={"blogImage_" + _id}
                                       type="file"
                                       name="blogImage"
                                       className={validClassBI}
@@ -674,10 +694,14 @@ const Blogs = () => {
                                     <Col lg={6}>
                                       <div className="form-check mb-2">
                                         <Input
+                                          key={"IsActive_" + _id}
                                           type="checkbox"
                                           name="IsActive"
                                           value={IsActive}
-                                          onChange={handleCheck}
+                                          // onChange={handleCheck}
+                                          onChange={(e) => {
+                                            setIsActive(e.target.checked);
+                                          }}
                                           checked={IsActive}
                                         />
                                         <Label
@@ -736,13 +760,17 @@ const Blogs = () => {
                                   <Col lg={6}>
                                     <div className="form-floating mb-3">
                                       <Input
+                                        key={"blogTitle_" + _id}
                                         type="text"
                                         className={validClassBT}
                                         placeholder="Enter blog title"
                                         required
                                         name="blogTitle"
                                         value={blogTitle}
-                                        onChange={handleChange}
+                                        // onChange={handleChange}
+                                        onChange={(e) => {
+                                          setblogTitle(e.target.value);
+                                        }}
                                       />
                                       <Label>
                                         Blog Title{" "}
@@ -765,7 +793,7 @@ const Blogs = () => {
                                       <CardBody>
                                         {/* <Form method="post"> */}
                                         <CKEditor
-                                          key={"blogDesc" + _id}
+                                          key={"blogDesc_" + _id}
                                           editor={ClassicEditor}
                                           data={blogDesc}
                                           config={{
@@ -773,12 +801,8 @@ const Blogs = () => {
                                           }}
                                           onChange={(event, editor) => {
                                             const data = editor.getData();
-                                            // handleChange();
-                                            setValues({
-                                              ...values,
-                                              blogDesc: data,
-                                            });
-                                            console.log("f", blogDesc);
+
+                                            setblogDesc(data);
                                           }}
                                         />
                                         {isSubmit && (
@@ -795,8 +819,8 @@ const Blogs = () => {
                                       Blog Image{" "}
                                       <span className="text-danger">*</span>
                                     </label>
-                                    <input
-                                      key={"blogImage" + _id}
+                                    <Input
+                                      key={"blogImage_" + _id}
                                       type="file"
                                       name="blogImage"
                                       className={validClassBI}
@@ -810,14 +834,14 @@ const Blogs = () => {
                                       </p>
                                     )}
 
-                                    {values.blogImage || photoAdd ? (
+                                    {blogImage || photoAdd ? (
                                       <img
                                         // key={photoAdd}
                                         className="m-2"
                                         src={
                                           checkImagePhoto
                                             ? photoAdd
-                                            : `${process.env.REACT_APP_API_URL_COFFEE}/${values.blogImage}`
+                                            : `${process.env.REACT_APP_API_URL_COFFEE}/${blogImage}`
                                         }
                                         width="180"
                                         height="200"
@@ -829,10 +853,13 @@ const Blogs = () => {
                                     <Col lg={6}>
                                       <div className="form-check mb-2">
                                         <Input
+                                          key={"IsActive_" + _id}
                                           type="checkbox"
                                           name="IsActive"
                                           value={IsActive}
-                                          onChange={handleCheck}
+                                          onChange={(e) => {
+                                            setIsActive(e.target.checked);
+                                          }}
                                           checked={IsActive}
                                         />
                                         <Label
@@ -918,7 +945,14 @@ const Blogs = () => {
         isOpen={modal_delete}
         toggle={() => {
           tog_delete();
-          setValues([]);
+          // setValues([]);
+          setblogDesc("");
+          setblogTitle("");
+          setlikes([]);
+          setcomments([]);
+          setuserId("");
+          setIsActive(false);
+          setblogImage("");
         }}
         centered
       >
