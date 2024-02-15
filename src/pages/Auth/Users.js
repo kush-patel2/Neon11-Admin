@@ -253,9 +253,9 @@ const Users = () => {
       <div className="page-content">
         <Container fluid>
           <BreadCrumb
-            maintitle="Users"
+            maintitle="Setup"
             title="Manage Users"
-            pageTitle="Users"
+            pageTitle="Setup"
           />
 
           <Row>

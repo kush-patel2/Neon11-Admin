@@ -348,7 +348,7 @@ const AdminUser = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb maintitle="Users" title="Admin Users" pageTitle="Users" />
+          <BreadCrumb maintitle="Setup" title="Admin Users" pageTitle="Setup" />
           <Row>
             <Col lg={12}>
               <Card>
