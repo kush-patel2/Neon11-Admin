@@ -81,7 +81,7 @@ const AdminUser = () => {
     setmodal_edit(!modal_edit);
     setIsSubmit(false);
     set_Id(_id);
-    getUsers(_id)
+    getAdminUser(_id)
       .then((res) => {
         setValues({
           ...values,
