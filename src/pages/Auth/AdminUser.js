@@ -21,52 +21,40 @@ import axios from "axios";
 import DataTable from "react-data-table-component";
 
 import {
-  createUsers,
-  getUsers,
-  removeUsers,
-  updateUsers,
-} from "../../functions/Auth/Users";
+  createAdminUser,
+  getAdminUser,
+  removeAdminUser,
+  updateAdminUser,
+} from "../../functions/Auth/AdminUser";
 
 const initialState = {
   firstName: "",
   lastName: "",
-  contactNo: "",
-  email: "",
-  password: "",
-  IsPublic: false,
-  followers: [],
-  following: [],
-  cart: [],
-  shippingAddress: [],
-  billingAddress: [],
+  Email: "",
+  Password: "",
   IsActive: false,
 };
 
-const Users = () => {
+const AdminUser = () => {
   const [values, setValues] = useState(initialState);
   const {
     firstName,
     lastName,
     Email,
     Password,
-    IsPublic,
-    UserType,
-    followers,
-    following,
+
     IsActive,
   } = values;
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
 
-  // const [errCN, setErrCN] = useState(false);
-
   const [query, setQuery] = useState("");
 
   const [_id, set_Id] = useState("");
   const [remove_id, setRemove_id] = useState("");
 
-  const [users, setUsers] = useState([]);
+  const [Adminuser, setAdminuser] = useState([]);
 
   useEffect(() => {
     console.log(formErrors);
@@ -101,8 +89,7 @@ const Users = () => {
           lastName: res.lastName,
           Email: res.Email,
           Password: res.Password,
-          UserType: res.UserType,
-          IsPublic: res.IsPublic,
+
           IsActive: res.IsActive,
         });
       })
@@ -122,10 +109,9 @@ const Users = () => {
   const handleClick = (e) => {
     e.preventDefault();
     setFormErrors({});
-    // let erros = validate(values);
-    // setFormErrors(erros);
+
     setIsSubmit(true);
-    createUsers(values)
+    createAdminUser(values)
       .then((res) => {
         setmodal_list(!modal_list);
         setValues(initialState);
@@ -140,7 +126,7 @@ const Users = () => {
 
   const handleDelete = (e) => {
     e.preventDefault();
-    removeUsers(remove_id)
+    removeAdminUser(remove_id)
       .then((res) => {
         setmodal_delete(!modal_delete);
         fetchUsers();
@@ -152,38 +138,76 @@ const Users = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    // let erros = validate(values);
-    // setFormErrors(erros);
+    let erros = validate(values);
+    setFormErrors(erros);
     setIsSubmit(true);
 
-    // if (Object.keys(erros).length === 0) {
-    updateUsers(_id, values)
-      .then((res) => {
-        setmodal_edit(!modal_edit);
-        fetchUsers();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    // }
+    if (Object.keys(erros).length === 0) {
+      updateAdminUser(_id, values)
+        .then((res) => {
+          setmodal_edit(!modal_edit);
+          fetchUsers();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
-  // const validate = (values) => {
-  //   const errors = {};
+  const [errFN, setErrFN] = useState(false);
+  const [errLN, setErrLN] = useState(false);
+  const [errEM, setErrEM] = useState(false);
+  const [errPA, setErrPA] = useState(false);
 
-  //   if (values.categoryName === "") {
-  //     errors.categoryName = "Category Name is required!";
-  //     setErrCN(true);
-  //   }
-  //   if (values.categoryName !== "") {
-  //     setErrCN(false);
-  //   }
+  const validate = (values) => {
+    const errors = {};
 
-  //   return errors;
-  // };
+    if (values.firstName === "") {
+      errors.firstName = "First Name is required!";
+      setErrFN(true);
+    }
+    if (values.firstName !== "") {
+      setErrFN(false);
+    }
 
-  // const validClassCategoryName =
-  //   errCN && isSubmit ? "form-control is-invalid" : "form-control";
+    if (values.lastName === "") {
+      errors.lastName = "Last Name is required!";
+      setErrLN(true);
+    }
+    if (values.lastName !== "") {
+      setErrLN(false);
+    }
+
+    if (values.Email === "") {
+      errors.Email = "Email is required!";
+      setErrEM(true);
+    }
+    if (values.Email !== "") {
+      setErrEM(false);
+    }
+
+    if (values.Password === "") {
+      errors.Password = "Password is required!";
+      setErrPA(true);
+    }
+    if (values.Password !== "") {
+      setErrPA(false);
+    }
+
+    return errors;
+  };
+
+  const validClassFN =
+    errFN && isSubmit ? "form-control is-invalid" : "form-control";
+
+  const validClassLN =
+    errLN && isSubmit ? "form-control is-invalid" : "form-control";
+
+  const validClassEM =
+    errEM && isSubmit ? "form-control is-invalid" : "form-control";
+
+  const validClassPA =
+    errPA && isSubmit ? "form-control is-invalid" : "form-control";
 
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
@@ -214,7 +238,7 @@ const Users = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/users`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/admin-user`,
         {
           skip: skip,
           per_page: perPage,
@@ -228,10 +252,10 @@ const Users = () => {
         if (response.length > 0) {
           let res = response[0];
           setLoading(false);
-          setUsers(res.data);
+          setAdminuser(res.data);
           setTotalRows(res.count);
         } else if (response.length === 0) {
-          setUsers([]);
+          setAdminuser([]);
         }
         // console.log(res);
       });
@@ -272,13 +296,7 @@ const Users = () => {
       sortField: "Email",
       minWidth: "150px",
     },
-    {
-      name: "Password",
-      selector: (row) => row.Password,
-      sortable: true,
-      sortField: "Password",
-      minWidth: "150px",
-    },
+
     {
       name: "Status",
       selector: (row) => {
@@ -324,26 +342,20 @@ const Users = () => {
     },
   ];
 
-  document.title = "Manage Users | RC Henning Coffee Company";
+  document.title = "Admin Users | RC Henning Coffee Company";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb
-            maintitle="Users"
-            title="Manage Users"
-            pageTitle="Users"
-          />
+          <BreadCrumb maintitle="Users" title="Admin Users" pageTitle="Users" />
           <Row>
             <Col lg={12}>
               <Card>
                 <CardHeader>
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" sm={6} lg={4} md={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">
-                        Manage Users
-                      </h2>
+                      <h2 className="card-title mb-0 fs-4 mt-2">Admin Users</h2>
                     </Col>
 
                     <Col sm={6} lg={4} md={6}>
@@ -391,7 +403,7 @@ const Users = () => {
                     <div className="table-responsive table-card mt-1 mb-1 text-right">
                       <DataTable
                         columns={col}
-                        data={users}
+                        data={Adminuser}
                         progressPending={loading}
                         sortServer
                         onSort={(column, sortDirection, sortedRows) => {
@@ -428,14 +440,14 @@ const Users = () => {
             setIsSubmit(false);
           }}
         >
-          Add User
+          Add Admin
         </ModalHeader>
         <form>
           <ModalBody>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className="form-control"
+                className={validClassFN}
                 placeholder="Enter first Name"
                 required
                 name="firstName"
@@ -445,14 +457,14 @@ const Users = () => {
               <Label>
                 First Name <span className="text-danger">*</span>
               </Label>
-              {/* {isSubmit && (
+              {isSubmit && (
                 <p className="text-danger">{formErrors.firstName}</p>
-              )} */}
+              )}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className="form-control"
+                className={validClassLN}
                 placeholder="Enter last Name"
                 required
                 name="lastName"
@@ -462,14 +474,12 @@ const Users = () => {
               <Label>
                 Last Name <span className="text-danger">*</span>
               </Label>
-              {/* {isSubmit && (
-                <p className="text-danger">{formErrors.firstName}</p>
-              )} */}
+              {isSubmit && <p className="text-danger">{formErrors.lastName}</p>}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className="form-control"
+                className={validClassEM}
                 placeholder="Enter email "
                 required
                 name="Email"
@@ -479,14 +489,12 @@ const Users = () => {
               <Label>
                 Email <span className="text-danger">*</span>
               </Label>
-              {/* {isSubmit && (
-                <p className="text-danger">{formErrors.firstName}</p>
-              )} */}
+              {isSubmit && <p className="text-danger">{formErrors.Email}</p>}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className="form-control"
+                className={validClassPA}
                 placeholder="Enter password"
                 required
                 name="Password"
@@ -496,9 +504,7 @@ const Users = () => {
               <Label>
                 Password <span className="text-danger">*</span>
               </Label>
-              {/* {isSubmit && (
-                <p className="text-danger">{formErrors.firstName}</p>
-              )} */}
+              {isSubmit && <p className="text-danger">{formErrors.Password}</p>}
             </div>
 
             <div className="form-check mb-2">
@@ -553,14 +559,14 @@ const Users = () => {
             setIsSubmit(false);
           }}
         >
-          Edit Users
+          Edit Admin Users
         </ModalHeader>
         <form>
           <ModalBody>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className="form-control"
+                className={validClassFN}
                 placeholder="Enter first Name"
                 required
                 name="firstName"
@@ -570,14 +576,14 @@ const Users = () => {
               <Label>
                 First Name<span className="text-danger">*</span>{" "}
               </Label>
-              {/* {isSubmit && (
+              {isSubmit && (
                 <p className="text-danger">{formErrors.firstName}</p>
-              )} */}
+              )}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className="form-control"
+                className={validClassLN}
                 placeholder="Enter last Name"
                 required
                 name="lastName"
@@ -587,14 +593,12 @@ const Users = () => {
               <Label>
                 Last Name<span className="text-danger">*</span>{" "}
               </Label>
-              {/* {isSubmit && (
-                <p className="text-danger">{formErrors.firstName}</p>
-              )} */}
+              {isSubmit && <p className="text-danger">{formErrors.lastName}</p>}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className="form-control"
+                className={validClassEM}
                 placeholder="Enter email "
                 required
                 name="Email"
@@ -604,14 +608,12 @@ const Users = () => {
               <Label>
                 Email <span className="text-danger">*</span>
               </Label>
-              {/* {isSubmit && (
-                <p className="text-danger">{formErrors.firstName}</p>
-              )} */}
+              {isSubmit && <p className="text-danger">{formErrors.Email}</p>}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className="form-control"
+                className={validClassPA}
                 placeholder="Enter password"
                 required
                 name="Password"
@@ -621,9 +623,7 @@ const Users = () => {
               <Label>
                 Password <span className="text-danger">*</span>
               </Label>
-              {/* {isSubmit && (
-                <p className="text-danger">{formErrors.firstName}</p>
-              )} */}
+              {isSubmit && <p className="text-danger">{formErrors.Password}</p>}
             </div>
 
             <div className="form-check mb-2">
@@ -680,7 +680,7 @@ const Users = () => {
             setmodal_delete(false);
           }}
         >
-          Remove User
+          Remove Admin
         </ModalHeader>
         <form>
           <ModalBody>
@@ -725,4 +725,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default AdminUser;

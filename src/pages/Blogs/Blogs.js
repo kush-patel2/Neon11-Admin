@@ -74,7 +74,7 @@ const Blogs = () => {
                 .then((res) => {
                   console.log("res", res.url);
                   resolve({
-                    default: `${process.env.REACT_APP_API_URL_COFFEE}/uploads/BannerCKImages/${res.url}`,
+                    default: `${process.env.REACT_APP_API_URL_COFFEE}/uploads/BlogCKImages/${res.url}`,
                   });
                 })
                 .catch((err) => console.log(err));
