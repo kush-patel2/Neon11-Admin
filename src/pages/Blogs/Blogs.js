@@ -386,13 +386,13 @@ const Blogs = () => {
       minWidth: "150px",
     },
 
-    {
-      name: " Written By",
-      cell: (row) => row.user.firstName,
-      sortable: true,
-      sortField: "row.user.firstName",
-      minWidth: "150px",
-    },
+    // {
+    //   name: " Written By",
+    //   cell: (row) => row.adminuser,
+    //   sortable: true,
+    //   sortField: "adminuser",
+    //   minWidth: "150px",
+    // },
 
     {
       name: "Date & Time",
