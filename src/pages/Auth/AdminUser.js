@@ -238,7 +238,7 @@ const AdminUser = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/admin-user`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/listByparams/adminUser`,
         {
           skip: skip,
           per_page: perPage,
@@ -348,7 +348,7 @@ const AdminUser = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb maintitle="Users" title="Admin Users" pageTitle="Users" />
+          <BreadCrumb maintitle="Setup" title="Admin Users" pageTitle="Setup" />
           <Row>
             <Col lg={12}>
               <Card>

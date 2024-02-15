@@ -35,7 +35,6 @@ import axios from "axios";
 const initialState = {
   Email: "",
   Password: "",
-  UserType: "admin",
 };
 
 const Login = (props) => {
@@ -82,14 +81,12 @@ const Login = (props) => {
     setFormErrors(validate(values));
 
     axios
-      .post(`${process.env.REACT_APP_API_URL_COFFEE}/api/login`, values)
+      .post(`${process.env.REACT_APP_API_URL_COFFEE}/api/adminLogin`, values)
       .then((res) => {
         if (res.isOk) {
           console.log(" login", res);
 
           localStorage.setItem("RCCoffeeAdmin", res.data._id);
-
-          // createLoginHistory(res.usermp.StakeHolderID, res.usermp.CompanyName);
 
           window.location.replace("/manage-users");
         } else {
