@@ -113,11 +113,17 @@ const AdminUser = () => {
     setIsSubmit(true);
     createAdminUser(values)
       .then((res) => {
-        setmodal_list(!modal_list);
-        setValues(initialState);
-        setIsSubmit(false);
-        setFormErrors({});
-        fetchUsers();
+        console.log("res", res);
+        if (res.isOk) {
+          setmodal_list(!modal_list);
+          setValues(initialState);
+          setIsSubmit(false);
+          setFormErrors({});
+          fetchUsers();
+        } else {
+          setErrEM(true);
+          setFormErrors({ Email: "Email already exists!" });
+        }
       })
       .catch((err) => {
         console.log(err);

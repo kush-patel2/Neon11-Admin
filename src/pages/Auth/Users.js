@@ -8,6 +8,10 @@ import {
   Container,
   Label,
   Input,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Row,
   Form,
 } from "reactstrap";
@@ -15,7 +19,9 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 
-import { getUsers } from "../../functions/Auth/Users";
+import { getUsers, removeUsers } from "../../functions/Auth/Users";
+import { getUserBillingAddress } from "../../functions/Auth/userBillingAddress";
+import { getUserShippingAddress } from "../../functions/Auth/userShippingAddress";
 
 const initialState = {
   firstName: "",
@@ -60,6 +66,25 @@ const Users = () => {
   const [_id, set_Id] = useState("");
 
   const [users, setUsers] = useState([]);
+  const [remove_id, setRemove_id] = useState("");
+
+  const [modal_delete, setmodal_delete] = useState(false);
+  const tog_delete = (_id) => {
+    setmodal_delete(!modal_delete);
+    setRemove_id(_id);
+  };
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    removeUsers(remove_id)
+      .then((res) => {
+        setmodal_delete(!modal_delete);
+        fetchUsers();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
     console.log(formErrors);
@@ -67,23 +92,41 @@ const Users = () => {
       console.log("no errors");
     }
   }, [formErrors, isSubmit]);
-
+  const [shippingContent, setShippingContent] = useState([]);
   const handleTog_edit = (_id) => {
     setUpdateForm(true);
     setIsSubmit(false);
     set_Id(_id);
     getUsers(_id)
       .then((res) => {
+        console.log("res in users", res);
         setValues({
           ...values,
           firstName: res.firstName,
           lastName: res.lastName,
           Email: res.Email,
           Password: res.Password,
+          shippingAddress: res.shippingAddress,
           contactNo: res.contactNo,
           IsPublic: res.IsPublic,
           IsActive: res.IsActive,
         });
+        console.log("va", res.shippingAddress);
+        // for (let i = 0; i < res.shippingAddress.length; i++) {
+        //   getUserShippingAddress(res.shippingAddress[i])
+        //     .then((res1) => {
+        //       console.log("res in ba", res1);
+        //       // setShippingContent(res1.address);
+        //       setShippingContent((prevShippingContent) => [
+        //         ...prevShippingContent,
+        //         res1.address,
+        //       ]);
+        //       console.log("res shippingAddress", shippingContent);
+        //     })
+        //     .catch((err) => {
+        //       console.log(err);
+        //     });
+        // }
       })
       .catch((err) => {
         console.log(err);
@@ -103,7 +146,7 @@ const Users = () => {
     setIsSubmit(false);
     setUpdateForm(false);
     setShowForm(false);
-
+    setShippingContent([]);
     setValues(initialState);
   };
 
@@ -227,7 +270,7 @@ const Users = () => {
                 </button>
               </div>
 
-              {/* <div className="remove">
+              <div className="remove">
                 <button
                   className="btn btn-sm btn-danger remove-item-btn"
                   data-bs-toggle="modal"
@@ -236,7 +279,7 @@ const Users = () => {
                 >
                   Remove
                 </button>
-              </div> */}
+              </div>
             </div>
           </React.Fragment>
         );
@@ -246,17 +289,13 @@ const Users = () => {
     },
   ];
 
-  document.title = "Manage Users | RC Henning Coffee Company";
+  document.title = "Users | RC Henning Coffee Company";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb
-            maintitle="Setup"
-            title="Manage Users"
-            pageTitle="Setup"
-          />
+          <BreadCrumb maintitle="Setup" title="Users" pageTitle="Setup" />
 
           <Row>
             <Col lg={12}>
@@ -264,9 +303,7 @@ const Users = () => {
                 <CardHeader>
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" lg={4} md={6} sm={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">
-                        Manage Users
-                      </h2>
+                      <h2 className="card-title mb-0 fs-4 mt-2">Users</h2>
                     </Col>
                     <Col lg={4} md={6} sm={6}>
                       <div
@@ -392,16 +429,12 @@ const Users = () => {
                                           name="firstName"
                                           value={firstName}
                                           onChange={handleChange}
+                                          disabled
                                         />
                                         <Label>
                                           First Name{" "}
                                           <span className="text-danger">*</span>
                                         </Label>
-                                        {isSubmit && (
-                                          <p className="text-danger">
-                                            {formErrors.firstName}
-                                          </p>
-                                        )}
                                       </div>
                                     </Col>
                                     <Col lg={6}>
@@ -414,16 +447,12 @@ const Users = () => {
                                           name="lastName"
                                           value={lastName}
                                           onChange={handleChange}
+                                          disabled
                                         />
                                         <Label>
                                           Last Name{" "}
                                           <span className="text-danger">*</span>
                                         </Label>
-                                        {isSubmit && (
-                                          <p className="text-danger">
-                                            {formErrors.lastName}
-                                          </p>
-                                        )}
                                       </div>
                                     </Col>
                                   </Row>
@@ -438,14 +467,12 @@ const Users = () => {
                                         name="Email"
                                         value={Email}
                                         onChange={handleChange}
+                                        disabled
                                       />
                                       <Label>
                                         Email{" "}
                                         <span className="text-danger">*</span>
                                       </Label>
-                                      {/* {isSubmit && (
-                <p className="text-danger">{formErrors.firstName}</p>
-              )} */}
                                     </div>
                                   </Col>
 
@@ -459,16 +486,12 @@ const Users = () => {
                                         name="Password"
                                         value={Password}
                                         onChange={handleChange}
+                                        disabled
                                       />
                                       <Label>
                                         Password{" "}
                                         <span className="text-danger">*</span>
                                       </Label>
-                                      {isSubmit && (
-                                        <p className="text-danger">
-                                          {formErrors.firstName}
-                                        </p>
-                                      )}
                                     </div>
                                   </Col>
 
@@ -482,6 +505,7 @@ const Users = () => {
                                         name="contactNo"
                                         value={contactNo}
                                         onChange={handleChange}
+                                        disabled
                                       />
                                       <Label>
                                         Contact Number{" "}
@@ -490,13 +514,21 @@ const Users = () => {
                                     </div>
                                   </Col>
 
-                                  <Col lg={6}>
+                                  {/* <Card>
+                                    <CardBody>
+                                      <h4>Shipping Address</h4>
+                                      {shippingContent}
+                                    </CardBody>
+                                  </Card> */}
+
+                                  <Col lg={12}>
                                     <div className="form-check mb-2">
                                       <Input
                                         type="checkbox"
                                         name="IsPublic"
                                         value={IsPublic}
                                         checked={IsPublic}
+                                        disabled
                                       />
                                       <Label
                                         className="form-check-label"
@@ -514,6 +546,7 @@ const Users = () => {
                                         name="IsActive"
                                         value={IsActive}
                                         checked={IsActive}
+                                        disabled
                                       />
                                       <Label
                                         className="form-check-label"
@@ -591,6 +624,62 @@ const Users = () => {
           </Row>
         </Container>
       </div>
+
+      {/* Remove Modal */}
+      <Modal
+        isOpen={modal_delete}
+        toggle={() => {
+          tog_delete();
+        }}
+        centered
+      >
+        <ModalHeader
+          className="bg-light p-3"
+          toggle={() => {
+            setmodal_delete(false);
+          }}
+        >
+          Remove User
+        </ModalHeader>
+        <form>
+          <ModalBody>
+            <div className="mt-2 text-center">
+              <lord-icon
+                src="https://cdn.lordicon.com/gsqxdxog.json"
+                trigger="loop"
+                colors="primary:#f7b84b,secondary:#f06548"
+                style={{ width: "100px", height: "100px" }}
+              ></lord-icon>
+              <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                <h4>Are you sure ?</h4>
+                <p className="text-muted mx-4 mb-0">
+                  Are you Sure You want to Remove this Record ?
+                </p>
+              </div>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <div className="hstack gap-2 justify-content-end">
+              <button
+                type="submit"
+                className="btn btn-danger"
+                id="add-btn"
+                onClick={handleDelete}
+              >
+                Remove
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-outline-danger"
+                onClick={() => setmodal_delete(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </ModalFooter>
+        </form>
+      </Modal>
     </React.Fragment>
   );
 };

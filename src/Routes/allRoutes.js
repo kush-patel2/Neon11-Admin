@@ -38,7 +38,7 @@ const authProtectedRoutes = [
   { path: "/state", component: <State /> },
   { path: "/location", component: <CompanyLocation /> },
 
-  { path: "/manage-users", component: <Users /> },
+  { path: "/users", component: <Users /> },
   { path: "/admin-user", component: <AdminUser /> },
 
   { path: "/company-details", component: <CompanyDetails /> },

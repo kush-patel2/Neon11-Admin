@@ -8,7 +8,6 @@ import logoLight from "../assets/images/logo-light.png";
 
 import logo from "../assets/images/logo/RC-logo-png.png";
 
-
 //Import Components
 import VerticalLayout from "./VerticalLayouts";
 import TwoColumnLayout from "./TwoColumnLayout";
@@ -57,7 +56,7 @@ const Sidebar = ({ layoutType }) => {
             height: "110px",
           }}
         >
-          <Link to="/manage-users" className="mt-2 logo logo-dark">
+          <Link to="/users" className="mt-2 logo logo-dark">
             <span className="logo-sm">
               <img src={logo} alt="" height="80" />
             </span>
@@ -66,7 +65,7 @@ const Sidebar = ({ layoutType }) => {
             </span>
           </Link>
 
-          <Link to="/manage-users" className="mt-2 logo logo-light">
+          <Link to="/users" className="mt-2 logo logo-light">
             <span className="logo-sm">
               <img src={logo} alt="" height="90" />
             </span>
