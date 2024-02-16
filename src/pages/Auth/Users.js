@@ -44,8 +44,8 @@ const Users = () => {
     firstName,
     lastName,
     contactNo,
-    Email,
-    Password,
+    email,
+    password,
     IsPublic,
     followers,
     following,
@@ -104,8 +104,8 @@ const Users = () => {
           ...values,
           firstName: res.firstName,
           lastName: res.lastName,
-          Email: res.Email,
-          Password: res.Password,
+          email: res.email,
+          password: res.password,
           shippingAddress: res.shippingAddress,
           contactNo: res.contactNo,
           IsPublic: res.IsPublic,
@@ -232,9 +232,9 @@ const Users = () => {
     },
     {
       name: "Email",
-      selector: (row) => row.Email,
+      selector: (row) => row.email,
       sortable: true,
-      sortField: "Email",
+      sortField: "email",
       minWidth: "150px",
     },
     // {
@@ -464,8 +464,8 @@ const Users = () => {
                                         className="form-control"
                                         placeholder="Enter email "
                                         required
-                                        name="Email"
-                                        value={Email}
+                                        name="email"
+                                        value={email}
                                         onChange={handleChange}
                                         disabled
                                       />
@@ -483,8 +483,8 @@ const Users = () => {
                                         className="form-control"
                                         placeholder="Enter password"
                                         required
-                                        name="Password"
-                                        value={Password}
+                                        name="password"
+                                        value={password}
                                         onChange={handleChange}
                                         disabled
                                       />

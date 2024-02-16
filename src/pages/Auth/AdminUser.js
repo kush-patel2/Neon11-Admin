@@ -30,8 +30,8 @@ import {
 const initialState = {
   firstName: "",
   lastName: "",
-  Email: "",
-  Password: "",
+  email: "",
+  password: "",
   IsActive: false,
 };
 
@@ -40,8 +40,8 @@ const AdminUser = () => {
   const {
     firstName,
     lastName,
-    Email,
-    Password,
+    email,
+    password,
 
     IsActive,
   } = values;
@@ -87,8 +87,8 @@ const AdminUser = () => {
           ...values,
           firstName: res.firstName,
           lastName: res.lastName,
-          Email: res.Email,
-          Password: res.Password,
+          email: res.email,
+          password: res.password,
 
           IsActive: res.IsActive,
         });
@@ -122,7 +122,7 @@ const AdminUser = () => {
           fetchUsers();
         } else {
           setErrEM(true);
-          setFormErrors({ Email: "Email already exists!" });
+          setFormErrors({ email: "Email already exists!" });
         }
       })
       .catch((err) => {
@@ -184,19 +184,19 @@ const AdminUser = () => {
       setErrLN(false);
     }
 
-    if (values.Email === "") {
-      errors.Email = "Email is required!";
+    if (values.email === "") {
+      errors.email = "email is required!";
       setErrEM(true);
     }
-    if (values.Email !== "") {
+    if (values.email !== "") {
       setErrEM(false);
     }
 
-    if (values.Password === "") {
-      errors.Password = "Password is required!";
+    if (values.password === "") {
+      errors.password = "password is required!";
       setErrPA(true);
     }
-    if (values.Password !== "") {
+    if (values.password !== "") {
       setErrPA(false);
     }
 
@@ -297,9 +297,9 @@ const AdminUser = () => {
     },
     {
       name: "Email",
-      selector: (row) => row.Email,
+      selector: (row) => row.email,
       sortable: true,
-      sortField: "Email",
+      sortField: "email",
       minWidth: "150px",
     },
 
@@ -488,14 +488,14 @@ const AdminUser = () => {
                 className={validClassEM}
                 placeholder="Enter email "
                 required
-                name="Email"
-                value={Email}
+                name="email"
+                value={email}
                 onChange={handleChange}
               />
               <Label>
                 Email <span className="text-danger">*</span>
               </Label>
-              {isSubmit && <p className="text-danger">{formErrors.Email}</p>}
+              {isSubmit && <p className="text-danger">{formErrors.email}</p>}
             </div>
             <div className="form-floating mb-3">
               <Input
@@ -503,14 +503,14 @@ const AdminUser = () => {
                 className={validClassPA}
                 placeholder="Enter password"
                 required
-                name="Password"
-                value={Password}
+                name="password"
+                value={password}
                 onChange={handleChange}
               />
               <Label>
                 Password <span className="text-danger">*</span>
               </Label>
-              {isSubmit && <p className="text-danger">{formErrors.Password}</p>}
+              {isSubmit && <p className="text-danger">{formErrors.password}</p>}
             </div>
 
             <div className="form-check mb-2">
@@ -607,14 +607,14 @@ const AdminUser = () => {
                 className={validClassEM}
                 placeholder="Enter email "
                 required
-                name="Email"
-                value={Email}
+                name="email"
+                value={email}
                 onChange={handleChange}
               />
               <Label>
                 Email <span className="text-danger">*</span>
               </Label>
-              {isSubmit && <p className="text-danger">{formErrors.Email}</p>}
+              {isSubmit && <p className="text-danger">{formErrors.email}</p>}
             </div>
             <div className="form-floating mb-3">
               <Input
@@ -622,14 +622,14 @@ const AdminUser = () => {
                 className={validClassPA}
                 placeholder="Enter password"
                 required
-                name="Password"
-                value={Password}
+                name="password"
+                value={password}
                 onChange={handleChange}
               />
               <Label>
                 Password <span className="text-danger">*</span>
               </Label>
-              {isSubmit && <p className="text-danger">{formErrors.Password}</p>}
+              {isSubmit && <p className="text-danger">{formErrors.password}</p>}
             </div>
 
             <div className="form-check mb-2">
