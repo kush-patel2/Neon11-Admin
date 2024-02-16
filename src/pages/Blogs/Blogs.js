@@ -36,6 +36,9 @@ const Blogs = () => {
   const [blogTitle, setblogTitle] = useState("");
   const [blogDesc, setblogDesc] = useState("");
   const [blogImage, setblogImage] = useState("");
+  const [blogThumnailDesc, setblogThumnailDesc] = useState("");
+  const [views, setViews] = useState(0);
+
   const [likes, setlikes] = useState([]);
   const [comments, setcomments] = useState([]);
   const [userId, setuserId] = useState(localStorage.getItem("RCCoffeeAdmin"));
@@ -114,6 +117,8 @@ const Blogs = () => {
         setblogImage(res.blogImage);
         setlikes(res.likes);
         setcomments(res.comments);
+        setblogThumnailDesc(res.blogThumnailDesc);
+        setViews(res.views);
         setuserId(res.userId);
         setIsActive(res.IsActive);
       })
@@ -137,6 +142,8 @@ const Blogs = () => {
       formdata.append("blogDesc", blogDesc);
       formdata.append("IsActive", IsActive);
       formdata.append("comments", comments);
+      formdata.append("views", views);
+      formdata.append("blogThumnailDesc", blogThumnailDesc);
       formdata.append("likes", likes);
       formdata.append("userId", localStorage.getItem("RCCoffeeAdmin"));
 
@@ -153,6 +160,8 @@ const Blogs = () => {
           setuserId("");
           setIsActive(false);
           setblogImage("");
+          setblogThumnailDesc("");
+          setViews(0);
           setIsSubmit(false);
           setCheckImagePhoto(false);
           setPhotoAdd("");
@@ -191,6 +200,8 @@ const Blogs = () => {
       formdata.append("blogDesc", blogDesc);
       formdata.append("IsActive", IsActive);
       formdata.append("comments", comments);
+      formdata.append("views", views);
+      formdata.append("blogThumnailDesc", blogThumnailDesc);
       formdata.append("likes", likes);
       formdata.append("userId", userId);
 
@@ -208,6 +219,8 @@ const Blogs = () => {
           setcomments([]);
           setuserId("");
           setIsActive(false);
+          setblogThumnailDesc("");
+          setViews(0);
           setblogImage("");
           fetchCategories();
         })
@@ -219,6 +232,7 @@ const Blogs = () => {
 
   const [errBT, setErrBT] = useState(false);
   const [errBD, setErrBD] = useState(false);
+  const [errBTD, setErrBTD] = useState(false);
   const [errBI, setErrBI] = useState(false);
 
   const validate = (blogDesc, blogTitle, blogImage) => {
@@ -239,6 +253,13 @@ const Blogs = () => {
     if (blogDesc !== "") {
       setErrBD(false);
     }
+    if (blogThumnailDesc === "") {
+      errors.blogThumnailDesc = "Blog Thumbnail Description is required!";
+      setErrBTD(true);
+    }
+    if (blogThumnailDesc !== "") {
+      setErrBTD(false);
+    }
 
     if (blogImage === "") {
       errors.blogImage = "Blog Image is required!";
@@ -256,6 +277,8 @@ const Blogs = () => {
 
   const validClassBD =
     errBD && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassBTD =
+    errBTD && isSubmit ? "form-control is-invalid" : "form-control";
 
   const validClassBI =
     errBI && isSubmit ? "form-control is-invalid" : "form-control";
@@ -350,6 +373,8 @@ const Blogs = () => {
     setCheckImagePhoto(false);
     setShowForm(false);
     setUpdateForm(false);
+    setblogThumnailDesc("");
+    setViews(0);
     // setValues(initialState);
     setblogDesc("");
     setblogTitle("");
@@ -366,6 +391,8 @@ const Blogs = () => {
     setPhotoAdd("");
     setUpdateForm(false);
     setShowForm(false);
+    setblogThumnailDesc("");
+    setViews(0);
     setCheckImagePhoto(false);
     // setValues(initialState);
     setblogDesc("");
@@ -627,6 +654,30 @@ const Blogs = () => {
                                     </div>
                                   </Col>
 
+                                  <Col lg={6}>
+                                    <div className="form-floating mb-3">
+                                      <Input
+                                        type="textarea"
+                                        className={validClassBTD}
+                                        style={{ height: "100px" }}
+                                        placeholder="Remarks..."
+                                        name="blogThumnailDesc"
+                                        value={blogThumnailDesc}
+                                        onChange={(e) => {
+                                          setblogThumnailDesc(e.target.value);
+                                        }}
+                                      />
+                                      <Label className="form-label">
+                                        Blog Thumbnail Description
+                                      </Label>
+                                      {isSubmit && (
+                                        <p className="text-danger">
+                                          {formErrors.blogThumnailDesc}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </Col>
+
                                   <Col lg={12}>
                                     <Card>
                                       <Label>
@@ -784,6 +835,29 @@ const Blogs = () => {
                                     </div>
                                   </Col>
 
+                                  <Col lg={6}>
+                                    <div className="form-floating mb-3">
+                                      <Input
+                                        type="textarea"
+                                        className={validClassBTD}
+                                        style={{ height: "100px" }}
+                                        placeholder="Remarks..."
+                                        name="blogThumnailDesc"
+                                        value={blogThumnailDesc}
+                                        onChange={(e) => {
+                                          setblogThumnailDesc(e.target.value);
+                                        }}
+                                      />
+                                      <Label className="form-label">
+                                        Blog Thumbnail Description
+                                      </Label>
+                                      {isSubmit && (
+                                        <p className="text-danger">
+                                          {formErrors.blogThumnailDesc}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </Col>
                                   <Col lg={12}>
                                     <Card>
                                       <Label>
