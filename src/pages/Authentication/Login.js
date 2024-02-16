@@ -88,7 +88,7 @@ const Login = (props) => {
 
           localStorage.setItem("RCCoffeeAdmin", res.data._id);
 
-          window.location.replace("/manage-users");
+          window.location.replace("/users");
         } else {
           toast.error("Authentication failed!");
         }
