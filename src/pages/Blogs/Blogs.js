@@ -191,7 +191,10 @@ const Blogs = () => {
     let erros = validate(blogTitle, blogDesc, blogImage);
     setFormErrors(erros);
     setIsSubmit(true);
+    const likesString = JSON.stringify(likes);
+    const commentString = JSON.stringify(comments);
 
+    console.log("likess", likes);
     if (Object.keys(erros).length === 0) {
       const formdata = new FormData();
 
@@ -199,10 +202,10 @@ const Blogs = () => {
       formdata.append("blogTitle", blogTitle);
       formdata.append("blogDesc", blogDesc);
       formdata.append("IsActive", IsActive);
-      formdata.append("comments", comments);
+      formdata.append("comments", commentString);
       formdata.append("views", views);
       formdata.append("blogThumnailDesc", blogThumnailDesc);
-      formdata.append("likes", likes);
+      formdata.append("likes", likesString);
       formdata.append("userId", userId);
 
       updateBlogs(_id, formdata)
