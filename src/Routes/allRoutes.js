@@ -30,6 +30,7 @@ import MilkCategory from "../pages/Category/MilkCategory";
 import ProductRatecard from "../pages/Products/ProductRatecard";
 import CompanyDetails from "../pages/Setup/CompanyDetails";
 import AdminUser from "../pages/Auth/AdminUser";
+import Notification from "../pages/userNotification/NotificationUser";
 const authProtectedRoutes = [
   // { path: "/dashboard", component: <DashboardCrm /> },
   { path: "/profile", component: <UserProfile /> },
@@ -50,6 +51,7 @@ const authProtectedRoutes = [
   { path: "/drink-category", component: <DrinkCategory /> },
   { path: "/size-category", component: <SizeCategory /> },
   { path: "/energy-category", component: <EnergyCategory /> },
+  { path: "/notifications", component: <Notification /> },
 
   { path: "/blogs", component: <Blogs /> },
   { path: "/banner", component: <Banner /> },
