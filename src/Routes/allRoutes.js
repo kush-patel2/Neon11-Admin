@@ -31,6 +31,9 @@ import ProductRatecard from "../pages/Products/ProductRatecard";
 import CompanyDetails from "../pages/Setup/CompanyDetails";
 import AdminUser from "../pages/Auth/AdminUser";
 import Notification from "../pages/userNotification/NotificationUser";
+import ProductParameterMaster from "../pages/ProductParameter/ParameterMaster";
+import ProductParameterValue from "../pages/ProductParameter/ParameterValue";
+import ProductPage from "../pages/ProductsNew/ProductPage";
 const authProtectedRoutes = [
   // { path: "/dashboard", component: <DashboardCrm /> },
   { path: "/profile", component: <UserProfile /> },
@@ -45,6 +48,13 @@ const authProtectedRoutes = [
   { path: "/company-details", component: <CompanyDetails /> },
 
   { path: "/category", component: <CategoryMaster /> },
+  { path: "/product-page", component: <ProductPage /> },
+
+  { path: "/product-parameter", component: <ProductParameterMaster /> },
+  { path: "/product-parameter-value", component: <ProductParameterValue /> },
+
+  { path: "/milk-category", component: <MilkCategory /> },
+
   { path: "/grind-category", component: <GrindCategoryMaster /> },
 
   { path: "/milk-category", component: <MilkCategory /> },

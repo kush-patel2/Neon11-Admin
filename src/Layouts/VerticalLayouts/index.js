@@ -226,7 +226,8 @@ const VerticalLayout = (props) => {
                       <span data-key="t-apps">Products Category </span>
                     </Link>
                   </li>
-                  <li className="nav-item">
+
+                  {/* <li className="nav-item">
                     <Link className="nav-link menu-link" to="/grind-category">
                       <span data-key="t-apps"> Grind Category</span>
                     </Link>
@@ -254,9 +255,23 @@ const VerticalLayout = (props) => {
                     <Link className="nav-link menu-link" to="/size-category">
                       <span data-key="t-apps">Drink Size Category</span>
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               </Collapse>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link menu-link" to="/product-parameter">
+                <span data-key="t-apps">Product Parameter </span>
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link
+                className="nav-link menu-link"
+                to="/product-parameter-value"
+              >
+                <span data-key="t-apps">Product Parameter Value</span>
+              </Link>
             </li>
           </ul>
         </Collapse>
