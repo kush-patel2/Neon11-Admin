@@ -34,6 +34,8 @@ import Notification from "../pages/userNotification/NotificationUser";
 import ProductParameterMaster from "../pages/ProductParameter/ParameterMaster";
 import ProductParameterValue from "../pages/ProductParameter/ParameterValue";
 import ProductPage from "../pages/ProductsNew/ProductPage";
+import Products from "../pages/ProductsNew/Products";
+import ProductVariants from "../pages/ProductsNew/ProductVariants";
 const authProtectedRoutes = [
   // { path: "/dashboard", component: <DashboardCrm /> },
   { path: "/profile", component: <UserProfile /> },
@@ -48,7 +50,6 @@ const authProtectedRoutes = [
   { path: "/company-details", component: <CompanyDetails /> },
 
   { path: "/category", component: <CategoryMaster /> },
-  { path: "/product-page", component: <ProductPage /> },
 
   { path: "/product-parameter", component: <ProductParameterMaster /> },
   { path: "/product-parameter-value", component: <ProductParameterValue /> },
@@ -76,6 +77,10 @@ const authProtectedRoutes = [
 
   { path: "/product-details", component: <ProductDetails /> },
   { path: "/product-ratecard", component: <ProductRatecard /> },
+
+  { path: "/product-page", component: <ProductPage /> },
+  { path: "/products", component: <Products /> },
+  { path: "/product-variants", component: <ProductVariants /> },
 
   { path: "/order-details", component: <OrderDetails /> },
 
