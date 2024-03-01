@@ -29,12 +29,14 @@ import moment from "moment-timezone";
 const initialState = {
   code: "",
   savePercentage: "",
+  startDate: moment().format("MM-DD-YYYY"),
+  endDate: moment().format("MM-DD-YYYY"),
   IsActive: false,
 };
 
 const PromocodeMaster = () => {
   const [values, setValues] = useState(initialState);
-  const { code, savePercentage, IsActive } = values;
+  const { code, savePercentage, startDate, endDate, IsActive } = values;
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
@@ -78,6 +80,8 @@ const PromocodeMaster = () => {
           ...values,
           code: res.code,
           savePercentage: res.savePercentage,
+          startDate: moment(res.startDate).format("YYYY-MM-DD"),
+          endDate: moment(res.endDate).format("YYYY-MM-DD"),
           IsActive: res.IsActive,
         });
       })
@@ -87,6 +91,7 @@ const PromocodeMaster = () => {
   };
 
   const handleChange = (e) => {
+    console.log(e.target.value);
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
@@ -228,14 +233,44 @@ const PromocodeMaster = () => {
       minWidth: "150px",
     },
     {
-      name: "Date & Time",
+      name: "Start Date",
+      selector: (row) => {
+        const dateObject = new Date(row.startDate);
+
+        return (
+          <React.Fragment>
+            {moment(new Date(dateObject.getTime())).format("MM-DD-YYYY")}
+          </React.Fragment>
+        );
+      },
+      sortable: true,
+      sortField: "startDate",
+      minWidth: "150px",
+    },
+    {
+      name: "End Date",
+      selector: (row) => {
+        const dateObject = new Date(row.endDate);
+
+        return (
+          <React.Fragment>
+            {moment(new Date(dateObject.getTime())).format("MM-DD-YYYY")}
+          </React.Fragment>
+        );
+      },
+      sortable: true,
+      sortField: "endDate",
+      minWidth: "150px",
+    },
+    {
+      name: "Created Date & Time",
       selector: (row) => {
         const dateObject = new Date(row.createdAt);
 
         return (
           <React.Fragment>
             {moment(new Date(dateObject.getTime())).format(
-              "DD-MM-YYYY hh:mm A"
+              "MM-DD-YYYY hh:mm A"
             )}
           </React.Fragment>
         );
@@ -407,7 +442,9 @@ const PromocodeMaster = () => {
                 value={code}
                 onChange={handleChange}
               />
-              <Label>Promocode<span className="text-danger">*</span> </Label>
+              <Label>
+                Promocode<span className="text-danger">*</span>{" "}
+              </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -423,7 +460,47 @@ const PromocodeMaster = () => {
                 value={savePercentage}
                 onChange={handleChange}
               />
-              <Label>Save(%)<span className="text-danger">*</span> </Label>
+              <Label>
+                Save(%)<span className="text-danger">*</span>{" "}
+              </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.categoryName}</p>
+              )} */}
+            </div>
+
+            <div className="form-floating mb-3">
+              <Input
+                type="date"
+                className="form-control"
+                placeholder="startDate "
+                required
+                name="startDate"
+                value={startDate}
+                onChange={handleChange}
+                min={moment().format("YYYY-MM-DD")}
+              />
+              <Label>
+                Start Date<span className="text-danger">*</span>{" "}
+              </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.categoryName}</p>
+              )} */}
+            </div>
+
+            <div className="form-floating mb-3">
+              <Input
+                type="date"
+                className="form-control"
+                placeholder="endDate "
+                required
+                name="endDate"
+                value={endDate}
+                onChange={handleChange}
+                min={startDate}
+              />
+              <Label>
+                End Date<span className="text-danger">*</span>{" "}
+              </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -495,7 +572,9 @@ const PromocodeMaster = () => {
                 value={code}
                 onChange={handleChange}
               />
-              <Label>Promocode <span className="text-danger">*</span></Label>
+              <Label>
+                Promocode <span className="text-danger">*</span>
+              </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
@@ -511,7 +590,47 @@ const PromocodeMaster = () => {
                 value={savePercentage}
                 onChange={handleChange}
               />
-              <Label>Save(%) <span className="text-danger">*</span></Label>
+              <Label>
+                Save(%) <span className="text-danger">*</span>
+              </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.categoryName}</p>
+              )} */}
+            </div>
+
+            <div className="form-floating mb-3">
+              <Input
+                type="date"
+                className="form-control"
+                placeholder="startDate "
+                required
+                name="startDate"
+                value={startDate}
+                onChange={handleChange}
+                min={moment().format("YYYY-MM-DD")}
+              />
+              <Label>
+                Start Date<span className="text-danger">*</span>{" "}
+              </Label>
+              {/* {isSubmit && (
+                <p className="text-danger">{formErrors.categoryName}</p>
+              )} */}
+            </div>
+
+            <div className="form-floating mb-3">
+              <Input
+                type="date"
+                className="form-control"
+                placeholder="endDate "
+                required
+                name="endDate"
+                value={endDate}
+                onChange={handleChange}
+                min={startDate}
+              />
+              <Label>
+                End Date<span className="text-danger">*</span>{" "}
+              </Label>
               {/* {isSubmit && (
                 <p className="text-danger">{formErrors.categoryName}</p>
               )} */}
