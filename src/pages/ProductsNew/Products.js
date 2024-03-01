@@ -86,17 +86,17 @@ const Products = () => {
   const columns = [
     {
       name: "Product Category",
-      // selector: (row) => (
-      //   <div>
-      //     {row.category && row.category.map((c) => (
-      //       <div key={c. _id}>{c.categoryName}</div>
-      //     ))}
-      //   </div>
-      // ),
-      selector: (row) => row.category.categoryName,
+      selector: (row) => (
+        <div>
+          {row.categories && row.categories.map((c, index) => (
+            <div key={index}>{c}</div>
+          ))}
+        </div>
+      ),
+      // selector: (row) => row.category.categoryName,
       sortable: true,
       sortField: "row.category.categoryName",
-      minWidth: "150px",
+      minWidth: "150p x",
     },
     {
       name: "Product Name",
