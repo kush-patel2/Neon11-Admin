@@ -20,7 +20,7 @@ import UserSubscription from "../pages/Subscription/UserSubscription";
 import SubscriptionMaster from "../pages/Subscription/SubscriptionMaster";
 import PromocodeMaster from "../pages/Subscription/PromocodeMaster";
 import ProductDetails from "../pages/Products/ProductsDetails";
-import OrderDetails from "../pages/Products/Orders";
+import OrderDetails from "../pages/ProductsNew/Orders/Orders";
 import UserProfile from "../pages/Authentication/user-profile";
 import Banner from "../pages/CMS/Banner";
 import EnergyCategory from "../pages/Category/EnergyCategory";

@@ -31,3 +31,10 @@ export const getOrders = async (_id) => {
     `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/get/orders/${_id}`
   );
 };
+
+export const updateOrderStatus = async (_id, value) => {
+  return await axios.put(
+    `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/update/order-status/${_id}`,
+    {OrderStatus: value}
+  );
+};

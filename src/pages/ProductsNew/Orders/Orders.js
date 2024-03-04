@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment-timezone";
-import UiContent from "../../Components/Common/UiContent";
-import BreadCrumb from "../../Components/Common/BreadCrumb";
+import UiContent from "../../../Components/Common/UiContent";
+import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import {
   Card,
   CardBody,
@@ -15,7 +15,7 @@ import {
   Row,
 } from "reactstrap";
 
-import { removeOrders } from "../../functions/Products/Orders";
+import { removeOrders, updateOrderStatus } from "../../../functions/Products/Orders/Orders";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
@@ -108,6 +108,12 @@ const OrderDetails = () => {
     setPerPage(newPerPage);
   };
 
+  const handleUpdateOrderStatus = (orderId, newStatus) => {
+    updateOrderStatus(orderId, newStatus).then((res) => {
+      fetchData();
+    })
+  };
+
   const columns = [
     {
       name: "Order ID",
@@ -133,8 +139,9 @@ const OrderDetails = () => {
       name: "Customer Details",
       cell: (row) =>
         row.address
-          ? `${row.address.firstName} ${row.address.lastName} || ${row.address.contactNo} 
-          || ${row.address.addressLine1} ${row.address.addressLine2}, ${row.address.city}, ${row.address.zipCode}`
+          ? `Name: ${row.address.firstName} ${row.address.lastName} ||
+           ${row.address.contactNo} ||
+           ${row.address.addressLine1} ${row.address.addressLine2}, ${row.address.city}, ${row.address.zipCode}`
           : "",
       sortable: true,
       sortField: "address",
@@ -159,7 +166,21 @@ const OrderDetails = () => {
     },
     {
       name: "Status",
-      cell: (row) => row.OrderStatus,
+      // cell: (row) => row.OrderStatus,
+      cell: (row, onUpdateStatus) => (
+        <div>
+          <select
+            value={row.OrderStatus}
+            onChange={(e) => handleUpdateOrderStatus(row._id, e.target.value)}
+          >
+            <option value="Not Processed">Not Processed</option>
+            <option value="Processing">Processing</option>
+            <option value="Dispatched">Dispatched</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+      ),
       sortable: true,
       sortField: "OrderStatus",
       xWidth: "400px",
@@ -178,7 +199,7 @@ const OrderDetails = () => {
                    <i class="ri-eye-line h3 text-success hover-effect"></i> 
                 </Link>
               </div>
-              {row.OrderStatus != "Cancelled" && <div className="remove">
+              {/* {row.OrderStatus != "Cancelled" && <div className="remove">
                 <Link
                   className=""
                   data-bs-toggle="modal"
@@ -187,7 +208,7 @@ const OrderDetails = () => {
                 >
                    <i class="ri-close-circle-line h3 text-danger"></i> 
                 </Link>
-              </div> }
+              </div> } */}
               
             </div>
           </React.Fragment>
