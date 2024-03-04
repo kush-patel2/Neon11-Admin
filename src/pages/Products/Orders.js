@@ -119,7 +119,8 @@ const OrderDetails = () => {
     {
       name: "User",
       cell: (row) =>
-        row.user ? `${row.user.firstName} ${row.user.lastName}` : "",
+        row.user ? `${row.user.firstName} ${row.user.lastName} ` ||  
+        <a href={`mailto:${row.user.email}`}>{row.user.email}</a> : "",
       sortable: true,
       sortField: "user",
       maxWidth: "280px",
@@ -128,8 +129,8 @@ const OrderDetails = () => {
       name: "Customer Details",
       cell: (row) =>
         row.address
-          ? `${row.address.firstName} ${row.address.lastName} | ${row.address.contactNo} 
-          | ${row.address.addressLine1} ${row.address.addressLine2}, ${row.address.city}, ${row.address.zipCode}`
+          ? `${row.address.firstName} ${row.address.lastName} || ${row.address.contactNo} 
+          || ${row.address.addressLine1} ${row.address.addressLine2}, ${row.address.city}, ${row.address.zipCode}`
           : "",
       sortable: true,
       sortField: "address",
@@ -156,7 +157,7 @@ const OrderDetails = () => {
       name: "Status",
       cell: (row) => row.OrderStatus,
       sortable: true,
-      rtField: "OrderStatus",
+      sortField: "OrderStatus",
       xWidth: "400px",
     },
     {
