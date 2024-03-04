@@ -502,10 +502,31 @@ const ProductVariants = () => {
     //   minWidth: "150px",
     // },
     {
+      name: "Product Category",
+      selector: (row) => (
+        <div>
+          {row.categories && row.categories.map((c, index) => (
+            <div key={index}>{c}</div>
+          ))}
+        </div>
+      ),
+      // selector: (row) => row.category.categoryName,
+      sortable: true,
+      sortField: "row.category.categoryName",
+      minWidth: "150p x",
+    },
+    {
       name: "Product Name",
       selector: (row) => row.productName,
       sortable: true,
       sortField: "row.productName",
+      minWidth: "150px",
+    },
+    {
+      name: "No. Of Variants ",
+      selector: (row) => row.productVariantsId ? row.productVariantsId : 0,
+      sortable: true,
+      sortField: "productVariantsId.length",
       minWidth: "150px",
     },
     {
