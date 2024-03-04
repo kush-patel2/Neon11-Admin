@@ -119,8 +119,12 @@ const OrderDetails = () => {
     {
       name: "User",
       cell: (row) =>
-        row.user ? `${row.user.firstName} ${row.user.lastName} ` ||  
-        <a href={`mailto:${row.user.email}`}>{row.user.email}</a> : "",
+        row.user ? 
+        <span>
+        {row.user.firstName}{row.user.lastName} || {" "}
+        <a href={`mailto:${row.user.email}`}>{row.user.email}</a> ||{" "}
+        {row.user.contactNo}
+      </span> : "",
       sortable: true,
       sortField: "user",
       maxWidth: "280px",
