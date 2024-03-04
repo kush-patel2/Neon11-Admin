@@ -226,36 +226,6 @@ const VerticalLayout = (props) => {
                       <span data-key="t-apps">Products Category </span>
                     </Link>
                   </li>
-
-                  {/* <li className="nav-item">
-                    <Link className="nav-link menu-link" to="/grind-category">
-                      <span data-key="t-apps"> Grind Category</span>
-                    </Link>
-                  </li>
-
-                  <li className="nav-item">
-                    <Link className="nav-link menu-link" to="/drink-category">
-                      <span data-key="t-apps"> Drink Type Category</span>
-                    </Link>
-                  </li>
-
-                  <li className="nav-item">
-                    <Link className="nav-link menu-link" to="/milk-category">
-                      <span data-key="t-apps"> Milk Type Category</span>
-                    </Link>
-                  </li>
-
-                  <li className="nav-item">
-                    <Link className="nav-link menu-link" to="/energy-category">
-                      <span data-key="t-apps"> Energy Drink Category</span>
-                    </Link>
-                  </li>
-
-                  <li className="nav-item">
-                    <Link className="nav-link menu-link" to="/size-category">
-                      <span data-key="t-apps">Drink Size Category</span>
-                    </Link>
-                  </li> */}
                 </ul>
               </Collapse>
             </li>

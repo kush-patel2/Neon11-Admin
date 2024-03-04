@@ -189,7 +189,6 @@ const Products = () => {
         } else if (response.length === 0) {
           setData([]);
         }
-        // console.log(res);
       });
 
     setLoading(false);

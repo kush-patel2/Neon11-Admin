@@ -18,6 +18,7 @@ import {
 import { removeOrders } from "../../functions/Products/Orders";
 import axios from "axios";
 import DataTable from "react-data-table-component";
+import { Link } from "react-router-dom";
 
 const OrderDetails = () => {
   const [filter, setFilter] = useState(true);
@@ -109,53 +110,35 @@ const OrderDetails = () => {
 
   const columns = [
     {
+      name: "Order ID",
+      cell: (row) => row._id,
+      sortable: true,
+      sortField: "user",
+      maxWidth: "280px",
+    },
+    {
       name: "User",
-      selector: (row) => row.username,
+      cell: (row) =>
+        row.user ? 
+        <span>
+        {row.user.firstName}{row.user.lastName} || {" "}
+        <a href={`mailto:${row.user.email}`}>{row.user.email}</a> ||{" "}
+        {row.user.contactNo}
+      </span> : "",
       sortable: true,
-      sortField: "username",
+      sortField: "user",
       maxWidth: "280px",
     },
     {
-      name: "Contact Name",
-      selector: (row) => row.name,
+      name: "Customer Details",
+      cell: (row) =>
+        row.address
+          ? `${row.address.firstName} ${row.address.lastName} || ${row.address.contactNo} 
+          || ${row.address.addressLine1} ${row.address.addressLine2}, ${row.address.city}, ${row.address.zipCode}`
+          : "",
       sortable: true,
-      sortField: "name",
+      sortField: "address",
       maxWidth: "280px",
-    },
-    {
-      name: "Contact No",
-      selector: (row) => row.contactNo,
-      sortable: true,
-      sortField: "contactNo",
-      maxWidth: "280px",
-    },
-    {
-      name: "Country",
-      cell: (row) => row.countryname,
-      sortable: true,
-      rtField: "countryname",
-      xWidth: "400px",
-    },
-    {
-      name: "State",
-      cell: (row) => row.statename,
-      sortable: true,
-      rtField: "statename",
-      xWidth: "400px",
-    },
-    {
-      name: "City",
-      cell: (row) => row.cityname,
-      sortable: true,
-      rtField: "cityname",
-      xWidth: "400px",
-    },
-    {
-      name: "Pincode",
-      cell: (row) => row.pincode,
-      sortable: true,
-      rtField: "pincode",
-      xWidth: "400px",
     },
     {
       name: "Date & Time",
@@ -165,7 +148,7 @@ const OrderDetails = () => {
         return (
           <React.Fragment>
             {moment(new Date(dateObject.getTime())).format(
-              "DD-MM-YYYY hh:mm A"
+              "MM-DD-YYYY hh:mm A"
             )}
           </React.Fragment>
         );
@@ -174,23 +157,38 @@ const OrderDetails = () => {
       sortField: "createdAt",
       minWidth: "150px",
     },
-
+    {
+      name: "Status",
+      cell: (row) => row.OrderStatus,
+      sortable: true,
+      sortField: "OrderStatus",
+      xWidth: "400px",
+    },
     {
       name: "Action",
       selector: (row) => {
         return (
           <React.Fragment>
             <div className="d-flex gap-2">
-              <div className="remove">
-                <button
-                  className="btn btn-sm btn-danger remove-item-btn"
+            <div className="edit">
+                <Link
+                  className=""
+                  // onClick={() => tog_delete(row._id)}
+                >
+                   <i class="ri-eye-line h3 text-success hover-effect"></i> 
+                </Link>
+              </div>
+              {row.OrderStatus != "Cancelled" && <div className="remove">
+                <Link
+                  className=""
                   data-bs-toggle="modal"
                   data-bs-target="#deleteRecordModal"
                   onClick={() => tog_delete(row._id)}
                 >
-                  Remove
-                </button>
-              </div>
+                   <i class="ri-close-circle-line h3 text-danger"></i> 
+                </Link>
+              </div> }
+              
             </div>
           </React.Fragment>
         );
@@ -292,7 +290,7 @@ const OrderDetails = () => {
               <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
                 <h4>Are you sure ?</h4>
                 <p className="text-muted mx-4 mb-0">
-                  Are you Sure You want to Remove this Record ?
+                  Are you Sure You want to Cancel this Record ?
                 </p>
               </div>
             </div>
