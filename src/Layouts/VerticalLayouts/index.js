@@ -15,6 +15,7 @@ const VerticalLayout = (props) => {
   const [params, setParams] = useState(false);
 
   const [product, setproduct] = useState(false);
+  const [order, setOrder] = useState(false);
   const [category, setCategory] = useState(false);
   const [subs, setSubs] = useState(false);
   const [inquiry, setInquiry] = useState(false);
@@ -229,20 +230,7 @@ const VerticalLayout = (props) => {
                 </ul>
               </Collapse>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link menu-link" to="/product-parameter">
-                <span data-key="t-apps">Product Parameter </span>
-              </Link>
-            </li>
-
-            <li className="nav-item">
-              <Link
-                className="nav-link menu-link"
-                to="/product-parameter-value"
-              >
-                <span data-key="t-apps">Product Parameter Value</span>
-              </Link>
-            </li>
+           
           </ul>
         </Collapse>
       </li>
@@ -264,6 +252,21 @@ const VerticalLayout = (props) => {
           //   id="sidebarApps"
         >
           <ul className="nav nav-sm flex-column test">
+          <li className="nav-item">
+              <Link className="nav-link menu-link" to="/product-parameter">
+                <span data-key="t-apps">Product Parameter </span>
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link
+                className="nav-link menu-link"
+                to="/product-parameter-value"
+              >
+                <span data-key="t-apps">Product Parameter Value</span>
+              </Link>
+            </li>
+            
             <li className="nav-item">
               <Link to="/products" className="nav-link">
                 Product Details
@@ -275,6 +278,29 @@ const VerticalLayout = (props) => {
                 Product Variants
               </Link>
             </li>
+
+          
+          </ul>
+        </Collapse>
+      </li>
+
+      <li className="nav-item">
+        <Link
+          className="nav-link menu-link"
+          to="#"
+          data-bs-toggle="collapse"
+          onClick={() => {
+            setOrder(!order);
+          }}
+        >
+          <span data-key="t-apps"> Order Master </span>
+        </Link>
+        <Collapse
+          className="menu-dropdown"
+          isOpen={order}
+          //   id="sidebarApps"
+        >
+          <ul className="nav nav-sm flex-column test">
 
             <li className="nav-item">
               <Link to="/order-details" className="nav-link">

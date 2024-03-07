@@ -116,14 +116,26 @@ const OrderDetails = () => {
 
   const columns = [
     {
-      name: "Order ID",
-      cell: (row) => row._id,
+      name: "Order",
+      cell: (row) => {
+        const dateObject = new Date(row.createdAt);
+
+        return (
+          <React.Fragment>
+            ID: {row.randomOrderId}
+            <br/>
+            Date: {moment(new Date(dateObject.getTime())).format(
+              "MM-DD-YYYY hh:mm A"
+            )}
+          </React.Fragment>
+        );
+      },
       sortable: true,
       sortField: "user",
       maxWidth: "280px",
     },
     {
-      name: "User",
+      name: "User ",
       cell: (row) =>
         row.user ? 
         <span>
@@ -136,10 +148,10 @@ const OrderDetails = () => {
       maxWidth: "280px",
     },
     {
-      name: "Customer Details",
+      name: "Delivery Details",
       cell: (row) =>
         row.address
-          ? `Name: ${row.address.firstName} ${row.address.lastName} ||
+          ? `${row.address.firstName} ${row.address.lastName} ||
            ${row.address.contactNo} ||
            ${row.address.addressLine1} ${row.address.addressLine2}, ${row.address.city}, ${row.address.zipCode}`
           : "",
@@ -148,22 +160,29 @@ const OrderDetails = () => {
       maxWidth: "280px",
     },
     {
-      name: "Date & Time",
-      selector: (row) => {
-        const dateObject = new Date(row.createdAt);
-
-        return (
-          <React.Fragment>
-            {moment(new Date(dateObject.getTime())).format(
-              "MM-DD-YYYY hh:mm A"
-            )}
-          </React.Fragment>
-        );
-      },
+      name: "Total",
+      cell: (row) => {$ (row.totalAmount).toFixed(2)},
       sortable: true,
-      sortField: "createdAt",
-      minWidth: "150px",
+      sortField: "totalAmount",
+      maxWidth: "280px",
     },
+    // {
+    //   name: "Date & Time",
+    //   selector: (row) => {
+    //     const dateObject = new Date(row.createdAt);
+
+    //     return (
+    //       <React.Fragment>
+    //         {moment(new Date(dateObject.getTime())).format(
+    //           "MM-DD-YYYY hh:mm A"
+    //         )}
+    //       </React.Fragment>
+    //     );
+    //   },
+    //   sortable: true,
+    //   sortField: "createdAt",
+    //   minWidth: "150px",
+    // },
     {
       name: "Status",
       // cell: (row) => row.OrderStatus,
