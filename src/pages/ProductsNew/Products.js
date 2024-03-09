@@ -53,8 +53,6 @@ const Products = () => {
   //search and pagination state
   const [query, setQuery] = useState("");
 
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
   const [values, setValues] = useState(initialState);
 
   const {
@@ -107,9 +105,7 @@ const Products = () => {
     },
     {
       name: "Base Price ($) ",
-      selector: (row) => {
-        return <p>{row.basePrice}</p>;
-      },
+      selector: (row) => `$ ${(row.basePrice).toFixed(2)}`,
       sortable: false,
       sortField: "basePrice",
     },
@@ -298,6 +294,7 @@ const Products = () => {
     setFormErrors(errors);
     setIsSubmit(true);
     // if (Object.keys(errors).length === 0) {
+      setLoading(true);
     const formdata = new FormData();
 
     formdata.append("myFile", productImage);
@@ -354,6 +351,7 @@ const Products = () => {
     // setFormErrors(errors);
     setIsSubmit(true);
     // if (Object.keys(errors).length === 0) {
+      setLoading(true);
     const formdata = new FormData();
 
     formdata.append("myFile", productImage);
@@ -378,6 +376,7 @@ const Products = () => {
         fetchProducts();
         setCheckImagePhoto(false);
         setValues(initialState);
+        setLoading(false)
       })
       .catch((err) => {
         console.log(err);
@@ -864,6 +863,23 @@ const Products = () => {
                                     </Col>
                                   </Row>
 
+                                  {loading && (
+                                      <div className="d-flex justify-content-center">
+                                        <div
+                                          className="spinner-border"
+                                          role="status"
+                                        >
+                                          <span className="sr-only">
+                                            Loading...
+                                          </span>
+                                        </div>
+                                        <h6 className="p-2">
+                                          Wait for a few seconds.This process
+                                          might take some time.
+                                        </h6>
+                                      </div>
+                                    )}
+
                                   <Col lg={12}>
                                     <div className="hstack gap-2 justify-content-end">
                                       <button
@@ -1158,6 +1174,23 @@ const Products = () => {
                                     </Col>
                                   </Row>
 
+                                  {loading && (
+                                      <div className="d-flex justify-content-center">
+                                        <div
+                                          className="spinner-border"
+                                          role="status"
+                                        >
+                                          <span className="sr-only">
+                                            Loading...
+                                          </span>
+                                        </div>
+                                        <h6 className="p-2">
+                                          Wait for a few seconds.This process
+                                          might take some time.
+                                        </h6>
+                                      </div>
+                                    )}
+
                                   <Col lg={12}>
                                     <div className="text-end">
                                       <button
@@ -1199,7 +1232,7 @@ const Products = () => {
                         <DataTable
                           columns={columns}
                           data={data}
-                          progressPending={loading}
+                          // progressPending={loading}
                           sortServer
                           onSort={(column, sortDirection, sortedRows) => {
                             handleSort(column, sortDirection);

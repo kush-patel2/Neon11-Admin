@@ -75,8 +75,7 @@ const ProductVariants = () => {
   const [filter, setFilter] = useState(true);
   const [_id, set_Id] = useState("");
   const [product_id, setProduct_Id] = useState("");
-
-
+  const [updatedPrice, setUpdatedPrice] = useState(0);
   const [remove_id, setRemove_id] = useState("");
 
   //search and pagination state
@@ -133,15 +132,15 @@ const ProductVariants = () => {
   const [showForm, setShowForm] = useState(false);
   const [updateForm, setUpdateForm] = useState(false);
   const [data, setData] = useState([]);
-  const [optionTableData, setOptionTableData] = useState([]);
-  const [variationTableData, setVariationTableData] = useState([]);
+
+  const [selectedOption, setSelectedOptions] = useState([]);
+  const [parameters, setParameters] = useState([]);
 
   const [errPN, setErrPN] = useState(false);
   const [errCN, setErrCN] = useState(false);
   const [errPI, setErrPI] = useState(false);
   const [errwt, setErrwt] = useState(false);
   const [errut, setErrut] = useState(false);
-
   const [errPr, setErrPr] = useState(false);
 
   const validate = (values) => {
@@ -203,7 +202,7 @@ const ProductVariants = () => {
   const [modal_list, setmodal_list] = useState(false);
   const [modal_update, setmodal_update] = useState(false); //used for producut edit
 
-  const [modal_edit, setmodal_edit] = useState(false);  //used for option update
+  const [modal_edit, setmodal_edit] = useState(false); //used for option update
 
   const tog_list = () => {
     setmodal_list(!modal_list);
@@ -244,8 +243,9 @@ const ProductVariants = () => {
       .then((res) => {
         setProductDetailValues({
           ...ProductDetailValues,
-          productId: res._id
+          productId: res._id,
         });
+        setSelectedOptions(res.productOptionId);
       })
       .catch((err) => {
         console.log(err);
@@ -259,14 +259,17 @@ const ProductVariants = () => {
   };
 
   useEffect(() => {
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      console.log("no errors");
-    }
-  }, [formErrors, isSubmit]);
+    selectedOption.map((item) => {
+      getProductOptions(item).then((p) => {
+        parameters.push(p.parameterId);
+      });
+    });
+  }, [selectedOption]);
 
   const [productsData, setProductsData] = useState([]);
   const [productsOptionsData, setProductsOptionsData] = useState([]);
   const [productsVariantsData, setProductsVariantsData] = useState([]);
+  const [loadingOption, setLoadingOption] = useState(false);
 
   useEffect(() => {
     loadProductsData();
@@ -327,36 +330,10 @@ const ProductVariants = () => {
     });
   }, [productId]);
 
-  const handleClick = (e) => {
-    e.preventDefault();
-    // let errors = validate(ProductDetailValues);
-    // setFormErrors(errors);
-    // setIsSubmit(true);
-
-    // const formdata = new FormData();
-    // formdata.append("productId", ProductDetailValues.productId);
-    // formdata.append("productOptionId", ProductDetailValues.productOptionId);
-    // formdata.append("productVariantsId", ProductDetailValues.productVariantsId);
-
-    // updateProducts(formdata) 
-    //   .then((res) => {
-    //     // setModalList(!modal_list);
-        setShowForm(false);
-        setProductDetailValues(initialStatePD);
-        setProductOptionValues(initialStatePO);
-        setProductVariantValues(initialStatePV);
-        setIsSubmit(false);
-        setFormErrors({});
-        fetchProducts();
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-  };
-
   const handleAddOptions = (e) => {
     e.preventDefault();
     setIsSubmit(true);
+    setLoadingOption(true);
 
     createProductOptionsForvariants({
       productId: ProductDetailValues.productId,
@@ -369,6 +346,7 @@ const ProductVariants = () => {
         setProductOptionValues(initialStatePO);
         loadProductOptionsData();
         loadProductVariantsData();
+        setLoadingOption(false);
       })
       .catch((error) => {
         console.log(error);
@@ -377,6 +355,7 @@ const ProductVariants = () => {
 
   const handleUpdateOptions = (e) => {
     e.preventDefault();
+    setLoadingOption(true);
 
     updateProductOptionsForvariants({
       productId: ProductDetailValues.productId,
@@ -388,6 +367,7 @@ const ProductVariants = () => {
         setProductOptionValues(initialStatePO);
         loadProductOptionsData();
         loadProductVariantsData();
+        setLoadingOption(false);
       })
       .catch((error) => {
         console.log(error);
@@ -411,20 +391,11 @@ const ProductVariants = () => {
       .then((res) => {
         // setmodal_delete(!modal_delete);
         loadProductOptionsData();
+        loadProductVariantsData();
       })
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  const handleAddCancel = (e) => {
-    e.preventDefault();
-    setIsSubmit(false);
-    setShowForm(false);
-    setUpdateForm(false);
-    setProductDetailValues(initialStatePD);
-    setProductsOptionsData([]);
-    setProductsVariantsData([]);
   };
 
   const handleUpdateCancel = (e) => {
@@ -505,9 +476,8 @@ const ProductVariants = () => {
       name: "Product Category",
       selector: (row) => (
         <div>
-          {row.categories && row.categories.map((c, index) => (
-            <div key={index}>{c}</div>
-          ))}
+          {row.categories &&
+            row.categories.map((c, index) => <div key={index}>{c}</div>)}
         </div>
       ),
       // selector: (row) => row.category.categoryName,
@@ -524,7 +494,8 @@ const ProductVariants = () => {
     },
     {
       name: "No. Of Variants ",
-      selector: (row) => row.productVariantsId ? row.productVariantsId : 0,
+      selector: (row) =>
+        row.productVariantsId ? row.productVariantsId.length : 0,
       sortable: true,
       sortField: "productVariantsId.length",
       minWidth: "150px",
@@ -540,11 +511,10 @@ const ProductVariants = () => {
                   className="btn btn-sm btn-success edit-item-btn "
                   data-bs-toggle="modal"
                   data-bs-target="#showModal"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleTogProduct_edit(row._id)
-                    }
-                    }
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleTogProduct_edit(row._id);
+                  }}
                 >
                   Edit
                 </button>
@@ -595,10 +565,10 @@ const ProductVariants = () => {
                   className="btn btn-sm btn-success edit-item-btn "
                   data-bs-toggle="modal"
                   data-bs-target="#showModal"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleTog_edit(row._id);
-                    }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleTog_edit(row._id);
+                  }}
                 >
                   Edit
                 </button>
@@ -611,7 +581,7 @@ const ProductVariants = () => {
                   data-bs-target="#deleteRecordModal"
                   onClick={(e) => {
                     e.preventDefault();
-                    handleDeleteProductOption(row._id)
+                    handleDeleteProductOption(row._id);
                   }}
                 >
                   Remove
@@ -639,7 +609,7 @@ const ProductVariants = () => {
     },
     {
       name: "Price Variant ($) ",
-      selector: (row) => row.priceVariant,
+      selector: (row) => `$ ${row.priceVariant}`,
     },
     {
       name: "Subscription",
@@ -778,10 +748,10 @@ const ProductVariants = () => {
                   </Row>
                 </CardHeader>
 
-                {/* ADD FORM  */}
+                {/* UPDATE FORM  */}
                 <div
                   style={{
-                    display: showForm && !updateForm ? "block" : "none",
+                    display: !showForm && updateForm ? "block" : "none",
                   }}
                 >
                   <CardBody>
@@ -799,6 +769,7 @@ const ProductVariants = () => {
                                         className="form-control"
                                         onChange={handleChange}
                                         value={ProductDetailValues.productId}
+                                        disabled
                                         data-choices
                                         data-choices-sorting="true"
                                       >
@@ -808,7 +779,7 @@ const ProductVariants = () => {
                                             <React.Fragment key={c._id}>
                                               {c.IsActive && (
                                                 <option value={c._id}>
-                                                  {c.productName} + {c.weight}
+                                                  {c.productName}
                                                 </option>
                                               )}
                                             </React.Fragment>
@@ -849,7 +820,6 @@ const ProductVariants = () => {
                                             columns={columns2}
                                             data={productsOptionsData}
                                             progressPending={loading}
-                                           
                                           />
                                         </div>
                                       </div>
@@ -871,152 +841,7 @@ const ProductVariants = () => {
                                           <button
                                             type="submit"
                                             className="btn btn-large btn-primary m-1"
-                                            onClick={tog_Variant}
-                                          >
-                                            Edit{" "}
-                                            {/* <i className="ri-add-circle-fill m-1"></i> */}
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </CardHeader>
-                                    <CardBody>
-                                      <Row>
-                                        <div>
-                                          <div className="table-responsive table-card mt-1 mb-1 text-right">
-                                            <DataTable
-                                              columns={columns3}
-                                              data={productsVariantsData}
-                                              progressPending={loading}
-                                            />
-                                          </div>
-                                        </div>
-                                      </Row>
-                                    </CardBody>
-                                  </Card>
-
-                                  <Col lg={12}>
-                                    <div className="hstack gap-2 justify-content-end">
-                                      <button
-                                        type="submit"
-                                        className="btn btn-success  m-1"
-                                        id="add-btn"
-                                        onClick={handleClick}
-                                      >
-                                        Submit
-                                      </button>
-                                      <button
-                                        type="button"
-                                        className="btn btn-outline-danger m-1"
-                                        onClick={handleAddCancel}
-                                      >
-                                        Cancel
-                                      </button>
-                                    </div>
-                                  </Col>
-                                </Row>
-                              </Form>
-                            </div>
-                          </CardBody>{" "}
-                        </Card>
-                      </Col>
-                    </React.Fragment>
-                  </CardBody>
-                </div>
-
-                {/* UPDATE FORM  */}
-                <div
-                  style={{
-                    display: !showForm && updateForm ? "block" : "none",
-                  }}
-                >
-                  <CardBody>
-                    <React.Fragment>
-                      <Col xxl={12}>
-                        <Card className="">
-                          <CardBody>
-                            <div className="live-preview">
-                              <Form>
-                                <Row>
-                                <Col lg={4}>
-                                    <div className="form-floating  mb-3">
-                                      <select
-                                        name="productId"
-                                        className="form-control"
-                                        onChange={handleChange}
-                                        value={ProductDetailValues.productId}
-                                        data-choices
-                                        data-choices-sorting="true"
-                                      >
-                                        <option>Select Product</option>
-                                        {productsData.map((c) => {
-                                          return (
-                                            <React.Fragment key={c._id}>
-                                              {c.IsActive && (
-                                                <option value={c._id}>
-                                                  {c.productName} + {c.weight}
-                                                </option>
-                                              )}
-                                            </React.Fragment>
-                                          );
-                                        })}
-                                      </select>
-                                      <Label>
-                                        Product
-                                        <span className="text-danger">*</span>
-                                      </Label>
-                                    </div>
-                                  </Col>
-
-                                  <Card>
-                                    <CardHeader className="bg-light">
-                                      <h4>Product Options</h4>
-                                    </CardHeader>
-                                    <CardBody>
-                                      <Row>
-                                        <Col lg={6}>
-                                          <button
-                                            type="submit"
-                                            className="btn btn-primary m-1"
                                             onClick={(e) => {
-                                              e.preventDefault();
-                                              tog_list();
-                                            }}
-                                          >
-                                            Add Option{" "}
-                                            <i class="ri-add-circle-fill m-1"></i>
-                                          </button>
-                                        </Col>
-                                      </Row>
-                                      {/* ListOptions */}
-                                      <div>
-                                        <div className="table-responsive table-card mt-1 mb-1 text-right">
-                                          <DataTable
-                                            columns={columns2}
-                                            data={productsOptionsData}
-                                            progressPending={loading}
-                                           
-                                          />
-                                        </div>
-                                      </div>
-                                    </CardBody>
-                                  </Card>
-
-                                  <Card>
-                                    <CardHeader className="bg-light">
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          justifyContent: "space-between",
-                                        }}
-                                      >
-                                        <div>
-                                          <h4>Manage Variants</h4>
-                                        </div>
-                                        <div>
-                                          <button
-                                            type="submit"
-                                            className="btn btn-large btn-primary m-1"
-                                            onClick={(e) =>{
                                               e.preventDefault();
                                               tog_Variant();
                                             }}
@@ -1051,9 +876,15 @@ const ProductVariants = () => {
                                           e.preventDefault();
                                           setUpdateForm(false);
                                           fetchProducts();
-                                          setProductDetailValues(initialStatePD);
-                                          setProductOptionValues(initialStatePO);
-                                          setProductVariantValues(initialStatePV);
+                                          setProductDetailValues(
+                                            initialStatePD
+                                          );
+                                          setProductOptionValues(
+                                            initialStatePO
+                                          );
+                                          setProductVariantValues(
+                                            initialStatePV
+                                          );
                                         }}
                                       >
                                         Update
@@ -1108,15 +939,24 @@ const ProductVariants = () => {
                         >
                           <option>Select Option Name</option>
                           {paramsNameData.map((c) => {
-                            return (
-                              <React.Fragment key={c._id}>
-                                {c.IsActive && (
-                                  <option value={c._id}>
-                                    {c.parameterName}
-                                  </option>
-                                )}
-                              </React.Fragment>
-                            );
+                            if (!parameters.includes(c._id)) {
+                              console.log(
+                                c._id,
+                                c.parameterName,
+                                selectedOption
+                              );
+                              return (
+                                <React.Fragment key={c._id}>
+                                  {c.IsActive && (
+                                    <option value={c._id}>
+                                      {c.parameterName}
+                                    </option>
+                                  )}
+                                </React.Fragment>
+                              );
+                            } else {
+                              return null;
+                            }
                           })}
                         </select>
                         <Label>
@@ -1165,16 +1005,17 @@ const ProductVariants = () => {
                         )}
                       </div>
 
-                      {/* <div className="form-check mb-2">
-                        <Input
-                          type="checkbox"
-                          className="form-check-input"
-                          name="IsActiveOption"
-                          value={IsActiveOption}
-                          onChange={handleCheckOptionActive}
-                        />
-                        <Label className="form-check-label">Is Active</Label>
-                      </div> */}
+                      {loadingOption && (
+                        <div className="d-flex justify-content-center">
+                          <div className="spinner-border" role="status">
+                            <span className="sr-only">Loading...</span>
+                          </div>
+                          <h6 className="p-2">
+                            Wait for a few seconds.This process might take some
+                            time.
+                          </h6>
+                        </div>
+                      )}
                     </ModalBody>
                     <ModalFooter>
                       <div className="hstack gap-2 justify-content-end">
@@ -1226,6 +1067,7 @@ const ProductVariants = () => {
                           className="form-control"
                           onChange={handleChangeOption}
                           value={parameterId}
+                          disabled
                           data-choices
                           data-choices-sorting="true"
                         >
@@ -1288,16 +1130,17 @@ const ProductVariants = () => {
                         )}
                       </div>
 
-                      {/* <div className="form-check mb-2">
-                        <Input
-                          type="checkbox"
-                          className="form-check-input"
-                          name="IsActiveOption"
-                          value={IsActiveOption}
-                          onChange={handleCheckOptionActive}
-                        />
-                        <Label className="form-check-label">Is Active</Label>
-                      </div> */}
+                      {loadingOption && (
+                        <div className="d-flex justify-content-center">
+                          <div className="spinner-border" role="status">
+                            <span className="sr-only">Loading...</span>
+                          </div>
+                          <h6 className="p-2">
+                            Wait for a few seconds.This process might take some
+                            time.
+                          </h6>
+                        </div>
+                      )}
                     </ModalBody>
                     <ModalFooter>
                       <div className="hstack gap-2 justify-content-end">
@@ -1325,7 +1168,7 @@ const ProductVariants = () => {
                   </form>
                 </Modal>
 
-                {/* VARIANT MODAL */}
+                {/*edit VARIANT MODAL */}
                 <Modal
                   className="modal-dialog modal-lg"
                   isOpen={variant_modal}
@@ -1374,8 +1217,13 @@ const ProductVariants = () => {
                                           ))}{" "}
                                       </td>
                                       <td class="text-success">
-                                        <div className="input-group mb-3" style={{ width: '150px' }}>
-                                        <span className="input-group-text">$</span>
+                                        <div
+                                          className="input-group mb-3"
+                                          style={{ width: "150px" }}
+                                        >
+                                          <span className="input-group-text">
+                                            $
+                                          </span>
                                           <input
                                             type="number"
                                             className="form-control"

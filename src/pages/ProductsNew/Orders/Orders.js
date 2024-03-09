@@ -160,8 +160,8 @@ const OrderDetails = () => {
       maxWidth: "280px",
     },
     {
-      name: "Total",
-      cell: (row) => {$ (row.totalAmount).toFixed(2)},
+      name: "Total Amount",
+      cell: (row) => `$ ${(row.totalAmount).toFixed(2)}`,
       sortable: true,
       sortField: "totalAmount",
       maxWidth: "280px",
