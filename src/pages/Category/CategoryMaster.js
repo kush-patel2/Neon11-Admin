@@ -291,7 +291,7 @@ const CategoryMaster = () => {
     },
   ];
 
-  document.title = "Products Category | RC Henning Coffee Company";
+  document.title = "Products Category | Project Name";
 
   return (
     <React.Fragment>

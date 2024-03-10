@@ -34,7 +34,7 @@ const UserProfile = () => {
   const [email, setemail] = useState("admin@rccoffee.in");
   const [idx, setidx] = useState("1");
 
-  const [userName, setUserName] = useState("RC Henning Coffee Company");
+  const [userName, setUserName] = useState("Project Name");
 
   const { user, success, error } = useSelector(state => ({
     user: state.Profile.user,
@@ -80,7 +80,7 @@ const UserProfile = () => {
     }
   });
 
-  document.title = "Profile | RC Henning Coffee Company";
+  document.title = "Profile | Project Name";
   return (
     <React.Fragment>
       <div className="page-content">

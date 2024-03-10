@@ -304,12 +304,11 @@ const AdminUser = () => {
     },
 
     {
-      name: "Status",
-      selector: (row) => {
-        return <p>{row.IsPublic ? "Public" : "Private"}</p>;
-      },
-      sortable: false,
-      sortField: "IsPublic",
+      name: "Password",
+      selector: (row) => row.password,
+      sortable: true,
+      sortField: "password",
+      minWidth: "150px",
     },
 
     {
@@ -348,7 +347,7 @@ const AdminUser = () => {
     },
   ];
 
-  document.title = "Admin Users | RC Henning Coffee Company";
+  document.title = "Admin Users | Project Name";
 
   return (
     <React.Fragment>

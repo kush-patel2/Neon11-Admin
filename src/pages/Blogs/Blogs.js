@@ -39,9 +39,11 @@ const Blogs = () => {
   const [blogThumnailDesc, setblogThumnailDesc] = useState("");
   const [views, setViews] = useState(0);
 
+  const [loadingOption, setLoadingOption] = useState(false);
+
   const [likes, setlikes] = useState([]);
   const [comments, setcomments] = useState([]);
-  const [userId, setuserId] = useState(localStorage.getItem("RCCoffeeAdmin"));
+  const [userId, setuserId] = useState(localStorage.getItem("AdminUser"));
   const [IsActive, setIsActive] = useState(false);
 
   const [formErrors, setFormErrors] = useState({});
@@ -110,8 +112,6 @@ const Blogs = () => {
     set_Id(_id);
     getBlogs(_id)
       .then((res) => {
-        console.log("res", res);
-
         setblogTitle(res.blogTitle);
         setblogDesc(res.blogDesc);
         setblogImage(res.blogImage);
@@ -135,6 +135,7 @@ const Blogs = () => {
     setIsSubmit(true);
 
     if (Object.keys(errors).length === 0) {
+      setLoadingOption(true);
       const formdata = new FormData();
 
       formdata.append("myFile", blogImage);
@@ -152,6 +153,7 @@ const Blogs = () => {
           console.log(res);
           // setmodal_list(!modal_list);
           setShowForm(false);
+          setLoadingOption(false);
           // setValues(initialState);
           setblogDesc("");
           setblogTitle("");
@@ -194,8 +196,8 @@ const Blogs = () => {
     const likesString = JSON.stringify(likes);
     const commentString = JSON.stringify(comments);
 
-    console.log("likess", likes);
     if (Object.keys(erros).length === 0) {
+      setLoadingOption(true);
       const formdata = new FormData();
 
       formdata.append("myFile", blogImage);
@@ -213,6 +215,7 @@ const Blogs = () => {
           // setmodal_edit(!modal_edit);
           setPhotoAdd("");
           setUpdateForm(false);
+          setLoadingOption(false);
 
           setCheckImagePhoto(false);
           // setValues(initialState);
@@ -486,7 +489,7 @@ const Blogs = () => {
     },
   ];
 
-  document.title = "Blogs | RC Henning Coffee Company";
+  document.title = "Blogs | Project Name";
 
   return (
     <React.Fragment>
@@ -768,6 +771,23 @@ const Blogs = () => {
                                     </Col>
                                   </div>
 
+                                  {loadingOption && (
+                                    <div className="d-flex justify-content-center">
+                                      <div
+                                        className="spinner-border"
+                                        role="status"
+                                      >
+                                        <span className="sr-only">
+                                          Loading...
+                                        </span>
+                                      </div>
+                                      <h6 className="p-2">
+                                        Wait for a few seconds.This process
+                                        might take some time.
+                                      </h6>
+                                    </div>
+                                  )}
+
                                   <Col lg={12}>
                                     <div className="hstack gap-2 justify-content-end">
                                       <button
@@ -948,6 +968,23 @@ const Blogs = () => {
                                       </div>
                                     </Col>
                                   </div>
+
+                                  {loadingOption && (
+                                    <div className="d-flex justify-content-center">
+                                      <div
+                                        className="spinner-border"
+                                        role="status"
+                                      >
+                                        <span className="sr-only">
+                                          Loading...
+                                        </span>
+                                      </div>
+                                      <h6 className="p-2">
+                                        Wait for a few seconds.This process
+                                        might take some time.
+                                      </h6>
+                                    </div>
+                                  )}
 
                                   <Col lg={12}>
                                     <div className="text-end">

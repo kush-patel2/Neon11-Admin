@@ -357,7 +357,7 @@ const Banner = () => {
     },
   ];
 
-  document.title = "Bannner | RC Henning Coffee Company";
+  document.title = "Bannner | Project Name";
 
   return (
     <React.Fragment>

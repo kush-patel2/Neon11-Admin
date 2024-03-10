@@ -315,7 +315,7 @@ const Country = () => {
     },
   ];
 
-  document.title = "Country | RC Henning Coffee Company";
+  document.title = "Country | Project Name";
 
   return (
     <React.Fragment>

@@ -648,7 +648,7 @@ const CompanyDetails = () => {
       minWidth: "180px",
     },
   ];
-  document.title = "Company Details | RC Henning Coffee Company";
+  document.title = "Company Details | Project Name";
 
   return (
     <React.Fragment>

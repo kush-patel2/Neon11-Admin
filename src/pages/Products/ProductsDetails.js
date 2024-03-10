@@ -38,12 +38,10 @@ const ProductDetails = () => {
     productName: "",
     productImage: "",
     productDescription: "",
+    price: 0,
     IsActive: false,
     IsSubscriptionProduct: false,
-    IsGiftHamper: false,
-    isSize: false,
-    isDrink: false,
-    isMilk: false,
+    isOutOfStock: false,
   };
 
   const [remove_id, setRemove_id] = useState("");
@@ -61,14 +59,9 @@ const ProductDetails = () => {
     productDescription,
     productImage,
     price,
-    weight,
-    unit,
     IsActive,
-    IsGiftHamper,
     IsSubscriptionProduct,
-    isSize,
-    isDrink,
-    isMilk,
+    isOutOfStock
   } = values;
 
   const [loading, setLoading] = useState(false);
@@ -96,14 +89,6 @@ const ProductDetails = () => {
       sortable: true,
       sortField: "productName",
       minWidth: "150px",
-    },
-    {
-      name: "Gift Hamper",
-      selector: (row) => {
-        return <p>{row.IsGiftHamper ? "Yes" : "No"}</p>;
-      },
-      sortable: false,
-      sortField: "IsGiftHamper",
     },
     {
       name: "Subscription",
@@ -320,13 +305,11 @@ const ProductDetails = () => {
       formdata.append("category", values.category);
       formdata.append("productName", values.productName);
       formdata.append("productDescription", values.productDescription);
-
       formdata.append("IsActive", values.IsActive);
       formdata.append("IsGiftHamper", values.IsGiftHamper);
       formdata.append("IsSubscriptionProduct", values.IsSubscriptionProduct);
-      formdata.append("isDrink", values.isDrink);
-      formdata.append("isMilk", values.isMilk);
-      formdata.append("isSize", values.isSize);
+      formdata.append("isOutOfStock", values.isOutOfStock);
+      formdata.append("price", values.price);
 
       createProductsDetails(formdata)
         .then((res) => {
@@ -372,16 +355,14 @@ const ProductDetails = () => {
     const formdata = new FormData();
 
     formdata.append("myFile", values.productImage);
-    formdata.append("category", values.category);
-    formdata.append("productName", values.productName);
-    formdata.append("productDescription", values.productDescription);
-    formdata.append("IsActive", values.IsActive);
-    formdata.append("IsGiftHamper", values.IsGiftHamper);
-    formdata.append("IsSubscriptionProduct", values.IsSubscriptionProduct);
-    formdata.append("isDrink", values.isDrink);
-    formdata.append("isMilk", values.isMilk);
-    formdata.append("isSize", values.isSize);
-
+      formdata.append("category", values.category);
+      formdata.append("productName", values.productName);
+      formdata.append("productDescription", values.productDescription);
+      formdata.append("IsActive", values.IsActive);
+      formdata.append("IsGiftHamper", values.IsGiftHamper);
+      formdata.append("IsSubscriptionProduct", values.IsSubscriptionProduct);
+      formdata.append("isOutOfStock", values.isOutOfStock);
+      formdata.append("price", values.price);
     updateProductsDetails(_id, formdata)
       .then((res) => {
         // setmodal_edit(!modal_edit);
@@ -439,9 +420,8 @@ const ProductDetails = () => {
           IsActive: res.IsActive,
           IsGiftHamper: res.IsGiftHamper,
           IsSubscriptionProduct: res.IsSubscriptionProduct,
-          isDrink: res.isDrink,
-          isMilk: res.isMilk,
-          isSize: res.isSize,
+          price: res.price,
+          isOutOfStock: res.isOutOfStock,
         });
       })
       .catch((err) => {
@@ -490,7 +470,7 @@ const ProductDetails = () => {
   const handleFilter = (e) => {
     setFilter(e.target.checked);
   };
-  document.title = "Product Details | RC Henning Coffee Company";
+  document.title = "Product Details | Project Name";
 
   return (
     <React.Fragment>
@@ -662,7 +642,7 @@ const ProductDetails = () => {
                                         )}
                                       </div>
                                     </Col>
-                                    <Col lg={6}>
+                                    <Col lg={4}>
                                       <div className="form-floating mb-3">
                                         <input
                                           type="text"
@@ -685,6 +665,28 @@ const ProductDetails = () => {
                                             {formErrors.productName}
                                           </p>
                                         )}
+                                      </div>
+                                    </Col>
+
+                                    <Col lg={2}>
+                                      <div className="form-floating mb-3">
+                                        <input
+                                          type="number"
+                                          className="form-control"
+                                          placeholder="Enter price"
+                                          required
+                                          name="price"
+                                          value={values.price}
+                                          onChange={handleChange}
+                                        />
+                                        <label
+                                          htmlFor="role-field"
+                                          className="form-label"
+                                        >
+                                          Price
+                                          <span className="text-danger">*</span>
+                                        </label>
+                                       
                                       </div>
                                     </Col>
                                   </Row>
@@ -744,16 +746,15 @@ const ProductDetails = () => {
                                     <div className="form-check mb-2 mt-2">
                                       <Input
                                         type="checkbox"
-                                        name="IsGiftHamper"
-                                        value={IsGiftHamper}
+                                        name="isOutOfStock"
+                                        value={isOutOfStock}
                                         onChange={handlecheckGH}
-                                        // checked={IsTopProducts}
                                       />
                                       <Label
                                         className="form-check-label"
                                         htmlFor="activeCheckBox"
                                       >
-                                        Is Gift Hamper
+                                        Is OutOfStock
                                       </Label>
                                     </div>
                                   </Col>
@@ -772,60 +773,6 @@ const ProductDetails = () => {
                                         htmlFor="activeCheckBox"
                                       >
                                         Subscription Product
-                                      </Label>
-                                    </div>
-                                  </Col>
-
-                                  <Col lg={6}>
-                                    <div className="form-check mb-2 mt-2">
-                                      <Input
-                                        type="checkbox"
-                                        name="isDrink"
-                                        value={isDrink}
-                                        onChange={handlecheckDrink}
-                                        // checked={IsTopProducts}
-                                      />
-                                      <Label
-                                        className="form-check-label"
-                                        htmlFor="activeCheckBox"
-                                      >
-                                        is Drink
-                                      </Label>
-                                    </div>
-                                  </Col>
-
-                                  <Col lg={6}>
-                                    <div className="form-check mb-2 mt-2">
-                                      <Input
-                                        type="checkbox"
-                                        name="isMilk"
-                                        value={isMilk}
-                                        onChange={handlecheckMilk}
-                                        // checked={IsTopProducts}
-                                      />
-                                      <Label
-                                        className="form-check-label"
-                                        htmlFor="activeCheckBox"
-                                      >
-                                        is Milk
-                                      </Label>
-                                    </div>
-                                  </Col>
-
-                                  <Col lg={6}>
-                                    <div className="form-check mb-2 mt-2">
-                                      <Input
-                                        type="checkbox"
-                                        name="isSize"
-                                        value={isSize}
-                                        onChange={handlecheckSize}
-                                        // checked={IsTopProducts}
-                                      />
-                                      <Label
-                                        className="form-check-label"
-                                        htmlFor="activeCheckBox"
-                                      >
-                                        is Size
                                       </Label>
                                     </div>
                                   </Col>
@@ -930,7 +877,7 @@ const ProductDetails = () => {
                                         )}
                                       </div>
                                     </Col>
-                                    <Col lg={6}>
+                                    <Col lg={4}>
                                       <div className="form-floating mb-3">
                                         <input
                                           type="text"
@@ -953,6 +900,27 @@ const ProductDetails = () => {
                                             {formErrors.productName}
                                           </p>
                                         )}
+                                      </div>
+                                    </Col>
+                                    <Col lg={2}>
+                                      <div className="form-floating mb-3">
+                                        <input
+                                          type="number"
+                                          className="form-control"
+                                          placeholder="Enter price"
+                                          required
+                                          name="price"
+                                          value={values.price}
+                                          onChange={handleChange}
+                                        />
+                                        <label
+                                          htmlFor="role-field"
+                                          className="form-label"
+                                        >
+                                          Price
+                                          <span className="text-danger">*</span>
+                                        </label>
+                                       
                                       </div>
                                     </Col>
                                   </Row>
@@ -1018,16 +986,16 @@ const ProductDetails = () => {
                                     <div className="form-check mb-2 mt-2">
                                       <Input
                                         type="checkbox"
-                                        name="IsGiftHamper"
-                                        value={IsGiftHamper}
+                                        name="isOutOfStock"
+                                        value={isOutOfStock}
                                         onChange={handlecheckGH}
-                                        checked={IsGiftHamper}
+                                        checked={isOutOfStock}
                                       />
                                       <Label
                                         className="form-check-label"
                                         htmlFor="activeCheckBox"
                                       >
-                                        Is Gift Hamper
+                                        Is OutOfStock
                                       </Label>
                                     </div>
                                   </Col>
@@ -1050,60 +1018,7 @@ const ProductDetails = () => {
                                     </div>
                                   </Col>
 
-                                  <Col lg={6}>
-                                    <div className="form-check mb-2 mt-2">
-                                      <Input
-                                        type="checkbox"
-                                        name="isDrink"
-                                        value={isDrink}
-                                        onChange={handlecheckDrink}
-                                        checked={isDrink}
-                                      />
-                                      <Label
-                                        className="form-check-label"
-                                        htmlFor="activeCheckBox"
-                                      >
-                                        is Drink
-                                      </Label>
-                                    </div>
-                                  </Col>
-
-                                  <Col lg={6}>
-                                    <div className="form-check mb-2 mt-2">
-                                      <Input
-                                        type="checkbox"
-                                        name="isMilk"
-                                        value={isMilk}
-                                        onChange={handlecheckMilk}
-                                        checked={isMilk}
-                                      />
-                                      <Label
-                                        className="form-check-label"
-                                        htmlFor="activeCheckBox"
-                                      >
-                                        is Milk
-                                      </Label>
-                                    </div>
-                                  </Col>
-
-                                  <Col lg={6}>
-                                    <div className="form-check mb-2 mt-2">
-                                      <Input
-                                        type="checkbox"
-                                        name="isSize"
-                                        value={isSize}
-                                        onChange={handlecheckSize}
-                                        checked={isSize}
-                                      />
-                                      <Label
-                                        className="form-check-label"
-                                        htmlFor="activeCheckBox"
-                                      >
-                                        is Size
-                                      </Label>
-                                    </div>
-                                  </Col>
-
+                                 
                                   <div className="mt-5">
                                     <Col lg={6}>
                                       <div className="form-check mb-2">

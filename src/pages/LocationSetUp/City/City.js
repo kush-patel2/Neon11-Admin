@@ -376,7 +376,7 @@ const City = () => {
     },
   ];
 
-  document.title = "City | RC Henning Coffee Company";
+  document.title = "City | Project Name";
   return (
     <React.Fragment>
       <UiContent />

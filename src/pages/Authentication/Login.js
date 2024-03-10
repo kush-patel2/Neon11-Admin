@@ -38,29 +38,6 @@ const initialState = {
 };
 
 const Login = (props) => {
-  // const dispatch = useDispatch();
-  // const { user } = useSelector((state) => ({
-  //   user: state.Account.user,
-  // }));
-
-  // const validation = useFormik({
-  //   enableReinitialize: true,
-
-  //   initialValues: {
-  //     // email: userLogin.email || "abc@gmail.com" || "",
-  //     // password: userLogin.password || "password" || "",
-  //     email: "",
-  //     password: "",
-  //   },
-  //   validationSchema: Yup.object({
-  //     email: Yup.string().required("Please Enter Your Email"),
-  //     password: Yup.string().required("Please Enter Your Password"),
-  //   }),
-  //   onSubmit: (values) => {
-  //     dispatch(loginUser(values, props.router.navigate));
-  //   },
-  // });
-
   const { error } = useSelector((state) => ({
     error: state.Login.error,
   }));
@@ -86,9 +63,9 @@ const Login = (props) => {
         if (res.isOk) {
           console.log(" login", res);
 
-          localStorage.setItem("RCCoffeeAdmin", res.data._id);
+          localStorage.setItem("AdminUser", res.data._id);
 
-          window.location.replace("/users");
+          window.location.replace("/admin-user");
         } else {
           toast.error("Authentication failed!");
         }
@@ -128,7 +105,7 @@ const Login = (props) => {
   const validClassPassword =
     errPassword && isSubmit ? "form-control is-invalid" : "form-control pe-5";
 
-  document.title = " SignIn | RC Henning Coffee Company ";
+  document.title = " SignIn | Project Name ";
   return (
     <React.Fragment>
       {/* <ParticlesAuth> */}
@@ -160,7 +137,7 @@ const Login = (props) => {
                             src={logo}
                             height={"70px"}
                             width={"80px"}
-                            alt="RC Henning Coffee Company"
+                            alt="Project Name"
                           />
                         </Link>
                       </div>

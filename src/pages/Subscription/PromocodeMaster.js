@@ -324,7 +324,7 @@ const PromocodeMaster = () => {
     },
   ];
 
-  document.title = "Promocode Master | RC Henning Coffee Company";
+  document.title = "Promocode Master | Project Name";
 
   return (
     <React.Fragment>

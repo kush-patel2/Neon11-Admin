@@ -20,6 +20,7 @@ const VerticalLayout = (props) => {
   const [subs, setSubs] = useState(false);
   const [inquiry, setInquiry] = useState(false);
   const [policy, setPolicy] = useState(false);
+  const [cms, setCMS] = useState(false);
 
   const navData = navdata().props.children;
   const path = props.router.location.pathname;
@@ -135,11 +136,7 @@ const VerticalLayout = (props) => {
                 Company Details
               </Link>
             </li>
-            <li className="nav-item">
-              <Link to="/users" className="nav-link">
-                Users
-              </Link>
-            </li>
+
             <li className="nav-item">
               <Link to="/admin-user" className="nav-link">
                 Admin Users
@@ -230,7 +227,6 @@ const VerticalLayout = (props) => {
                 </ul>
               </Collapse>
             </li>
-           
           </ul>
         </Collapse>
       </li>
@@ -252,126 +248,9 @@ const VerticalLayout = (props) => {
           //   id="sidebarApps"
         >
           <ul className="nav nav-sm flex-column test">
-          <li className="nav-item">
-              <Link className="nav-link menu-link" to="/product-parameter">
-                <span data-key="t-apps">Product Parameter </span>
-              </Link>
-            </li>
-
             <li className="nav-item">
-              <Link
-                className="nav-link menu-link"
-                to="/product-parameter-value"
-              >
-                <span data-key="t-apps">Product Parameter Value</span>
-              </Link>
-            </li>
-            
-            <li className="nav-item">
-              <Link to="/products" className="nav-link">
+              <Link to="/product-details" className="nav-link">
                 Product Details
-              </Link>
-            </li>
-
-            <li className="nav-item">
-              <Link to="/product-variants" className="nav-link">
-                Product Variants
-              </Link>
-            </li>
-
-          
-          </ul>
-        </Collapse>
-      </li>
-
-      <li className="nav-item">
-        <Link
-          className="nav-link menu-link"
-          to="#"
-          data-bs-toggle="collapse"
-          onClick={() => {
-            setOrder(!order);
-          }}
-        >
-          <span data-key="t-apps"> Order Master </span>
-        </Link>
-        <Collapse
-          className="menu-dropdown"
-          isOpen={order}
-          //   id="sidebarApps"
-        >
-          <ul className="nav nav-sm flex-column test">
-
-            <li className="nav-item">
-              <Link to="/order-details" className="nav-link">
-                Orders
-              </Link>
-            </li>
-          </ul>
-        </Collapse>
-      </li>
-
-      <li className="nav-item">
-        <Link
-          className="nav-link menu-link"
-          to="#"
-          data-bs-toggle="collapse"
-          onClick={() => {
-            setSubs(!subs);
-          }}
-        >
-          <span data-key="t-apps"> Subscription Master </span>
-        </Link>
-        <Collapse className="menu-dropdown" isOpen={subs}>
-          <ul className="nav nav-sm flex-column test">
-            <li className="nav-item">
-              <Link className="nav-link menu-link" to="/subscription-master">
-                <span data-key="t-apps"> Subscriptions </span>
-              </Link>
-            </li>
-
-            <li className="nav-item">
-              <Link className="nav-link menu-link" to="/subscription-master">
-                <span data-key="t-apps"> Subscription Ratecard </span>
-              </Link>
-            </li>
-
-            <li className="nav-item">
-              <Link className="nav-link menu-link" to="/user-subscriptions">
-                <span data-key="t-apps"> User Subscriptions </span>
-              </Link>
-            </li>
-          </ul>
-        </Collapse>
-      </li>
-
-      <li className="nav-item">
-        <Link
-          className="nav-link menu-link"
-          to="#"
-          data-bs-toggle="collapse"
-          onClick={() => {
-            setInquiry(!inquiry);
-          }}
-        >
-          <span data-key="t-apps"> Inquiry Details</span>
-        </Link>
-        <Collapse
-          className="menu-dropdown"
-          isOpen={inquiry}
-          //   id="sidebarApps"
-        >
-          <ul className="nav nav-sm flex-column test">
-            <li className="nav-item">
-              <Link to="/inquiry" className="nav-link">
-                Inquiry
-              </Link>
-            </li>
-          </ul>
-          <ul className="nav nav-sm flex-column test">
-            <li className="nav-item">
-              <Link to="/newsletter-subscription" className="nav-link">
-                Newsletter Subscriptions
               </Link>
             </li>
           </ul>
@@ -390,13 +269,7 @@ const VerticalLayout = (props) => {
           <span data-key="t-apps"> Policy and Promos</span>
         </Link>
         <Collapse className="menu-dropdown" isOpen={policy}>
-          <ul className="nav nav-sm flex-column test">
-            <li className="nav-item">
-              <Link to="/policy-master" className="nav-link">
-                Policy Master
-              </Link>
-            </li>
-          </ul>
+          <ul className="nav nav-sm flex-column test"></ul>
           <ul className="nav nav-sm flex-column test">
             <li className="nav-item">
               <Link to="/promocode-master" className="nav-link">
@@ -404,26 +277,39 @@ const VerticalLayout = (props) => {
               </Link>
             </li>
           </ul>
-          <ul className="nav nav-sm flex-column test">
-            <li className="nav-item">
-              <Link to="/faqs" className="nav-link">
-                FAQs
-              </Link>
-            </li>
-          </ul>
+          <ul className="nav nav-sm flex-column test"></ul>
         </Collapse>
       </li>
 
       <li className="nav-item">
-        <Link className="nav-link menu-link" to="/blogs">
-          <span data-key="t-apps">Blogs </span>
+        <Link
+          className="nav-link menu-link"
+          to="#"
+          data-bs-toggle="collapse"
+          onClick={() => {
+            setCMS(!cms);
+          }}
+        >
+          <span data-key="t-apps"> CMS </span>
         </Link>
-      </li>
-
-      <li className="nav-item">
-        <Link className="nav-link menu-link" to="/banner">
-          <span data-key="t-apps">Banner </span>
-        </Link>
+        <Collapse
+          className="menu-dropdown"
+          isOpen={cms}
+          //   id="sidebarApps"
+        >
+          <ul className="nav nav-sm flex-column test">
+            <li className="nav-item">
+              <Link className="nav-link menu-link" to="/blogs">
+                <span data-key="t-apps">Blogs </span>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link menu-link" to="/banner">
+                <span data-key="t-apps">Banner </span>
+              </Link>
+            </li>
+          </ul>
+        </Collapse>
       </li>
     </React.Fragment>
   );
