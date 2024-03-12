@@ -21,37 +21,35 @@ import axios from "axios";
 import DataTable from "react-data-table-component";
 
 import {
-  createAdminUser,
-  getAdminUser,
-  removeAdminUser,
-  updateAdminUser,
-} from "../../functions/Auth/AdminUser";
+  createContact,
+  removeContact,
+  updateContact,
+  getContact,
+} from '../../functions/Conatct1/Contacct'
 
 const initialState = {
-  firstName: "",
-  lastName: "",
+  contactno: "",
+  address: "",
   email: "",
-  password: "",
-  bannerImage: "",
   IsActive: false,
 };
 
-const AdminUser = () => {
+const ContactUs = () => {
   const [values, setValues] = useState(initialState);
-  const { firstName, lastName, email, password, bannerImage, IsActive } =
-    values;
+  const { contactno, address, email, IsActive } = values;
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
+
+  const [errCN, setErrCN] = useState(false);
 
   const [query, setQuery] = useState("");
 
   const [_id, set_Id] = useState("");
   const [remove_id, setRemove_id] = useState("");
 
-  const [Adminuser, setAdminuser] = useState([]);
-  const [photoAdd, setPhotoAdd] = useState();
-  const [checkImagePhoto, setCheckImagePhoto] = useState(false);
+  const [categories, setCategories] = useState([]);
+
   useEffect(() => {
     console.log(formErrors);
     if (Object.keys(formErrors).length === 0 && isSubmit) {
@@ -77,15 +75,14 @@ const AdminUser = () => {
     setmodal_edit(!modal_edit);
     setIsSubmit(false);
     set_Id(_id);
-    getAdminUser(_id)
+    getContact(_id)
       .then((res) => {
+        console.log(res);
         setValues({
           ...values,
-          firstName: res.firstName,
-          lastName: res.lastName,
-          email: res.email,
-          password: res.password,
-          bannerImage:res.bannerImage,
+          contactno: res.contactno,
+          address:res.address,
+          email:res.email,
           IsActive: res.IsActive,
         });
       })
@@ -105,42 +102,40 @@ const AdminUser = () => {
   const handleClick = (e) => {
     e.preventDefault();
     setFormErrors({});
+    console.log("country", values);
     let erros = validate(values);
     setFormErrors(erros);
     setIsSubmit(true);
 
-    if (Object.keys(erros).length === 0) {
-      const formdata = new FormData();
-
-      formdata.append("myFile", values.bannerImage);
-      formdata.append("firstName", values.firstName);
-      formdata.append("lastName", values.lastName);
-      formdata.append("IsActive", values.IsActive);
-      formdata.append("email", values.email);
-      formdata.append("password", values.password);
-      createAdminUser(formdata)
-        .then((res) => {
-          setmodal_list(!modal_list);
-          setValues(initialState);
-          setCheckImagePhoto(false);
-          setIsSubmit(false);
-          setFormErrors({});
-          setPhotoAdd("");
-
-          fetchUsers();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    createContact(values)
+      .then((res) => {
+        setmodal_list(!modal_list);
+        setValues(initialState);
+        fetchCategories();
+        // if (res.isOk) {
+        //   setmodal_list(!modal_list);
+        //   setValues(initialState);
+        //   fetchCategories();
+        // } else {
+        //   if (res.field === 1) {
+        //     setErrCN(true);
+        //     setFormErrors({
+        //       categoryName: "This Category name is already exists!",
+        //     });
+        //   }
+        // }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleDelete = (e) => {
     e.preventDefault();
-    removeAdminUser(remove_id)
+    removeContact(remove_id)
       .then((res) => {
         setmodal_delete(!modal_delete);
-        fetchUsers();
+        fetchCategories();
       })
       .catch((err) => {
         console.log(err);
@@ -154,96 +149,34 @@ const AdminUser = () => {
     setIsSubmit(true);
 
     if (Object.keys(erros).length === 0) {
-      const formdata = new FormData();
-
-      formdata.append("myFile", values.bannerImage);
-      formdata.append("firstName", values.firstName);
-      formdata.append("lastName", values.lastName);
-      formdata.append("IsActive", values.IsActive);
-      formdata.append("email", values.email);
-      formdata.append("password", values.password);
-
-      updateAdminUser(_id, formdata)
+      updateContact(_id, values)
         .then((res) => {
           setmodal_edit(!modal_edit);
-          fetchUsers();
-          setPhotoAdd("");
-
-          setCheckImagePhoto(false);
+          fetchCategories();
         })
         .catch((err) => {
           console.log(err);
         });
     }
   };
-  const PhotoUpload = (e) => {
-    if (e.target.files.length > 0) {
-      const image = new Image();
 
-      let imageurl = URL.createObjectURL(e.target.files[0]);
-      console.log("img", e.target.files[0]);
-
-      setPhotoAdd(imageurl);
-      setValues({ ...values, bannerImage: e.target.files[0] });
-      setCheckImagePhoto(true);
-    }
-  };
-  const [errFN, setErrFN] = useState(false);
-  const [errLN, setErrLN] = useState(false);
-  const [errEM, setErrEM] = useState(false);
-  const [errPA, setErrPA] = useState(false);
-  const [errBI, setErrBI] = useState(false);
   const validate = (values) => {
     const errors = {};
 
-    if (values.firstName === "") {
-      errors.firstName = "First Name is required!";
-      setErrFN(true);
+    if (values.categoryName === "") {
+      errors.categoryName = "Category Name is required!";
+      setErrCN(true);
     }
-    if (values.firstName !== "") {
-      setErrFN(false);
-    }
-
-    if (values.lastName === "") {
-      errors.lastName = "Last Name is required!";
-      setErrLN(true);
-    }
-    if (values.lastName !== "") {
-      setErrLN(false);
-    }
-
-    if (values.email === "") {
-      errors.email = "email is required!";
-      setErrEM(true);
-    }
-    if (values.email !== "") {
-      setErrEM(false);
-    }
-
-    if (values.password === "") {
-      errors.password = "password is required!";
-      setErrPA(true);
-    }
-    if (values.password !== "") {
-      setErrPA(false);
+    if (values.categoryName !== "") {
+      setErrCN(false);
     }
 
     return errors;
   };
 
-  const validClassFN =
-    errFN && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassCategoryName =
+    errCN && isSubmit ? "form-control is-invalid" : "form-control";
 
-  const validClassLN =
-    errLN && isSubmit ? "form-control is-invalid" : "form-control";
-
-  const validClassEM =
-    errEM && isSubmit ? "form-control is-invalid" : "form-control";
-
-  const validClassPA =
-    errPA && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassBI =
-    errBI && isSubmit ? "form-control is-invalid" : "form-control";
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
@@ -255,27 +188,16 @@ const AdminUser = () => {
     setcolumn(column.sortField);
     setsortDirection(sortDirection);
   };
-  const renderImage = (uploadimage) => {
-    const imageUrl = `${process.env.REACT_APP_API_URL_COFFEE}/${uploadimage}`;
-
-    return (
-      <img
-        src={imageUrl}
-        alt="Image"
-        style={{ width: "75px", height: "75px", padding: "5px" }}
-      />
-    );
-  };
 
   useEffect(() => {
     // fetchUsers(1); // fetch page 1 of users
   }, []);
 
   useEffect(() => {
-    fetchUsers();
+    fetchCategories();
   }, [pageNo, perPage, column, sortDirection, query, filter]);
 
-  const fetchUsers = async () => {
+  const fetchCategories = async () => {
     setLoading(true);
     let skip = (pageNo - 1) * perPage;
     if (skip < 0) {
@@ -284,7 +206,7 @@ const AdminUser = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/listByparams/adminUser`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/contact`,
         {
           skip: skip,
           per_page: perPage,
@@ -297,12 +219,11 @@ const AdminUser = () => {
       .then((response) => {
         if (response.length > 0) {
           let res = response[0];
-          console.log(">>>", res);
           setLoading(false);
-          setAdminuser(res.data);
+          setCategories(res.data);
           setTotalRows(res.count);
         } else if (response.length === 0) {
-          setAdminuser([]);
+          setCategories([]);
         }
         // console.log(res);
       });
@@ -323,42 +244,34 @@ const AdminUser = () => {
   };
   const col = [
     {
-      name: "First Name",
-      selector: (row) => row.firstName,
+      name: "Contact No",
+      selector: (row) => row.contactno,
       sortable: true,
-      sortField: "firstName",
+      sortField: "contactno",
       minWidth: "150px",
     },
     {
-      name: "Last Name",
-      selector: (row) => row.lastName,
-      sortable: true,
-      sortField: "lastName",
-      minWidth: "150px",
-    },
+        name: "Address",
+        selector: (row) => row.address,
+        sortable: true,
+        sortField: "address",
+        minWidth: "150px",
+      },
+      {
+        name: "Email",
+        selector: (row) => row.email,
+        sortable: true,
+        sortField: "email",
+        minWidth: "150px",
+      },
     {
-      name: "Email",
-      selector: (row) => row.email,
-      sortable: true,
-      sortField: "email",
-      minWidth: "150px",
+      name: "Status",
+      selector: (row) => {
+        return <p>{row.IsActive ? "Active" : "InActive"}</p>;
+      },
+      sortable: false,
+      sortField: "Status",
     },
-
-    {
-      name: "Password",
-      selector: (row) => row.password,
-      sortable: true,
-      sortField: "password",
-      minWidth: "150px",
-    },
-    {
-      name: "Image",
-      selector: (row) => renderImage(row.bannerImage),
-      sortable: true,
-      sortField: "password",
-      minWidth: "150px",
-    },
-
     {
       name: "Action",
       selector: (row) => {
@@ -395,20 +308,24 @@ const AdminUser = () => {
     },
   ];
 
-  document.title = "Admin Users | EcoSoch";
+  document.title = "Contact Us | Project Name";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb maintitle="Setup" title="Admin Users" pageTitle="Setup" />
+          <BreadCrumb
+            maintitle="Category"
+            title="Products Category"
+            pageTitle="Category"
+          />
           <Row>
             <Col lg={12}>
               <Card>
                 <CardHeader>
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" sm={6} lg={4} md={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">Admin Users</h2>
+                      <h2 className="card-title mb-0 fs-4 mt-2">Contact Us</h2>
                     </Col>
 
                     <Col sm={6} lg={4} md={6}>
@@ -456,7 +373,7 @@ const AdminUser = () => {
                     <div className="table-responsive table-card mt-1 mb-1 text-right">
                       <DataTable
                         columns={col}
-                        data={Adminuser}
+                        data={categories}
                         progressPending={loading}
                         sortServer
                         onSort={(column, sortDirection, sortedRows) => {
@@ -493,47 +410,48 @@ const AdminUser = () => {
             setIsSubmit(false);
           }}
         >
-          Add Admin
+          Add Category
         </ModalHeader>
         <form>
           <ModalBody>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassFN}
-                placeholder="Enter first Name"
+                className={validClassCategoryName}
+                placeholder="Enter Contact Name"
                 required
-                name="firstName"
-                value={firstName}
+                name="contactno"
+                value={contactno}
                 onChange={handleChange}
               />
               <Label>
-                First Name <span className="text-danger">*</span>
+                Contact No <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.firstName}</p>
+                <p className="text-danger">{formErrors.contactno}</p>
               )}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassLN}
-                placeholder="Enter last Name"
+                className={validClassCategoryName}
+                placeholder="Enter Contact Name"
                 required
-                name="lastName"
-                value={lastName}
+                name="address"
+                value={address}
                 onChange={handleChange}
               />
               <Label>
-                Last Name <span className="text-danger">*</span>
+                {" "}
+                Address <span className="text-danger">*</span>
               </Label>
-              {isSubmit && <p className="text-danger">{formErrors.lastName}</p>}
+              {isSubmit && <p className="text-danger">{formErrors.address}</p>}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassEM}
-                placeholder="Enter email "
+                className={validClassCategoryName}
+                placeholder="Enter Contact Name"
                 required
                 name="email"
                 value={email}
@@ -544,50 +462,6 @@ const AdminUser = () => {
               </Label>
               {isSubmit && <p className="text-danger">{formErrors.email}</p>}
             </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassPA}
-                placeholder="Enter password"
-                required
-                name="password"
-                value={password}
-                onChange={handleChange}
-              />
-              <Label>
-                Password <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && <p className="text-danger">{formErrors.password}</p>}
-            </div>
-
-            <Col lg={6}>
-              <label>
-                Admin Image <span className="text-danger">*</span>
-              </label>
-
-              <input
-                type="file"
-                name="bannerImage"
-                className={validClassBI}
-                // accept="images/*"
-                accept=".jpg, .jpeg, .png"
-                onChange={PhotoUpload}
-              />
-              {isSubmit && (
-                <p className="text-danger">{formErrors.bannerImage}</p>
-              )}
-              {checkImagePhoto ? (
-                <img
-                  //   src={image ?? myImage}
-                  className="m-2"
-                  src={photoAdd}
-                  alt="Profile"
-                  width="300"
-                  height="200"
-                />
-              ) : null}
-            </Col>
-
             <div className="form-check mb-2">
               <Input
                 type="checkbox"
@@ -616,8 +490,6 @@ const AdminUser = () => {
                   setmodal_list(false);
                   setValues(initialState);
                   setIsSubmit(false);
-                  setCheckImagePhoto(false);
-                  setPhotoAdd("");
                 }}
               >
                 Cancel
@@ -642,103 +514,61 @@ const AdminUser = () => {
             setIsSubmit(false);
           }}
         >
-          Edit Admin Users
+          Edit Category
         </ModalHeader>
         <form>
           <ModalBody>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassFN}
-                placeholder="Enter first Name"
+                className={validClassCategoryName}
+                placeholder="Enter Category Name"
                 required
-                name="firstName"
-                value={firstName}
+                name="contactno"
+                value={contactno}
                 onChange={handleChange}
               />
               <Label>
-                First Name<span className="text-danger">*</span>{" "}
+                Contact No <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.firstName}</p>
+                <p className="text-danger">{formErrors.categoryName}</p>
               )}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassLN}
-                placeholder="Enter last Name"
+                className={validClassCategoryName}
+                placeholder="Enter Category Name"
                 required
-                name="lastName"
-                value={lastName}
+                name="address"
+                value={address}
                 onChange={handleChange}
               />
               <Label>
-                Last Name<span className="text-danger">*</span>{" "}
+              address <span className="text-danger">*</span>
               </Label>
-              {isSubmit && <p className="text-danger">{formErrors.lastName}</p>}
+              {isSubmit && (
+                <p className="text-danger">{formErrors.categoryName}</p>
+              )}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassEM}
-                placeholder="Enter email "
+                className={validClassCategoryName}
+                placeholder="Enter Category Name"
                 required
                 name="email"
                 value={email}
                 onChange={handleChange}
               />
               <Label>
-                Email <span className="text-danger">*</span>
+              email <span className="text-danger">*</span>
               </Label>
-              {isSubmit && <p className="text-danger">{formErrors.email}</p>}
-            </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassPA}
-                placeholder="Enter password"
-                required
-                name="password"
-                value={password}
-                onChange={handleChange}
-              />
-              <Label>
-                Password <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && <p className="text-danger">{formErrors.password}</p>}
-            </div>
-            <Col lg={6}>
-              <label>
-                Banner Image <span className="text-danger">*</span>
-              </label>
-              <input
-                key={"bannerImage" + _id}
-                type="file"
-                name="bannerImage"
-                className={validClassBI}
-                // accept="images/*"
-                accept=".jpg, .jpeg, .png"
-                onChange={PhotoUpload}
-              />
               {isSubmit && (
-                <p className="text-danger">{formErrors.bannerImage}</p>
+                <p className="text-danger">{formErrors.categoryName}</p>
               )}
-
-              {values.bannerImage || photoAdd ? (
-                <img
-                  // key={photoAdd}
-                  className="m-2"
-                  src={
-                    checkImagePhoto
-                      ? photoAdd
-                      : `${process.env.REACT_APP_API_URL_COFFEE}/${values.bannerImage}`
-                  }
-                  width="300"
-                  height="200"
-                />
-              ) : null}
-            </Col>
+            </div>
             <div className="form-check mb-2">
               <Input
                 type="checkbox"
@@ -793,7 +623,7 @@ const AdminUser = () => {
             setmodal_delete(false);
           }}
         >
-          Remove Admin
+          Remove Category
         </ModalHeader>
         <form>
           <ModalBody>
@@ -838,4 +668,4 @@ const AdminUser = () => {
   );
 };
 
-export default AdminUser;
+export default ContactUs;

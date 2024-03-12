@@ -113,9 +113,9 @@ const VerticalLayout = (props) => {
   return (
     <React.Fragment>
       {/* menu Items */}
-      <li className="menu-title">
+      {/* <li className="menu-title">
         <span data-key="t-menu">Menu</span>
-      </li>
+      </li> */}
 
       <li className="nav-item">
         <Link
@@ -142,13 +142,13 @@ const VerticalLayout = (props) => {
                 Admin Users
               </Link>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link to="/#" className="nav-link">
                 Roles
               </Link>
-            </li>
+            </li> */}
 
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link
                 className="nav-link menu-link"
                 to="#"
@@ -187,7 +187,7 @@ const VerticalLayout = (props) => {
                   </li>
                 </ul>
               </Collapse>
-            </li>
+            </li> */}
           </ul>
         </Collapse>
       </li>
@@ -231,7 +231,7 @@ const VerticalLayout = (props) => {
         </Collapse>
       </li>
 
-      <li className="nav-item">
+      {/* <li className="nav-item">
         <Link
           className="nav-link menu-link"
           to="#"
@@ -255,9 +255,9 @@ const VerticalLayout = (props) => {
             </li>
           </ul>
         </Collapse>
-      </li>
+      </li> */}
 
-      <li className="nav-item">
+      {/* <li className="nav-item">
         <Link
           className="nav-link menu-link"
           to="#"
@@ -279,7 +279,7 @@ const VerticalLayout = (props) => {
           </ul>
           <ul className="nav nav-sm flex-column test"></ul>
         </Collapse>
-      </li>
+      </li> */}
 
       <li className="nav-item">
         <Link
@@ -301,6 +301,21 @@ const VerticalLayout = (props) => {
             <li className="nav-item">
               <Link className="nav-link menu-link" to="/blogs">
                 <span data-key="t-apps">Blogs </span>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link menu-link" to="/contact">
+                <span data-key="t-apps">Footer </span>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link menu-link" to="/newproject">
+                <span data-key="t-apps">New Project </span>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link menu-link" to="/review">
+                <span data-key="t-apps">User Review </span>
               </Link>
             </li>
             <li className="nav-item">

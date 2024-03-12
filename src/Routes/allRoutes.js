@@ -14,6 +14,9 @@ import UserProfile from "../pages/Authentication/user-profile";
 import Banner from "../pages/CMS/Banner";
 import CompanyDetails from "../pages/Setup/CompanyDetails";
 import AdminUser from "../pages/Auth/AdminUser";
+import ContactUs from "../pages/CMS/ContactUs";
+import Review from "../pages/CMS/Review";
+import NewProject from "../pages/CMS/NewProject";
 const authProtectedRoutes = [
   // { path: "/dashboard", component: <DashboardCrm /> },
   { path: "/profile", component: <UserProfile /> },
@@ -23,13 +26,13 @@ const authProtectedRoutes = [
   { path: "/location", component: <CompanyLocation /> },
   { path: "/admin-user", component: <AdminUser /> },
   { path: "/company-details", component: <CompanyDetails /> },
-
+  {path:"/contact",component:<ContactUs/>},
   { path: "/category", component: <CategoryMaster /> },
-
+  {path:"/review",component:<Review/>},
   { path: "/blogs", component: <Blogs /> },
   { path: "/banner", component: <Banner /> },
   { path: "/promocode-master", component: <PromocodeMaster /> },
-
+  {path:"/newproject",component:<NewProject/>},
   { path: "/product-details", component: <ProductDetails /> },
 
 
