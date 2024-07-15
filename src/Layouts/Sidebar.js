@@ -6,7 +6,7 @@ import logoSm from "../assets/images/logo-sm.png";
 import logoDark from "../assets/images/logo-dark.png";
 import logoLight from "../assets/images/logo-light.png";
 
-import logo from "../assets/images/logo/ecosoch-logo.jpg";
+import logo from "../assets/images/logo/email-logo2.png";
 
 //Import Components
 import VerticalLayout from "./VerticalLayouts";
@@ -58,19 +58,19 @@ const Sidebar = ({ layoutType }) => {
         >
           <Link to="/users" className="mt-2 logo logo-dark">
             <span className="logo-sm">
-              <img src={logo} alt="" height="80" />
+              <img src={logo} alt="" height="40" />
             </span>
             <span className="logo-lg">
-              <img src={logo} alt="" height="80" />
+              <img src={logo} alt="" height="40" />
             </span>
           </Link>
 
           <Link to="/users" className="mt-2 logo logo-light">
             <span className="logo-sm">
-              <img src={logo} alt="" height="90" />
+              <img src={logo} alt="" height="50" />
             </span>
             <span className="logo-lg">
-              <img src={logo} alt="" height="90" />
+              <img src={logo} alt="" height="50" />
             </span>
           </Link>
           <button

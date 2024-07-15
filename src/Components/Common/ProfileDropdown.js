@@ -6,10 +6,10 @@ import {
   DropdownMenu,
   DropdownToggle,
 } from "reactstrap";
-
-//import images
-import avatar1 from "../../assets/images/users/avatar-1.jpg";
-import logo from "../../assets/images/logo/RC-logo-png.png";
+import axios from "axios";
+// // import images
+// import avatar1 from "../../assets/images/users/avatar-1.jpg";
+// import logo from "../../assets/images/logo/grace_lab_logo.jpg";
 
 const ProfileDropdown = () => {
   const { user } = useSelector((state) => ({
@@ -21,31 +21,34 @@ const ProfileDropdown = () => {
     window.location.replace("/");
   };
 
-
   const [userName, setUserName] = useState("Admin");
 
   useEffect(() => {
-    if (sessionStorage.getItem("authUser")) {
-      const obj = JSON.parse(sessionStorage.getItem("authUser"));
-      setUserName(
-        process.env.REACT_APP_DEFAULTAUTH === "fake"
-          ? obj.username === undefined
-            ? user.first_name
-              ? user.first_name
-              : obj.data.first_name
-            : "Admin" || "Admin"
-          : process.env.REACT_APP_DEFAULTAUTH === "firebase"
-          ? obj.providerData[0].email
-          : "Admin"
-      );
-    }
-  }, [userName, user]);
+    const fetchUserData = async () => {
+      try {
+        const userId = localStorage.getItem("AdminUser");
+        const response = await axios.get(`${process.env.REACT_APP_API_URL_COFFEE}/api/auth/get/adminUser/${userId}`);
+        console.log("response", response);
+        const userData = response; // Access response data
+        setUserName(userData.firstName);
+        console.log("image", userData.bannerImage);
+        const logoUrl = `${process.env.REACT_APP_API_URL_COFFEE}/${userData.bannerImage}`;
+        setLogo(logoUrl);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
 
-  //Dropdown Toggle
+  // Empty dependency array to fetch user data only once when the component mounts
+  const [logo, setLogo] = useState('');
+  // Dropdown Toggle
   const [isProfileDropdown, setIsProfileDropdown] = useState(false);
   const toggleProfileDropdown = () => {
     setIsProfileDropdown(!isProfileDropdown);
   };
+
   return (
     <React.Fragment>
       <Dropdown
@@ -62,10 +65,8 @@ const ProfileDropdown = () => {
             />
             <span className="text-start ms-xl-2">
               <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
-                {/* {userName} */}
-                Project Name
+                {userName}
               </span>
-              {/* <span className="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">Founder</span> */}
             </span>
           </span>
         </DropdownToggle>
@@ -75,7 +76,6 @@ const ProfileDropdown = () => {
             <i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
             <span className="align-middle">Profile</span>
           </DropdownItem>
-
           <DropdownItem onClick={handleLogout}>
             <i className="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>{" "}
             <span className="align-middle" data-key="t-logout">

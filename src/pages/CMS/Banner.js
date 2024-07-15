@@ -296,6 +296,17 @@ const Banner = () => {
   const handleFilter = (e) => {
     setFilter(e.target.checked);
   };
+  const renderImage = (uploadimage) => {
+    const imageUrl = `${process.env.REACT_APP_API_URL_COFFEE}/${uploadimage}`;
+
+    return (
+      <img
+        src={imageUrl}
+        alt="Image"
+        style={{ width: "75px", height: "75px", padding: "5px" }}
+      />
+    );
+  };
 
   const col = [
     {
@@ -320,6 +331,13 @@ const Banner = () => {
       },
       sortable: false,
       sortField: "Status",
+    },
+    {
+      name:"Image",
+      selector: (row) => renderImage(row.bannerImage),
+      sortable: false,
+      sortField: "Image",
+      minwidth: "150px"
     },
     {
       name: "Action",
@@ -357,7 +375,7 @@ const Banner = () => {
     },
   ];
 
-  document.title = "Bannner | Project Name";
+  document.title = "Banner | Neon11";
 
   return (
     <React.Fragment>
@@ -370,7 +388,7 @@ const Banner = () => {
                 <CardHeader>
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" sm={6} lg={4} md={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">Banner</h2>
+                      <h2 className="card-title mb-0 fs-4 mt-2">Carousel Images</h2>
                     </Col>
 
                     <Col sm={6} lg={4} md={6}>

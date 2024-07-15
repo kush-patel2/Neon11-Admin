@@ -14,7 +14,7 @@ import {
 } from "reactstrap";
 import { Alert } from "react-bootstrap";
 
-import logo from "../../assets/images/logo/RC-logo-png.png";
+import logo from "../../assets/images/logo/logo-neon.png";
 
 import { ToastContainer, toast } from "react-toastify";
 //redux

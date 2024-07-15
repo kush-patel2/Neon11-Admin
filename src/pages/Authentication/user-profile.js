@@ -23,24 +23,51 @@ import { useFormik } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 
 import avatar from "../../assets/images/users/avatar-1.jpg";
-import logo from "../../assets/images/logo/RC-logo-png.png";
+import logo from "../../assets/images/logo/logo-neon.png";
 
 // actions
 import { editProfile, resetProfileFlag } from "../../store/actions";
+import axios from "axios";
+import { getAdminUser } from "../../functions/Auth/AdminUser";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
 
-  const [email, setemail] = useState("admin@rccoffee.in");
+  
   const [idx, setidx] = useState("1");
 
   const [userName, setUserName] = useState("Project Name");
+
+  const [firstName, setFirstName]= useState("");
+  const [lastName, setLastName]= useState("");
+  const [photo, setPhoto]= useState("");
+  const [password, setPassword]= useState("");
+  const [email, setemail] = useState("");
+  const [IsActive, setIsActive] = useState();
 
   const { user, success, error } = useSelector(state => ({
     user: state.Profile.user,
     success: state.Profile.success,
     error: state.Profile.error
   }));
+
+  const fetchUserData = async ()=>{
+    try {
+      const userId = localStorage.getItem("AdminUser");
+      await getAdminUser(userId).then((response)=> {
+        console.log(response);
+        setFirstName(response.firstName);
+        setLastName(response.lastName);
+        setPassword(response.password);
+        setemail(response.email);
+        setPhoto(`${process.env.REACT_APP_API_URL_COFFEE}/${response.bannerImage}`);
+        setIsActive(response.IsActive);
+        // console.log(IsActive);
+      })
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }
 
   useEffect(() => {
     if (sessionStorage.getItem("authUser")) {
@@ -52,15 +79,17 @@ const UserProfile = () => {
         sessionStorage.setItem("authUser", JSON.stringify(obj));
       }
 
-      setUserName(obj.data.first_name);
-      setemail(obj.data.email);
-      setidx(obj.data._id || "1");
+     
 
       setTimeout(() => {
         dispatch(resetProfileFlag());
       }, 3000);
     }
+    fetchUserData();
   }, [dispatch, user]);
+
+
+
 
 
 
@@ -80,7 +109,7 @@ const UserProfile = () => {
     }
   });
 
-  document.title = "Profile | Project Name";
+  document.title = `Profile | ${firstName} ${lastName}`;
   return (
     <React.Fragment>
       <div className="page-content">
@@ -95,15 +124,19 @@ const UserProfile = () => {
                   <div className="d-flex">
                     <div className="mx-3">
                       <img
-                        src={logo}
+                        src={photo}
                         alt=""
                         className="avatar-md rounded-circle img-thumbnail"
                       />
                     </div>
                     <div className="flex-grow-1 align-self-center">
                       <div className="text-muted">
-                        <h5>{userName || "Admin"}</h5>
+                        <h5>{`${firstName} ${lastName}`|| "Admin"}</h5>
+                        {/* <p className="mb-1">Last Name : {lastName}</p> */}
                         <p className="mb-1">Email Id : {email}</p>
+                        <p className="mb-1">Password : {password}</p>
+                        <p className="mb-1">IsActive : {IsActive? "Yes" : "No"}</p>
+
                         {/* <p className="mb-0">Id No : #{idx}</p> */}
                       </div>
                     </div>
