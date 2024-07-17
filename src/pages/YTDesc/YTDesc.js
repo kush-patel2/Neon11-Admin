@@ -19,33 +19,37 @@ import {
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import axios from "axios";
 import DataTable from "react-data-table-component";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
-import {
-  createContact,
-  removeContact,
-  updateContact,
-  getContact,
-} from '../../functions/Conatct1/Contacct'
+import { createYTDesc, getYTDesc, removeYTDesc, updateYTDesc } from "../../functions/YTDesc/YTDesc";
+import TextArea from "antd/es/input/TextArea";
 
 const initialState = {
-  contactno: "",
-  address: "",
-  email: "",
-  gmaplink: "",
+    Title: "",
+    subTitle: "",
+    Desc: "",
+    ytLink: "",
   IsActive: false,
 };
 
-const ContactUs = () => {
+const YTDesc = () => {
   const [values, setValues] = useState(initialState);
-  const { contactno, address, email, gmaplink, IsActive } = values;
+//   const { Title, subTitle, Desc, ytLink, IsActive } = values;
+const [Title, setTitle] = useState("");
+const [subTitle, setsubTitle] = useState("");
+const [Desc, setDesc] = useState("");
+const [ytLink, setytLink] = useState("");
+const [IsActive, setIsActive] = useState(false);
+
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
 
-  const [errCN, setErrCN] = useState(false);
-  const [errAdd, setErrAdd] = useState(false);
-  const [errEm, setErrEm] = useState(false);
-  const [errGM, setErrGM] = useState(false);
+  const [errTI, setErrTI] = useState(false);
+  const [errSTI, setErrSTI] = useState(false);
+  const [errDS, setErrDS] = useState(false);
+  const [errYT, setErrYT] = useState(false);
 
   const [query, setQuery] = useState("");
 
@@ -53,6 +57,8 @@ const ContactUs = () => {
   const [remove_id, setRemove_id] = useState("");
 
   const [categories, setCategories] = useState([]);
+
+
 
   useEffect(() => {
     console.log(formErrors);
@@ -66,6 +72,11 @@ const ContactUs = () => {
     setmodal_list(!modal_list);
     setValues(initialState);
     setIsSubmit(false);
+    setTitle("");
+    setsubTitle("");
+    setDesc("");
+    setytLink("");
+    setIsActive(false);
   };
 
   const [modal_delete, setmodal_delete] = useState(false);
@@ -79,17 +90,15 @@ const ContactUs = () => {
     setmodal_edit(!modal_edit);
     setIsSubmit(false);
     set_Id(_id);
-    getContact(_id)
+    getYTDesc(_id)
       .then((res) => {
         console.log(res);
-        setValues({
-          ...values,
-          contactno: res.contactno,
-          address:res.address,
-          email:res.email,
-          gmaplink: res.gmaplink,
-          IsActive: res.IsActive,
-        });
+        setTitle(res.Title);
+        setDesc(res.Desc);
+        setytLink(res.ytLink);
+        setsubTitle(res.subTitle);
+        setIsActive(res.IsActive)
+        
       })
       .catch((err) => {
         console.log(err);
@@ -101,22 +110,48 @@ const ContactUs = () => {
   };
 
   const handleCheck = (e) => {
-    setValues({ ...values, IsActive: e.target.checked });
+    // setValues({ ...values, IsActive: e.target.checked });
+    setIsActive(e.target.checked)
   };
 
   const handleClick = (e) => {
     e.preventDefault();
     setFormErrors({});
     console.log("country", values);
-    let erros = validate(values);
-    setFormErrors(erros);
+    let errors = validate(Title, subTitle, Desc, ytLink);
+    setFormErrors(errors);
     setIsSubmit(true);
 
-    createContact(values)
+    if (Object.keys(errors).length === 0) {
+        // setLoadingOption(true);
+      const formdata = new FormData();
+
+      formdata.append("Title", Title);
+      formdata.append("subTitle", subTitle);
+      formdata.append("Desc", Desc);
+      formdata.append("ytLink", ytLink);
+      formdata.append("IsActive", IsActive);
+      createYTDesc(formdata)
       .then((res) => {
-        setmodal_list(!modal_list);
-        setValues(initialState);
+        console.log(res);
+        setTitle("");
+        setsubTitle("");
+        setDesc("");
+        setytLink("");
+        setIsActive(false);
         fetchCategories();
+        setmodal_list(!modal_list);
+      })
+      .catch((err) => {
+        console.log("Error from server:", err);
+      });
+    }
+
+    // createYTDesc(values)
+    //   .then((res) => {
+    //     setmodal_list(!modal_list);
+    //     setValues(initialState);
+    //     fetchCategories();
         // if (res.isOk) {
         //   setmodal_list(!modal_list);
         //   setValues(initialState);
@@ -129,16 +164,21 @@ const ContactUs = () => {
         //     });
         //   }
         // }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   };
 
   const handleDelete = (e) => {
     e.preventDefault();
-    removeContact(remove_id)
+    removeYTDesc(remove_id)
       .then((res) => {
+        setTitle("");
+        setsubTitle("");
+        setDesc("");
+        setytLink("");
+        setIsActive(false);
         setmodal_delete(!modal_delete);
         fetchCategories();
       })
@@ -149,65 +189,73 @@ const ContactUs = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    let erros = validate(values);
+    let erros = validate(Title, subTitle, Desc, ytLink);
     setFormErrors(erros);
     setIsSubmit(true);
 
     if (Object.keys(erros).length === 0) {
-      updateContact(_id, values)
+
+        const formdata = new FormData();
+
+        formdata.append("Title", Title);
+        formdata.append("subTitle", subTitle);
+        formdata.append("Desc", Desc);
+        formdata.append("ytLink", ytLink);
+        formdata.append("IsActive", IsActive);
+      updateYTDesc(_id, formdata)
         .then((res) => {
           setmodal_edit(!modal_edit);
           fetchCategories();
         })
         .catch((err) => {
-          console.log(err);
+            console.log("Error from server:", err);
         });
     }
   };
 
-  const validate = (values) => {
+  const validate = (Title, subTitle, Desc, ytLink) => {
     const errors = {};
 
-    if (values.contactno === "") {
-      errors.contactno = "Contact Number is required!";
-      setErrCN(true);
+    if (Title === "") {
+      errors.Title = "Title is required!";
+      setErrTI(true);
     }
-    if (values.contactno !== "") {
-      setErrCN(false);
+    if (Title !== "") {
+      setErrTI(false);
     }
-    if (values.address === "") {
-      errors.address = "Address is required!";
-      setErrAdd(true);
+    if (subTitle === "") {
+      errors.subTitle = "Sub Title is required!";
+      setErrSTI(true);
     }
-    if (values.address !== "") {
-      setErrAdd(false);
+    if (subTitle !== "") {
+      setErrSTI(false);
     }
-    if (values.email === "") {
-      errors.email = "Email is required!";
-      setErrEm(true);
+    if (Desc === "") {
+      errors.Desc = "Description is required!";
+      setErrDS(true);
     }
-    if (values.email !== "") {
-      setErrEm(false);
+    if (Desc !== "") {
+      setErrDS(false);
     }
-    if (values.gmaplink === "") {
-      errors.gmaplink = "Google Map Link is required!";
-      setErrGM(true);
+    if (ytLink === "") {
+      errors.ytLink = "Youtube Link is required!";
+      setErrYT(true);
     }
-    if (values.gmaplink !== "") {
-      setErrGM(false);
+    if (ytLink !== "") {
+      setErrYT(false);
     }
 
     return errors;
   };
 
-  const validClassContactNumber =
-    errCN && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassEmail =
-    errEm && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassAddress =
-    errAdd && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassGMapLink = 
-    errGM && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassTitle =
+    errTI && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassSubTitle =
+    errSTI && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassDesc =
+    errDS && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassYTLink = 
+    errYT && isSubmit ? "form-control is-invalid" : "form-control";
   
 
   const [loading, setLoading] = useState(false);
@@ -239,7 +287,7 @@ const ContactUs = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/contact`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/ytdesc`,
         {
           skip: skip,
           per_page: perPage,
@@ -277,31 +325,31 @@ const ContactUs = () => {
   };
   const col = [
     {
-      name: "Contact No",
-      selector: (row) => row.contactno,
+      name: "Title",
+      selector: (row) => row.Title,
       sortable: true,
-      sortField: "contactno",
-      minWidth: "150px",
+      sortField: "Title",
+      maxWidth: "150px",
     },
     {
-        name: "Address",
-        selector: (row) => row.address,
+        name: "SubTitle",
+        selector: (row) => row.subTitle,
         sortable: true,
-        sortField: "address",
-        minWidth: "150px",
+        sortField: "SubTitle",
+        maxWidth: "150px",
       },
       {
-        name: "Email",
-        selector: (row) => row.email,
+        name: "Description",
+        selector: (row) => row.Desc,
         sortable: true,
-        sortField: "email",
-        minWidth: "150px",
+        sortField: "Description",
+        maxWidth: "250px",
       },
       {
-        name: "Google Map Link",
-        selector: (row) => row.gmaplink,
+        name: "Youtube Link",
+        selector: (row) => row.ytLink,
         sortable: false,
-        sortField: "Google Map Link",
+        sortField: "Youtube Link",
         maxWidth: "150px",
       },
     {
@@ -348,15 +396,15 @@ const ContactUs = () => {
     },
   ];
 
-  document.title = "Contact Us | Neon11";
+  document.title = "YTDesc | Neon11";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           <BreadCrumb
-            maintitle="Contact Us"
-            title="Contact Us"
+            maintitle="Home- YT Description"
+            title="Home- YT Description"
             pageTitle="CMS "
           />
           <Row>
@@ -365,7 +413,7 @@ const ContactUs = () => {
                 <CardHeader>
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" sm={6} lg={4} md={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">Contact Us</h2>
+                      <h2 className="card-title mb-0 fs-4 mt-2">Home- YT Description</h2>
                     </Col>
 
                     <Col sm={6} lg={4} md={6}>
@@ -436,6 +484,7 @@ const ContactUs = () => {
       </div>
 
       {/* Add Modal */}
+      
       <Modal
         isOpen={modal_list}
         toggle={() => {
@@ -450,72 +499,77 @@ const ContactUs = () => {
             setIsSubmit(false);
           }}
         >
-          Add Category
+          Add Description
         </ModalHeader>
         <form>
           <ModalBody>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassContactNumber}
-                placeholder="Enter Contact Number"
+                className={validClassTitle}
+                placeholder="Enter Title"
                 required
-                name="contactno"
-                value={contactno}
-                onChange={handleChange}
+                name="Title"
+                value={Title}
+                onChange={(e)=>{setTitle(e.target.value)}}
               />
               <Label>
-                Contact No <span className="text-danger">*</span>
+              Title <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.contactno}</p>
+                <p className="text-danger">{formErrors.Title}</p>
               )}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassAddress}
-                placeholder="Enter Address"
+                className={validClassSubTitle}
+                placeholder="Enter SubTitle"
                 required
-                name="address"
-                value={address}
-                onChange={handleChange}
+                name="subTitle"
+                value={subTitle}
+                onChange={(e)=>{setsubTitle(e.target.value)}}
               />
               <Label>
                 {" "}
-                Address <span className="text-danger">*</span>
+                SubTitle <span className="text-danger">*</span>
               </Label>
-              {isSubmit && <p className="text-danger">{formErrors.address}</p>}
+              {isSubmit && <p className="text-danger">{formErrors.subTitle}</p>}
             </div>
+            <div className="mb-3">
+            <Label>
+                Description <span className="text-danger">*</span>
+              </Label>
+            <CKEditor
+                                          key={"Desc_" + _id}
+                                          editor={ClassicEditor}
+                                          data={Desc}
+                                          
+                                          onChange={(event, editor) => {
+                                            const data = editor.getData();
+
+                                            setDesc(data);
+                                          }}
+                                        />
+              
+              {isSubmit && <p className="text-danger">{formErrors.Desc}</p>}
+             
+            </div>
+            
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassEmail}
-                placeholder="Enter Email"
+                className={validClassYTLink}
+                placeholder="Enter Youtube Link"
                 required
-                name="email"
-                value={email}
-                onChange={handleChange}
+                name="ytLink"
+                value={ytLink}
+                onChange={(e)=>{setytLink(e.target.value)}}
               />
               <Label>
-                Email <span className="text-danger">*</span>
+                Youtube Link <span className="text-danger">*</span>
               </Label>
-              {isSubmit && <p className="text-danger">{formErrors.email}</p>}
-            </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassGMapLink}
-                placeholder="Enter Google Map Link"
-                required
-                name="gmaplink"
-                value={gmaplink}
-                onChange={handleChange}
-              />
-              <Label>
-                Google Map Link <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && <p className="text-danger">{formErrors.gmaplink}</p>}
+              {isSubmit && <p className="text-danger">{formErrors.ytLink}</p>}
             </div>
             <div className="form-check mb-2">
               <Input
@@ -569,77 +623,85 @@ const ContactUs = () => {
             setIsSubmit(false);
           }}
         >
-          Edit Category
+          Edit Description
         </ModalHeader>
         <form>
           <ModalBody>
-            <div className="form-floating mb-3">
+          <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassContactNumber}
-                placeholder="Enter Contact Number"
+                className={validClassTitle}
+                placeholder="Enter Title"
                 required
-                name="contactno"
-                value={contactno}
-                onChange={handleChange}
+                name="Title"
+                value={Title}
+                onChange={(e)=>{setTitle(e.target.value)}}
               />
               <Label>
-                Contact No <span className="text-danger">*</span>
+              Title <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.contactno}</p>
+                <p className="text-danger">{formErrors.Title}</p>
               )}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassAddress}
-                placeholder="Enter Address"
+                className={validClassSubTitle}
+                placeholder="Enter SubTitle"
                 required
-                name="address"
-                value={address}
-                onChange={handleChange}
+                name="subTitle"
+                value={subTitle}
+                onChange={(e)=>{setsubTitle(e.target.value)}}
               />
               <Label>
-              address <span className="text-danger">*</span>
+                {" "}
+                SubTitle <span className="text-danger">*</span>
               </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.address}</p>
-              )}
+              {isSubmit && <p className="text-danger">{formErrors.subTitle}</p>}
+            </div>
+            <div className="mb-3">
+              {/* <TextArea
+                type="text"
+                className={validClassDesc}
+                placeholder="Enter Description"
+                required
+                name="Desc"
+                value={Desc}
+                rows={15}
+                onChange={(e)=>{setDesc(e.target.value)}}
+              /> */}
+              <Label>
+                Description <span className="text-danger">*</span>
+              </Label>
+              <CKEditor
+                                          key={"Desc_" + _id}
+                                          editor={ClassicEditor}
+                                          data={Desc}
+                                          
+                                          onChange={(event, editor) => {
+                                            const data = editor.getData();
+
+                                            setDesc(data);
+                                          }}
+                                        />
+              
+              {isSubmit && <p className="text-danger">{formErrors.Desc}</p>}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassEmail}
-                placeholder="Enter Email"
+                className={validClassYTLink}
+                placeholder="Enter Youtube Link"
                 required
-                name="email"
-                value={email}
-                onChange={handleChange}
+                name="ytLink"
+                value={ytLink}
+                onChange={(e)=>{setytLink(e.target.value)}}
               />
               <Label>
-              email <span className="text-danger">*</span>
+                Youtube Link <span className="text-danger">*</span>
               </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.email}</p>
-              )}
-            </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassGMapLink}
-                placeholder="Enter Google Map Link"
-                required
-                name="gmaplink"
-                value={gmaplink}
-                onChange={handleChange}
-              />
-              <Label>
-              Google Map Link <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.gmaplink}</p>
-              )}
+              {isSubmit && <p className="text-danger">{formErrors.ytLink}</p>}
             </div>
             <div className="form-check mb-2">
               <Input
@@ -740,4 +802,4 @@ const ContactUs = () => {
   );
 };
 
-export default ContactUs;
+export default YTDesc;

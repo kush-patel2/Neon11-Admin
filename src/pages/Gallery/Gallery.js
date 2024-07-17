@@ -20,39 +20,26 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 
-import {
-  createContact,
-  removeContact,
-  updateContact,
-  getContact,
-} from '../../functions/Conatct1/Contacct'
-
+import { createImages, getImages, removeImages, updateImages } from "../../functions/Gallery/Gallery";
 const initialState = {
-  contactno: "",
-  address: "",
-  email: "",
-  gmaplink: "",
+  serialNumber: "",
+  image: "",
   IsActive: false,
 };
 
-const ContactUs = () => {
+const Gallery = () => {
   const [values, setValues] = useState(initialState);
-  const { contactno, address, email, gmaplink, IsActive } = values;
+  const { serialNumber, image, IsActive } = values;
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
-
-  const [errCN, setErrCN] = useState(false);
-  const [errAdd, setErrAdd] = useState(false);
-  const [errEm, setErrEm] = useState(false);
-  const [errGM, setErrGM] = useState(false);
 
   const [query, setQuery] = useState("");
 
   const [_id, set_Id] = useState("");
   const [remove_id, setRemove_id] = useState("");
 
-  const [categories, setCategories] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     console.log(formErrors);
@@ -79,17 +66,16 @@ const ContactUs = () => {
     setmodal_edit(!modal_edit);
     setIsSubmit(false);
     set_Id(_id);
-    getContact(_id)
+    getImages(_id)
       .then((res) => {
         console.log(res);
         setValues({
           ...values,
-          contactno: res.contactno,
-          address:res.address,
-          email:res.email,
-          gmaplink: res.gmaplink,
+          serialNumber: res.serialNumber,
+          image: res.image,
           IsActive: res.IsActive,
         });
+        console.log("res", values.serialNumber);
       })
       .catch((err) => {
         console.log(err);
@@ -104,40 +90,76 @@ const ContactUs = () => {
     setValues({ ...values, IsActive: e.target.checked });
   };
 
+  const [errSR, setErrSR] = useState(false);
+  const [errBI, setErrBI] = useState(false);
+//   const [errB1, setErrB1] = useState(false);
+//   const [errB2, setErrB2] = useState(false);
+//   const [errB3, setErrB3] = useState(false);
+//   const [errB4, setErrB4] = useState(false);
+//   const [errDS, setErrDS] = useState(false);
+
+  const validate = (values) => {
+    const errors = {};
+
+    if (values.serialNumber === "") {
+      errors.serialNumber = "Serial Number is required!";
+      setErrSR(true);
+    }
+    if (values.serialNumber !== "") {
+      setErrSR(false);
+    }
+
+    if (values.image === "") {
+      errors.image = "Image is required!";
+      setErrBI(true);
+    }
+    if (values.abtImage !== "") {
+      setErrBI(false);
+    }
+
+    return errors;
+  };
+
+  const validClassSR =
+    errSR && isSubmit ? "form-control is-invalid" : "form-control";
+
+  const validClassBI =
+    errBI && isSubmit ? "form-control is-invalid" : "form-control";
+
   const handleClick = (e) => {
     e.preventDefault();
     setFormErrors({});
-    console.log("country", values);
-    let erros = validate(values);
-    setFormErrors(erros);
+    let errors = validate(values);
+    setFormErrors(errors);
     setIsSubmit(true);
 
-    createContact(values)
-      .then((res) => {
-        setmodal_list(!modal_list);
-        setValues(initialState);
-        fetchCategories();
-        // if (res.isOk) {
-        //   setmodal_list(!modal_list);
-        //   setValues(initialState);
-        //   fetchCategories();
-        // } else {
-        //   if (res.field === 1) {
-        //     setErrCN(true);
-        //     setFormErrors({
-        //       categoryName: "This Category name is already exists!",
-        //     });
-        //   }
-        // }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (Object.keys(errors).length === 0) {
+      const formdata = new FormData();
+
+      formdata.append("myFile", values.image);
+      formdata.append("serialNumber", values.serialNumber);
+      formdata.append("IsActive", values.IsActive);
+
+      createImages(formdata)
+        .then((res) => {
+          setmodal_list(!modal_list);
+          setValues(initialState);
+          setCheckImagePhoto(false);
+          setIsSubmit(false);
+          setFormErrors({});
+          setPhotoAdd("");
+
+          fetchCategories();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   const handleDelete = (e) => {
     e.preventDefault();
-    removeContact(remove_id)
+    removeImages(remove_id)
       .then((res) => {
         setmodal_delete(!modal_delete);
         fetchCategories();
@@ -149,66 +171,30 @@ const ContactUs = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    let erros = validate(values);
-    setFormErrors(erros);
+    let errors = validate(values);
+    setFormErrors(errors);
     setIsSubmit(true);
 
-    if (Object.keys(erros).length === 0) {
-      updateContact(_id, values)
+    if (Object.keys(errors).length === 0) {
+      const formdata = new FormData();
+
+      formdata.append("myFile", values.image);
+      formdata.append("serialNumber", values.serialNumber);
+      formdata.append("IsActive", values.IsActive);
+
+      updateImages(_id, formdata)
         .then((res) => {
           setmodal_edit(!modal_edit);
           fetchCategories();
+          setPhotoAdd("");
+
+          setCheckImagePhoto(false);
         })
         .catch((err) => {
           console.log(err);
         });
     }
   };
-
-  const validate = (values) => {
-    const errors = {};
-
-    if (values.contactno === "") {
-      errors.contactno = "Contact Number is required!";
-      setErrCN(true);
-    }
-    if (values.contactno !== "") {
-      setErrCN(false);
-    }
-    if (values.address === "") {
-      errors.address = "Address is required!";
-      setErrAdd(true);
-    }
-    if (values.address !== "") {
-      setErrAdd(false);
-    }
-    if (values.email === "") {
-      errors.email = "Email is required!";
-      setErrEm(true);
-    }
-    if (values.email !== "") {
-      setErrEm(false);
-    }
-    if (values.gmaplink === "") {
-      errors.gmaplink = "Google Map Link is required!";
-      setErrGM(true);
-    }
-    if (values.gmaplink !== "") {
-      setErrGM(false);
-    }
-
-    return errors;
-  };
-
-  const validClassContactNumber =
-    errCN && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassEmail =
-    errEm && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassAddress =
-    errAdd && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassGMapLink = 
-    errGM && isSubmit ? "form-control is-invalid" : "form-control";
-  
 
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
@@ -239,7 +225,7 @@ const ContactUs = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/contact`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/galleryimg`,
         {
           skip: skip,
           per_page: perPage,
@@ -253,10 +239,10 @@ const ContactUs = () => {
         if (response.length > 0) {
           let res = response[0];
           setLoading(false);
-          setCategories(res.data);
+          setData(res.data);
           setTotalRows(res.count);
         } else if (response.length === 0) {
-          setCategories([]);
+          setData([]);
         }
         // console.log(res);
       });
@@ -268,6 +254,23 @@ const ContactUs = () => {
     setPageNo(page);
   };
 
+  const [photoAdd, setPhotoAdd] = useState();
+  const [checkImagePhoto, setCheckImagePhoto] = useState(false);
+
+  const PhotoUpload = (e) => {
+    if (e.target.files.length > 0) {
+      const image = new Image();
+
+      let imageurl = URL.createObjectURL(e.target.files[0]);
+      console.log("img", e.target.files[0]);
+    //   abtImage=imageurl;
+      setPhotoAdd(imageurl);
+      
+      setValues({ ...values, image: e.target.files[0] });
+      setCheckImagePhoto(true);
+    }
+  };
+
   const handlePerRowsChange = async (newPerPage, page) => {
     // setPageNo(page);
     setPerPage(newPerPage);
@@ -275,42 +278,39 @@ const ContactUs = () => {
   const handleFilter = (e) => {
     setFilter(e.target.checked);
   };
+  const renderImage = (uploadimage) => {
+    const imageUrl = `${process.env.REACT_APP_API_URL_COFFEE}/${uploadimage}`;
+
+    return (
+      <img
+        src={imageUrl}
+        alt="Image"
+        style={{ width: "75px", height: "75px", padding: "5px" }}
+      />
+    );
+  };
+
   const col = [
     {
-      name: "Contact No",
-      selector: (row) => row.contactno,
+      name: "Serial Number",
+      selector: (row) => row.serialNumber,
       sortable: true,
-      sortField: "contactno",
+      sortField: "serialNumber",
+      maxWidth: "150px",
+    },
+    {
+      name: "image",
+      selector: (row) => renderImage(row.image),
+      sortable: false,
+      sortField: "image",
       minWidth: "150px",
     },
     {
-        name: "Address",
-        selector: (row) => row.address,
-        sortable: true,
-        sortField: "address",
-        minWidth: "150px",
-      },
-      {
-        name: "Email",
-        selector: (row) => row.email,
-        sortable: true,
-        sortField: "email",
-        minWidth: "150px",
-      },
-      {
-        name: "Google Map Link",
-        selector: (row) => row.gmaplink,
+        name: "Active",
+        selector:(row) => row.IsActive?"Active" : "In Active",
         sortable: false,
-        sortField: "Google Map Link",
+        sortField: "Active",
         maxWidth: "150px",
-      },
-    {
-      name: "Status",
-      selector: (row) => {
-        return <p>{row.IsActive ? "Active" : "InActive"}</p>;
-      },
-      sortable: false,
-      sortField: "Status",
     },
     {
       name: "Action",
@@ -348,24 +348,20 @@ const ContactUs = () => {
     },
   ];
 
-  document.title = "Contact Us | Neon11";
+  document.title = "Gallery | Neon11";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb
-            maintitle="Contact Us"
-            title="Contact Us"
-            pageTitle="CMS "
-          />
+          <BreadCrumb maintitle="CMS" title="Gallery" pageTitle="CMS" />
           <Row>
             <Col lg={12}>
               <Card>
                 <CardHeader>
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" sm={6} lg={4} md={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">Contact Us</h2>
+                      <h2 className="card-title mb-0 fs-4 mt-2">Gallery </h2>
                     </Col>
 
                     <Col sm={6} lg={4} md={6}>
@@ -413,7 +409,7 @@ const ContactUs = () => {
                     <div className="table-responsive table-card mt-1 mb-1 text-right">
                       <DataTable
                         columns={col}
-                        data={categories}
+                        data={data}
                         progressPending={loading}
                         sortServer
                         onSort={(column, sortDirection, sortedRows) => {
@@ -450,73 +446,55 @@ const ContactUs = () => {
             setIsSubmit(false);
           }}
         >
-          Add Category
+          Add Gallery Images
         </ModalHeader>
         <form>
           <ModalBody>
+            
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassContactNumber}
-                placeholder="Enter Contact Number"
+                className={validClassSR}
+                placeholder="Enter serial number "
                 required
-                name="contactno"
-                value={contactno}
+                name="serialNumber"
+                value={serialNumber}
                 onChange={handleChange}
               />
               <Label>
-                Contact No <span className="text-danger">*</span>
+                Serial Number<span className="text-danger">*</span>{" "}
               </Label>
+              {isSubmit && <p className="text-danger">{formErrors.serialNumber}</p>}
+            </div>
+
+            <Col lg={6}>
+              <label>
+                Image <span className="text-danger">*</span>
+              </label>
+
+              <input
+                type="file"
+                name="image"
+                className={validClassBI}
+                // accept="images/*"
+                accept=".jpg, .jpeg, .png"
+                onChange={PhotoUpload}
+              />
               {isSubmit && (
-                <p className="text-danger">{formErrors.contactno}</p>
+                <p className="text-danger">{formErrors.image}</p>
               )}
-            </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassAddress}
-                placeholder="Enter Address"
-                required
-                name="address"
-                value={address}
-                onChange={handleChange}
-              />
-              <Label>
-                {" "}
-                Address <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && <p className="text-danger">{formErrors.address}</p>}
-            </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassEmail}
-                placeholder="Enter Email"
-                required
-                name="email"
-                value={email}
-                onChange={handleChange}
-              />
-              <Label>
-                Email <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && <p className="text-danger">{formErrors.email}</p>}
-            </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassGMapLink}
-                placeholder="Enter Google Map Link"
-                required
-                name="gmaplink"
-                value={gmaplink}
-                onChange={handleChange}
-              />
-              <Label>
-                Google Map Link <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && <p className="text-danger">{formErrors.gmaplink}</p>}
-            </div>
+              {checkImagePhoto ? (
+                <img
+                  //   src={image ?? myImage}
+                  className="m-2"
+                  src={photoAdd}
+                  alt="Profile"
+                  width="300"
+                  height="200"
+                />
+              ) : null}
+            </Col>
+
             <div className="form-check mb-2">
               <Input
                 type="checkbox"
@@ -545,6 +523,8 @@ const ContactUs = () => {
                   setmodal_list(false);
                   setValues(initialState);
                   setIsSubmit(false);
+                  setCheckImagePhoto(false);
+                  setPhotoAdd("");
                 }}
               >
                 Cancel
@@ -569,78 +549,54 @@ const ContactUs = () => {
             setIsSubmit(false);
           }}
         >
-          Edit Category
+          Edit Banner
         </ModalHeader>
         <form>
           <ModalBody>
-            <div className="form-floating mb-3">
+          <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassContactNumber}
-                placeholder="Enter Contact Number"
+                className={validClassSR}
+                placeholder="Enter serial number "
                 required
-                name="contactno"
-                value={contactno}
+                name="serialNumber"
+                value={serialNumber}
                 onChange={handleChange}
               />
               <Label>
-                Contact No <span className="text-danger">*</span>
+                Serial Number<span className="text-danger">*</span>{" "}
               </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.contactno}</p>
-              )}
+              {isSubmit && <p className="text-danger">{formErrors.serialNumber}</p>}
             </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassAddress}
-                placeholder="Enter Address"
-                required
-                name="address"
-                value={address}
-                onChange={handleChange}
+
+            <Col lg={6}>
+              <label>
+                Image <span className="text-danger">*</span>
+              </label>
+
+              <input
+                type="file"
+                name="image"
+                className={validClassBI}
+                // accept="images/*"
+                accept=".jpg, .jpeg, .png"
+                onChange={PhotoUpload}
               />
-              <Label>
-              address <span className="text-danger">*</span>
-              </Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.address}</p>
+                <p className="text-danger">{formErrors.image}</p>
               )}
-            </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassEmail}
-                placeholder="Enter Email"
-                required
-                name="email"
-                value={email}
-                onChange={handleChange}
-              />
-              <Label>
-              email <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.email}</p>
-              )}
-            </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassGMapLink}
-                placeholder="Enter Google Map Link"
-                required
-                name="gmaplink"
-                value={gmaplink}
-                onChange={handleChange}
-              />
-              <Label>
-              Google Map Link <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.gmaplink}</p>
-              )}
-            </div>
+              {checkImagePhoto ? (
+                <img
+                  //   src={image ?? myImage}
+                  className="m-2"
+                  src={photoAdd}
+                  alt="Profile"
+                  width="300"
+                  height="200"
+                />
+              ) : null}
+            </Col>
+
             <div className="form-check mb-2">
               <Input
                 type="checkbox"
@@ -671,7 +627,9 @@ const ContactUs = () => {
                 onClick={() => {
                   setmodal_edit(false);
                   setIsSubmit(false);
+                  setCheckImagePhoto(false);
                   setFormErrors({});
+                  setPhotoAdd("");
                 }}
               >
                 Cancel
@@ -695,7 +653,7 @@ const ContactUs = () => {
             setmodal_delete(false);
           }}
         >
-          Remove Category
+          Remove Promocode
         </ModalHeader>
         <form>
           <ModalBody>
@@ -740,4 +698,4 @@ const ContactUs = () => {
   );
 };
 
-export default ContactUs;
+export default Gallery;

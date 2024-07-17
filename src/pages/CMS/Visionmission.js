@@ -20,31 +20,27 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 
-import {
-  createContact,
-  removeContact,
-  updateContact,
-  getContact,
-} from '../../functions/Conatct1/Contacct'
+
+import { createSocialMedia, getSocialMedia, removeSocialMedia, updateSocialMedia } from "../../functions/SocialMedia/SocialMedia";
+import { createVisionmission, getVisionmission, removeVisionmission, updateVisionmission } from "../../functions/Visionmision/Visionmission";
 
 const initialState = {
-  contactno: "",
-  address: "",
-  email: "",
-  gmaplink: "",
-  IsActive: false,
+    vision: "",
+    mission: "",
+    value: "",
+    IsActive: false,
 };
 
-const ContactUs = () => {
+const Visionmission = () => {
   const [values, setValues] = useState(initialState);
-  const { contactno, address, email, gmaplink, IsActive } = values;
+  const { vision, mission, value, IsActive } = values;
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
 
-  const [errCN, setErrCN] = useState(false);
-  const [errAdd, setErrAdd] = useState(false);
-  const [errEm, setErrEm] = useState(false);
+  const [errVI, setErrVI] = useState(false);
+  const [errMI, setErrMI] = useState(false);
+  const [errVA, setErrVA] = useState(false);
   const [errGM, setErrGM] = useState(false);
 
   const [query, setQuery] = useState("");
@@ -79,15 +75,14 @@ const ContactUs = () => {
     setmodal_edit(!modal_edit);
     setIsSubmit(false);
     set_Id(_id);
-    getContact(_id)
+    getVisionmission(_id)
       .then((res) => {
         console.log(res);
         setValues({
           ...values,
-          contactno: res.contactno,
-          address:res.address,
-          email:res.email,
-          gmaplink: res.gmaplink,
+          vision: res.vision,
+          mission:res.mission,
+          value:res.value,
           IsActive: res.IsActive,
         });
       })
@@ -108,15 +103,23 @@ const ContactUs = () => {
     e.preventDefault();
     setFormErrors({});
     console.log("country", values);
-    let erros = validate(values);
-    setFormErrors(erros);
+    let errors = validate(values);
+    setFormErrors(errors);
     setIsSubmit(true);
+    if (Object.keys(errors).length === 0) {
+        createVisionmission(values)
+        .then((res) => {
+          setmodal_list(!modal_list);
+          setValues(initialState);
+          fetchCategories();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
 
-    createContact(values)
-      .then((res) => {
-        setmodal_list(!modal_list);
-        setValues(initialState);
-        fetchCategories();
+
+   
         // if (res.isOk) {
         //   setmodal_list(!modal_list);
         //   setValues(initialState);
@@ -129,15 +132,12 @@ const ContactUs = () => {
         //     });
         //   }
         // }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      
   };
 
   const handleDelete = (e) => {
     e.preventDefault();
-    removeContact(remove_id)
+    removeVisionmission(remove_id)
       .then((res) => {
         setmodal_delete(!modal_delete);
         fetchCategories();
@@ -154,7 +154,7 @@ const ContactUs = () => {
     setIsSubmit(true);
 
     if (Object.keys(erros).length === 0) {
-      updateContact(_id, values)
+      updateVisionmission(_id, values)
         .then((res) => {
           setmodal_edit(!modal_edit);
           fetchCategories();
@@ -168,46 +168,39 @@ const ContactUs = () => {
   const validate = (values) => {
     const errors = {};
 
-    if (values.contactno === "") {
-      errors.contactno = "Contact Number is required!";
-      setErrCN(true);
+    if (values.vision === "") {
+      errors.vision = "Vision content is required!";
+      setErrVI(true);
     }
-    if (values.contactno !== "") {
-      setErrCN(false);
+    if (values.vision !== "") {
+        setErrVI(false);
     }
-    if (values.address === "") {
-      errors.address = "Address is required!";
-      setErrAdd(true);
+    if (values.mission === "") {
+      errors.mission = "Mission content is required!";
+      setErrMI(true);
     }
-    if (values.address !== "") {
-      setErrAdd(false);
+    if (values.mission !== "") {
+        setErrMI(false);
     }
-    if (values.email === "") {
-      errors.email = "Email is required!";
-      setErrEm(true);
+    if (values.value === "") {
+      errors.value = "Value content is required!";
+      setErrVA(true);
     }
-    if (values.email !== "") {
-      setErrEm(false);
+    if (values.value !== "") {
+        setErrVA(false);
     }
-    if (values.gmaplink === "") {
-      errors.gmaplink = "Google Map Link is required!";
-      setErrGM(true);
-    }
-    if (values.gmaplink !== "") {
-      setErrGM(false);
-    }
+    
 
     return errors;
   };
 
-  const validClassContactNumber =
-    errCN && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassEmail =
-    errEm && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassAddress =
-    errAdd && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassGMapLink = 
-    errGM && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassVision =
+    errVI && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassMission =
+    errMI && isSubmit ? "form-control is-invalid" : "form-control";
+  const validClassValue =
+    errVA && isSubmit ? "form-control is-invalid" : "form-control";
+
   
 
   const [loading, setLoading] = useState(false);
@@ -239,7 +232,7 @@ const ContactUs = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/contact`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/vision-mission`,
         {
           skip: skip,
           per_page: perPage,
@@ -277,33 +270,27 @@ const ContactUs = () => {
   };
   const col = [
     {
-      name: "Contact No",
-      selector: (row) => row.contactno,
+      name: "Vision",
+      selector: (row) => row.vision,
       sortable: true,
-      sortField: "contactno",
+      sortField: "Vision",
       minWidth: "150px",
     },
     {
-        name: "Address",
-        selector: (row) => row.address,
+        name: "Mission",
+        selector: (row) => row.mission,
         sortable: true,
-        sortField: "address",
+        sortField: "Mission",
         minWidth: "150px",
       },
       {
-        name: "Email",
-        selector: (row) => row.email,
+        name: "Value",
+        selector: (row) => row.value,
         sortable: true,
-        sortField: "email",
+        sortField: "value",
         minWidth: "150px",
       },
-      {
-        name: "Google Map Link",
-        selector: (row) => row.gmaplink,
-        sortable: false,
-        sortField: "Google Map Link",
-        maxWidth: "150px",
-      },
+      
     {
       name: "Status",
       selector: (row) => {
@@ -348,15 +335,15 @@ const ContactUs = () => {
     },
   ];
 
-  document.title = "Contact Us | Neon11";
+  document.title = "Vision Mission Value | Neon11";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           <BreadCrumb
-            maintitle="Contact Us"
-            title="Contact Us"
+            maintitle="Vision Mission Value"
+            title="Vision Mission Value"
             pageTitle="CMS "
           />
           <Row>
@@ -365,7 +352,7 @@ const ContactUs = () => {
                 <CardHeader>
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" sm={6} lg={4} md={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">Contact Us</h2>
+                      <h2 className="card-title mb-0 fs-4 mt-2">Vision Mission Value</h2>
                     </Col>
 
                     <Col sm={6} lg={4} md={6}>
@@ -450,73 +437,58 @@ const ContactUs = () => {
             setIsSubmit(false);
           }}
         >
-          Add Category
+          Add Vision Mission Value Content
         </ModalHeader>
         <form>
           <ModalBody>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassContactNumber}
-                placeholder="Enter Contact Number"
+                className={validClassVision}
+                placeholder="Enter Vision Content"
                 required
-                name="contactno"
-                value={contactno}
+                name="vision"
+                value={vision}
                 onChange={handleChange}
               />
               <Label>
-                Contact No <span className="text-danger">*</span>
+                Vision <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.contactno}</p>
+                <p className="text-danger">{formErrors.vision}</p>
               )}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassAddress}
-                placeholder="Enter Address"
+                className={validClassMission}
+                placeholder="Enter Mission Content"
                 required
-                name="address"
-                value={address}
+                name="mission"
+                value={mission}
                 onChange={handleChange}
               />
               <Label>
                 {" "}
-                Address <span className="text-danger">*</span>
+                Mission <span className="text-danger">*</span>
               </Label>
-              {isSubmit && <p className="text-danger">{formErrors.address}</p>}
+              {isSubmit && <p className="text-danger">{formErrors.mission}</p>}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassEmail}
-                placeholder="Enter Email"
+                className={validClassValue}
+                placeholder="Enter Value Content"
                 required
-                name="email"
-                value={email}
+                name="value"
+                value={value}
                 onChange={handleChange}
               />
               <Label>
-                Email <span className="text-danger">*</span>
+                Value <span className="text-danger">*</span>
               </Label>
-              {isSubmit && <p className="text-danger">{formErrors.email}</p>}
-            </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassGMapLink}
-                placeholder="Enter Google Map Link"
-                required
-                name="gmaplink"
-                value={gmaplink}
-                onChange={handleChange}
-              />
-              <Label>
-                Google Map Link <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && <p className="text-danger">{formErrors.gmaplink}</p>}
-            </div>
+              {isSubmit && <p className="text-danger">{formErrors.value}</p>}
+            </div> 
             <div className="form-check mb-2">
               <Input
                 type="checkbox"
@@ -573,74 +545,55 @@ const ContactUs = () => {
         </ModalHeader>
         <form>
           <ModalBody>
-            <div className="form-floating mb-3">
+          <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassContactNumber}
-                placeholder="Enter Contact Number"
+                className={validClassVision}
+                placeholder="Enter Vision Content"
                 required
-                name="contactno"
-                value={contactno}
+                name="vision"
+                value={vision}
                 onChange={handleChange}
               />
               <Label>
-                Contact No <span className="text-danger">*</span>
+                Vision <span className="text-danger">*</span>
               </Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.contactno}</p>
+                <p className="text-danger">{formErrors.vision}</p>
               )}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassAddress}
-                placeholder="Enter Address"
+                className={validClassMission}
+                placeholder="Enter Mission Content"
                 required
-                name="address"
-                value={address}
+                name="mission"
+                value={mission}
                 onChange={handleChange}
               />
               <Label>
-              address <span className="text-danger">*</span>
+                {" "}
+                Mission <span className="text-danger">*</span>
               </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.address}</p>
-              )}
+              {isSubmit && <p className="text-danger">{formErrors.mission}</p>}
             </div>
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassEmail}
-                placeholder="Enter Email"
+                className={validClassValue}
+                placeholder="Enter Value Content"
                 required
-                name="email"
-                value={email}
+                name="value"
+                value={value}
                 onChange={handleChange}
               />
               <Label>
-              email <span className="text-danger">*</span>
+                Value <span className="text-danger">*</span>
               </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.email}</p>
-              )}
+              {isSubmit && <p className="text-danger">{formErrors.value}</p>}
             </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassGMapLink}
-                placeholder="Enter Google Map Link"
-                required
-                name="gmaplink"
-                value={gmaplink}
-                onChange={handleChange}
-              />
-              <Label>
-              Google Map Link <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.gmaplink}</p>
-              )}
-            </div>
+            
             <div className="form-check mb-2">
               <Input
                 type="checkbox"
@@ -740,4 +693,4 @@ const ContactUs = () => {
   );
 };
 
-export default ContactUs;
+export default Visionmission;
