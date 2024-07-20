@@ -21,15 +21,15 @@ import axios from "axios";
 import DataTable from "react-data-table-component";
 
 import { createImages, getImages, removeImages, updateImages } from "../../functions/Gallery/Gallery";
+import { createLogo, getLogo, removeLogo, updateLogo } from "../../functions/Logo/Logo";
 const initialState = {
-  serialNumber: "",
-  image: "",
+  logo: "",
   IsActive: false,
 };
 
-const Gallery = () => {
+const Logo = () => {
   const [values, setValues] = useState(initialState);
-  const { serialNumber, image, IsActive } = values;
+  const {logo, IsActive } = values;
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
@@ -66,16 +66,15 @@ const Gallery = () => {
     setmodal_edit(!modal_edit);
     setIsSubmit(false);
     set_Id(_id);
-    getImages(_id)
+    getLogo(_id)
       .then((res) => {
         console.log(res);
         setValues({
           ...values,
-          serialNumber: res.serialNumber,
-          image: res.image,
+          logo: res.logo,
           IsActive: res.IsActive,
         });
-        console.log("res", values.serialNumber);
+        console.log("res", values.logo);
       })
       .catch((err) => {
         console.log(err);
@@ -92,25 +91,13 @@ const Gallery = () => {
 
   const [errSR, setErrSR] = useState(false);
   const [errBI, setErrBI] = useState(false);
-//   const [errB1, setErrB1] = useState(false);
-//   const [errB2, setErrB2] = useState(false);
-//   const [errB3, setErrB3] = useState(false);
-//   const [errB4, setErrB4] = useState(false);
-//   const [errDS, setErrDS] = useState(false);
+
 
   const validate = (values) => {
     const errors = {};
 
-    if (values.serialNumber === "") {
-      errors.serialNumber = "Serial Number is required!";
-      setErrSR(true);
-    }
-    if (values.serialNumber !== "") {
-      setErrSR(false);
-    }
-
     if (values.image === "") {
-      errors.image = "Image is required!";
+      errors.image = "Logo is required!";
       setErrBI(true);
     }
     if (values.image !== "") {
@@ -120,8 +107,7 @@ const Gallery = () => {
     return errors;
   };
 
-  const validClassSR =
-    errSR && isSubmit ? "form-control is-invalid" : "form-control";
+
 
   const validClassBI =
     errBI && isSubmit ? "form-control is-invalid" : "form-control";
@@ -136,11 +122,10 @@ const Gallery = () => {
     if (Object.keys(errors).length === 0) {
       const formdata = new FormData();
 
-      formdata.append("myFile", values.image);
-      formdata.append("serialNumber", values.serialNumber);
+      formdata.append("myFile", values.logo);
       formdata.append("IsActive", values.IsActive);
 
-      createImages(formdata)
+      createLogo(formdata)
         .then((res) => {
           setmodal_list(!modal_list);
           setValues(initialState);
@@ -159,7 +144,7 @@ const Gallery = () => {
 
   const handleDelete = (e) => {
     e.preventDefault();
-    removeImages(remove_id)
+    removeLogo(remove_id)
       .then((res) => {
         setmodal_delete(!modal_delete);
         fetchCategories();
@@ -178,11 +163,10 @@ const Gallery = () => {
     if (Object.keys(errors).length === 0) {
       const formdata = new FormData();
 
-      formdata.append("myFile", values.image);
-      formdata.append("serialNumber", values.serialNumber);
+      formdata.append("myFile", values.logo);
       formdata.append("IsActive", values.IsActive);
 
-      updateImages(_id, formdata)
+      updateLogo(_id, formdata)
         .then((res) => {
           setmodal_edit(!modal_edit);
           fetchCategories();
@@ -225,7 +209,7 @@ const Gallery = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/galleryimg`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/logo`,
         {
           skip: skip,
           per_page: perPage,
@@ -266,7 +250,7 @@ const Gallery = () => {
     //   abtImage=imageurl;
       setPhotoAdd(imageurl);
       
-      setValues({ ...values, image: e.target.files[0] });
+      setValues({ ...values, logo: e.target.files[0] });
       setCheckImagePhoto(true);
     }
   };
@@ -285,24 +269,17 @@ const Gallery = () => {
       <img
         src={imageUrl}
         alt="Image"
-        style={{ width: "75px", height: "75px", padding: "5px" }}
+        style={{ width: "150px", height: "150px", padding: "5px" }}
       />
     );
   };
 
   const col = [
     {
-      name: "Serial Number",
-      selector: (row) => row.serialNumber,
-      sortable: true,
-      sortField: "serialNumber",
-      maxWidth: "150px",
-    },
-    {
-      name: "image",
-      selector: (row) => renderImage(row.image),
+      name: "Logo",
+      selector: (row) => renderImage(row.logo),
       sortable: false,
-      sortField: "image",
+      sortField: "logo",
       minWidth: "150px",
     },
     {
@@ -348,20 +325,20 @@ const Gallery = () => {
     },
   ];
 
-  document.title = "Gallery | Neon11";
+  document.title = "Logo | Neon11";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb maintitle="CMS" title="Gallery" pageTitle="CMS" />
+          <BreadCrumb maintitle="CMS" title="Logo" pageTitle="CMS" />
           <Row>
             <Col lg={12}>
               <Card>
                 <CardHeader>
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" sm={6} lg={4} md={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">Gallery </h2>
+                      <h2 className="card-title mb-0 fs-4 mt-2">Logo </h2>
                     </Col>
 
                     <Col sm={6} lg={4} md={6}>
@@ -446,28 +423,11 @@ const Gallery = () => {
             setIsSubmit(false);
           }}
         >
-          Add Gallery Images
+          Add Logo
         </ModalHeader>
         <form>
           <ModalBody>
-            
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassSR}
-                placeholder="Enter serial number "
-                required
-                name="serialNumber"
-                value={serialNumber}
-                onChange={handleChange}
-              />
-              <Label>
-                Serial Number<span className="text-danger">*</span>{" "}
-              </Label>
-              {isSubmit && <p className="text-danger">{formErrors.serialNumber}</p>}
-            </div>
-
-            <Col lg={6}>
+            <Col lg={6} className="mb-3">
               <label>
                 Image <span className="text-danger">*</span>
               </label>
@@ -481,7 +441,7 @@ const Gallery = () => {
                 onChange={PhotoUpload}
               />
               {isSubmit && (
-                <p className="text-danger">{formErrors.image}</p>
+                <p className="text-danger">{formErrors.logo}</p>
               )}
               {checkImagePhoto ? (
                 <img
@@ -549,26 +509,10 @@ const Gallery = () => {
             setIsSubmit(false);
           }}
         >
-          Edit Banner
+          Edit Logo
         </ModalHeader>
         <form>
           <ModalBody>
-          <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassSR}
-                placeholder="Enter serial number "
-                required
-                name="serialNumber"
-                value={serialNumber}
-                onChange={handleChange}
-              />
-              <Label>
-                Serial Number<span className="text-danger">*</span>{" "}
-              </Label>
-              {isSubmit && <p className="text-danger">{formErrors.serialNumber}</p>}
-            </div>
-
             <Col lg={6}>
               <label>
                 Image <span className="text-danger">*</span>
@@ -583,7 +527,7 @@ const Gallery = () => {
                 onChange={PhotoUpload}
               />
               {isSubmit && (
-                <p className="text-danger">{formErrors.image}</p>
+                <p className="text-danger">{formErrors.logo}</p>
               )}
               {checkImagePhoto ? (
                 <img
@@ -698,4 +642,4 @@ const Gallery = () => {
   );
 };
 
-export default Gallery;
+export default Logo;

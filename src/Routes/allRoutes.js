@@ -28,6 +28,9 @@ import LEDCategoryMaster from "../pages/Category/LEDCategoryMaster";
 import LEDBoard from "../pages/LEDBoard/LEDBoard";
 import NeonSigns from "../pages/NeonSigns/NeonSigns";
 import NeonDesc from "../pages/NeonSigns/NeonDesc";
+import Logo from "../pages/Logo/Logo";
+import NeonGoProducts from "../pages/NeonGoProducts/NeonGoProducts";
+import ControllerProducts from "../pages/ControllerProducts/ControllerProducts";
 const authProtectedRoutes = [
   // { path: "/dashboard", component: <DashboardCrm /> },
   { path: "/profile", component: <UserProfile /> },
@@ -39,6 +42,7 @@ const authProtectedRoutes = [
   { path: "/company-details", component: <CompanyDetails /> },
   {path:"/contact",component:<ContactUs/>},
   {path:"/socialmedia", component:<SocialMedia/>},
+  {path:"/logo", component:<Logo/>},
   {path:"/aboutus", component:<AboutUs/>},
   {path:"/galleryimg", component:<Gallery/>},
   {path:"/ytdesc", component:<YTDesc/>},
@@ -56,6 +60,8 @@ const authProtectedRoutes = [
   { path: "/ledboard-details", component: <LEDBoard /> },
   { path: "/neonsigns-details", component: <NeonSigns /> },
   { path: "/neondesc-details", component: <NeonDesc /> },
+  { path: "/neongo-products", component: <NeonGoProducts /> },
+  { path: "/controller-products", component: <ControllerProducts /> },
 
 
   {

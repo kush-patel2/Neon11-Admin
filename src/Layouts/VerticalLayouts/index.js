@@ -246,7 +246,7 @@ const VerticalLayout = (props) => {
         </Collapse>
       </li>
 
-      {/* <li className="nav-item">
+      <li className="nav-item">
         <Link
           className="nav-link menu-link"
           to="#"
@@ -263,14 +263,24 @@ const VerticalLayout = (props) => {
           //   id="sidebarApps"
         >
           <ul className="nav nav-sm flex-column test">
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link to="/product-details" className="nav-link">
                 Product Details
+              </Link>
+            </li> */}
+            <li className="nav-item">
+              <Link to="/neongo-products" className="nav-link">
+                NeonGo Products
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/controller-products" className="nav-link">
+              Controller Products
               </Link>
             </li>
           </ul>
         </Collapse>
-      </li> */}
+      </li>
 
       {/* <li className="nav-item">
         <Link
@@ -313,9 +323,14 @@ const VerticalLayout = (props) => {
           //   id="sidebarApps"
         >
           <ul className="nav nav-sm flex-column test">
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className="nav-link menu-link" to="/blogs">
                 <span data-key="t-apps">Blogs </span>
+              </Link>
+            </li> */}
+            <li className="nav-item">
+              <Link className="nav-link menu-link" to="/logo">
+                <span data-key="t-apps">Logo </span>
               </Link>
             </li>
             <li className="nav-item">
