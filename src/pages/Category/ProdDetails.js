@@ -20,32 +20,22 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 
-import {
-  createContact,
-  removeContact,
-  updateContact,
-  getContact,
-} from '../../functions/Conatct1/Contacct'
+
+import { createProdCategoryMaster, getProdCategoryMaster, removeProdCategoryMaster, updateProdCategoryMaster } from "../../functions/Category/ProdCategory";
 
 const initialState = {
-  contactno: "",
-  address: "",
-  email: "",
-  gmaplink: "",
+  categoryName: "",
   IsActive: false,
 };
 
-const ContactUs = () => {
+const ProdCategoryMaster = () => {
   const [values, setValues] = useState(initialState);
-  const { contactno, address, email, gmaplink, IsActive } = values;
+  const { categoryName, IsActive } = values;
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [filter, setFilter] = useState(true);
-
+ 
   const [errCN, setErrCN] = useState(false);
-  const [errAdd, setErrAdd] = useState(false);
-  const [errEm, setErrEm] = useState(false);
-  const [errGM, setErrGM] = useState(false);
 
   const [query, setQuery] = useState("");
 
@@ -79,15 +69,12 @@ const ContactUs = () => {
     setmodal_edit(!modal_edit);
     setIsSubmit(false);
     set_Id(_id);
-    getContact(_id)
+    getProdCategoryMaster(_id)
       .then((res) => {
         console.log(res);
         setValues({
           ...values,
-          contactno: res.contactno,
-          address:res.address,
-          email:res.email,
-          gmaplink: res.gmaplink,
+          categoryName: res.categoryName,
           IsActive: res.IsActive,
         });
       })
@@ -108,36 +95,39 @@ const ContactUs = () => {
     e.preventDefault();
     setFormErrors({});
     console.log("country", values);
-    let erros = validate(values);
-    setFormErrors(erros);
+    let errors = validate(values);
+    setFormErrors(errors);
     setIsSubmit(true);
+    if (Object.keys(errors).length === 0) {
+        createProdCategoryMaster(values)
+        .then((res) => {
+          setmodal_list(!modal_list);
+            setValues(initialState);
+            fetchCategories();
+          // if (res.isOk) {
+          //   setmodal_list(!modal_list);
+          //   setValues(initialState);
+          //   fetchCategories();
+          // } else {
+          //   if (res.field === 1) {
+          //     setErrCN(true);
+          //     setFormErrors({
+          //       categoryName: "This Category name is already exists!",
+          //     });
+          //   }
+          // }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
 
-    createContact(values)
-      .then((res) => {
-        setmodal_list(!modal_list);
-        setValues(initialState);
-        fetchCategories();
-        // if (res.isOk) {
-        //   setmodal_list(!modal_list);
-        //   setValues(initialState);
-        //   fetchCategories();
-        // } else {
-        //   if (res.field === 1) {
-        //     setErrCN(true);
-        //     setFormErrors({
-        //       categoryName: "This Category name is already exists!",
-        //     });
-        //   }
-        // }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      
   };
 
   const handleDelete = (e) => {
     e.preventDefault();
-    removeContact(remove_id)
+    removeProdCategoryMaster(remove_id)
       .then((res) => {
         setmodal_delete(!modal_delete);
         fetchCategories();
@@ -149,12 +139,12 @@ const ContactUs = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    let erros = validate(values);
-    setFormErrors(erros);
+    let errors = validate(values);
+    setFormErrors(errors);
     setIsSubmit(true);
 
-    if (Object.keys(erros).length === 0) {
-      updateContact(_id, values)
+    if (Object.keys(errors).length === 0) {
+      updateProdCategoryMaster(_id, values)
         .then((res) => {
           setmodal_edit(!modal_edit);
           fetchCategories();
@@ -168,47 +158,19 @@ const ContactUs = () => {
   const validate = (values) => {
     const errors = {};
 
-    if (values.contactno === "") {
-      errors.contactno = "Contact Number is required!";
+    if (values.categoryName === "") {
+      errors.categoryName = "Category Name is required!";
       setErrCN(true);
     }
-    if (values.contactno !== "") {
+    if (values.categoryName !== "") {
       setErrCN(false);
-    }
-    if (values.address === "") {
-      errors.address = "Address is required!";
-      setErrAdd(true);
-    }
-    if (values.address !== "") {
-      setErrAdd(false);
-    }
-    if (values.email === "") {
-      errors.email = "Email is required!";
-      setErrEm(true);
-    }
-    if (values.email !== "") {
-      setErrEm(false);
-    }
-    if (values.gmaplink === "") {
-      errors.gmaplink = "Google Map Link is required!";
-      setErrGM(true);
-    }
-    if (values.gmaplink !== "") {
-      setErrGM(false);
     }
 
     return errors;
   };
 
-  const validClassContactNumber =
+  const validClassCategoryName =
     errCN && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassEmail =
-    errEm && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassAddress =
-    errAdd && isSubmit ? "form-control is-invalid" : "form-control";
-  const validClassGMapLink = 
-    errGM && isSubmit ? "form-control is-invalid" : "form-control";
-  
 
   const [loading, setLoading] = useState(false);
   const [totalRows, setTotalRows] = useState(0);
@@ -239,7 +201,7 @@ const ContactUs = () => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/contact`,
+        `${process.env.REACT_APP_API_URL_COFFEE}/api/auth/list-by-params/ProductsCategoryMaster`,
         {
           skip: skip,
           per_page: perPage,
@@ -277,33 +239,13 @@ const ContactUs = () => {
   };
   const col = [
     {
-      name: "Contact No",
-      selector: (row) => row.contactno,
+      name: "Category Name",
+      selector: (row) => row.categoryName,
       sortable: true,
-      sortField: "contactno",
+      sortField: "categoryName",
       minWidth: "150px",
     },
-    {
-        name: "Address",
-        selector: (row) => row.address,
-        sortable: true,
-        sortField: "address",
-        minWidth: "150px",
-      },
-      {
-        name: "Email",
-        selector: (row) => row.email,
-        sortable: true,
-        sortField: "email",
-        minWidth: "150px",
-      },
-      {
-        name: "Google Map Link",
-        selector: (row) => row.gmaplink,
-        sortable: false,
-        sortField: "Google Map Link",
-        maxWidth: "150px",
-      },
+
     {
       name: "Status",
       selector: (row) => {
@@ -348,16 +290,16 @@ const ContactUs = () => {
     },
   ];
 
-  document.title = "Contact Us | Neon11";
+  document.title = "Products Category | Neon 11";
 
   return (
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
           <BreadCrumb
-            maintitle="Contact Us"
-            title="Contact Us"
-            pageTitle="CMS "
+            maintitle="Category"
+            title="Products Category"
+            pageTitle="Category"
           />
           <Row>
             <Col lg={12}>
@@ -365,7 +307,7 @@ const ContactUs = () => {
                 <CardHeader>
                   <Row className="g-4 mb-1">
                     <Col className="col-sm" sm={6} lg={4} md={6}>
-                      <h2 className="card-title mb-0 fs-4 mt-2">Contact Us</h2>
+                      <h2 className="card-title mb-0 fs-4 mt-2">Products Category</h2>
                     </Col>
 
                     <Col sm={6} lg={4} md={6}>
@@ -457,66 +399,19 @@ const ContactUs = () => {
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassContactNumber}
-                placeholder="Enter Contact Number"
+                className={validClassCategoryName}
+                placeholder="Enter Category Name"
                 required
-                name="contactno"
-                value={contactno}
+                name="categoryName"
+                value={categoryName}
                 onChange={handleChange}
               />
-              <Label>
-                Contact No <span className="text-danger">*</span>
-              </Label>
+              <Label>Category Name <span className="text-danger">*</span></Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.contactno}</p>
+                <p className="text-danger">{formErrors.categoryName}</p>
               )}
             </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassAddress}
-                placeholder="Enter Address"
-                required
-                name="address"
-                value={address}
-                onChange={handleChange}
-              />
-              <Label>
-                {" "}
-                Address <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && <p className="text-danger">{formErrors.address}</p>}
-            </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassEmail}
-                placeholder="Enter Email"
-                required
-                name="email"
-                value={email}
-                onChange={handleChange}
-              />
-              <Label>
-                Email <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && <p className="text-danger">{formErrors.email}</p>}
-            </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassGMapLink}
-                placeholder="Enter Google Map Link"
-                required
-                name="gmaplink"
-                value={gmaplink}
-                onChange={handleChange}
-              />
-              <Label>
-                Google Map Link <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && <p className="text-danger">{formErrors.gmaplink}</p>}
-            </div>
+
             <div className="form-check mb-2">
               <Input
                 type="checkbox"
@@ -576,71 +471,19 @@ const ContactUs = () => {
             <div className="form-floating mb-3">
               <Input
                 type="text"
-                className={validClassContactNumber}
-                placeholder="Enter Contact Number"
+                className={validClassCategoryName}
+                placeholder="Enter Category Name"
                 required
-                name="contactno"
-                value={contactno}
+                name="categoryName"
+                value={categoryName}
                 onChange={handleChange}
               />
-              <Label>
-                Contact No <span className="text-danger">*</span>
-              </Label>
+              <Label>Category Name <span className="text-danger">*</span></Label>
               {isSubmit && (
-                <p className="text-danger">{formErrors.contactno}</p>
+                <p className="text-danger">{formErrors.categoryName}</p>
               )}
             </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassAddress}
-                placeholder="Enter Address"
-                required
-                name="address"
-                value={address}
-                onChange={handleChange}
-              />
-              <Label>
-              address <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.address}</p>
-              )}
-            </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassEmail}
-                placeholder="Enter Email"
-                required
-                name="email"
-                value={email}
-                onChange={handleChange}
-              />
-              <Label>
-              email <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.email}</p>
-              )}
-            </div>
-            <div className="form-floating mb-3">
-              <Input
-                type="text"
-                className={validClassGMapLink}
-                placeholder="Enter Google Map Link"
-                required
-                name="gmaplink"
-                value={gmaplink}
-                onChange={handleChange}
-              />
-              <Label>
-              Google Map Link <span className="text-danger">*</span>
-              </Label>
-              {isSubmit && (
-                <p className="text-danger">{formErrors.gmaplink}</p>
-              )}
-            </div>
+
             <div className="form-check mb-2">
               <Input
                 type="checkbox"
@@ -740,4 +583,4 @@ const ContactUs = () => {
   );
 };
 
-export default ContactUs;
+export default ProdCategoryMaster;

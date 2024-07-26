@@ -17,10 +17,13 @@ const VerticalLayout = (props) => {
   const [product, setproduct] = useState(false);
   const [order, setOrder] = useState(false);
   const [category, setCategory] = useState(false);
+  const [homecomponents, sethomecomponents] = useState(false);
   const [subs, setSubs] = useState(false);
   const [inquiry, setInquiry] = useState(false);
   const [policy, setPolicy] = useState(false);
+  const [neonsigns, setNeonSigns] = useState(false);
   const [cms, setCMS] = useState(false);
+  const [usrs, setUsrs] = useState(false);
 
   const navData = navdata().props.children;
   const path = props.router.location.pathname;
@@ -224,6 +227,29 @@ const VerticalLayout = (props) => {
                       <span data-key="t-apps">Products Category </span>
                     </Link>
                   </li>
+                  <li className="nav-item">
+                    <Link
+                      className="nav-link menu-link"
+                      to="/neonsigns-category"
+                    >
+                      <span data-key="t-apps">Neon Signs Category </span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link menu-link" to="/led-category">
+                      <span data-key="t-apps">LED Category </span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link menu-link" to="/product-category">
+                      <span data-key="t-apps">Product Category </span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link menu-link" to="/product-details">
+                      <span data-key="t-apps">Product Details </span>
+                    </Link>
+                  </li>
                 </ul>
               </Collapse>
             </li>
@@ -231,7 +257,7 @@ const VerticalLayout = (props) => {
         </Collapse>
       </li>
 
-      {/* <li className="nav-item">
+      <li className="nav-item">
         <Link
           className="nav-link menu-link"
           to="#"
@@ -248,15 +274,56 @@ const VerticalLayout = (props) => {
           //   id="sidebarApps"
         >
           <ul className="nav nav-sm flex-column test">
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link to="/product-details" className="nav-link">
                 Product Details
+              </Link>
+            </li> */}
+            <li className="nav-item">
+              <Link to="/neongo-products" className="nav-link">
+                NeonGo Products
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/controller-products" className="nav-link">
+              Controller Products
               </Link>
             </li>
           </ul>
         </Collapse>
-      </li> */}
+      </li>
 
+      <li className="nav-item">
+        <Link
+          className="nav-link menu-link"
+          to="#"
+          data-bs-toggle="collapse"
+          onClick={() => {
+            setUsrs(!usrs);
+          }}
+        >
+          <span data-key="t-apps"> Users </span>
+        </Link>
+        <Collapse
+          className="menu-dropdown"
+          isOpen={usrs}
+          //   id="sidebarApps"
+        >
+          <ul className="nav nav-sm flex-column test">
+            {/* <li className="nav-item">
+              <Link to="/product-details" className="nav-link">
+                Product Details
+              </Link>
+            </li> */}
+            <li className="nav-item">
+              <Link to="/list-users" className="nav-link">
+                Users List
+              </Link>
+            </li>
+            
+          </ul>
+        </Collapse>
+      </li>
       {/* <li className="nav-item">
         <Link
           className="nav-link menu-link"
@@ -298,30 +365,119 @@ const VerticalLayout = (props) => {
           //   id="sidebarApps"
         >
           <ul className="nav nav-sm flex-column test">
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className="nav-link menu-link" to="/blogs">
                 <span data-key="t-apps">Blogs </span>
+              </Link>
+            </li> */}
+            <li className="nav-item">
+              <Link className="nav-link menu-link" to="/logo">
+                <span data-key="t-apps">Logo </span>
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link menu-link" to="/contact">
-                <span data-key="t-apps">Footer </span>
+                <span data-key="t-apps">Contact Us </span>
               </Link>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className="nav-link menu-link" to="/newproject">
                 <span data-key="t-apps">New Project </span>
               </Link>
-            </li>
-            <li className="nav-item">
+            </li> */}
+            {/* <li className="nav-item">
               <Link className="nav-link menu-link" to="/review">
                 <span data-key="t-apps">User Review </span>
               </Link>
+            </li> */}
+
+            <li className="nav-item">
+              <Link className="nav-link menu-link" to="/socialmedia">
+                <span data-key="t-apps">Social Media Links </span>
+              </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link menu-link" to="/banner">
-                <span data-key="t-apps">Carousel Images </span>
+              <Link className="nav-link menu-link" to="/aboutus">
+                <span data-key="t-apps">About Us</span>
               </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link menu-link" to="/galleryimg">
+                <span data-key="t-apps">Gallery Images</span>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/ledboard-details" className="nav-link">
+                LED Board Details
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link
+                className="nav-link menu-link"
+                to="#"
+                data-bs-toggle="collapse"
+                onClick={() => {
+                  setNeonSigns(!neonsigns);
+                }}
+              >
+                <span data-key="t-apps"> Neon Signs</span>
+              </Link>
+              <Collapse className="menu-dropdown" isOpen={neonsigns}>
+                <ul className="nav nav-sm flex-column test"></ul>
+                <ul className="nav nav-sm flex-column test">
+                  <li className="nav-item">
+                    <Link to="/neonsigns-details" className="nav-link">
+                      Neon Signs-YT Links Details
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/neondesc-details" className="nav-link">
+                      Neon Description Details
+                    </Link>
+                  </li>
+                </ul>
+                <ul className="nav nav-sm flex-column test"></ul>
+              </Collapse>
+            </li>
+            <li className="nav-item">
+              <Link
+                className="nav-link menu-link"
+                to="#"
+                data-bs-toggle="collapse"
+                onClick={() => {
+                  // setCategory(!category);
+                  sethomecomponents(!homecomponents);
+                }}
+              >
+                <span data-key="t-apps"> Home Components</span>
+              </Link>
+              <Collapse className="menu-dropdown" isOpen={homecomponents}>
+                <ul className="nav nav-sm flex-column test">
+                  <li className="nav-item">
+                    <Link className="nav-link menu-link" to="/banner">
+                      <span data-key="t-apps">Carousel Images </span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link menu-link" to="/ytdesc">
+                      <span data-key="t-apps">
+                        Description with Youtube Video{" "}
+                      </span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link menu-link" to="/home-about">
+                      <span data-key="t-apps">Home Page- About Section </span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link menu-link" to="/vision-mission">
+                      <span data-key="t-apps">Vision Mission Value </span>
+                    </Link>
+                  </li>
+                </ul>
+              </Collapse>
             </li>
           </ul>
         </Collapse>
