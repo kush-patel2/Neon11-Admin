@@ -23,6 +23,7 @@ const VerticalLayout = (props) => {
   const [policy, setPolicy] = useState(false);
   const [neonsigns, setNeonSigns] = useState(false);
   const [cms, setCMS] = useState(false);
+  const [usrs, setUsrs] = useState(false);
 
   const navData = navdata().props.children;
   const path = props.router.location.pathname;
@@ -239,6 +240,16 @@ const VerticalLayout = (props) => {
                       <span data-key="t-apps">LED Category </span>
                     </Link>
                   </li>
+                  <li className="nav-item">
+                    <Link className="nav-link menu-link" to="/product-category">
+                      <span data-key="t-apps">Product Category </span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link menu-link" to="/product-details">
+                      <span data-key="t-apps">Product Details </span>
+                    </Link>
+                  </li>
                 </ul>
               </Collapse>
             </li>
@@ -282,6 +293,37 @@ const VerticalLayout = (props) => {
         </Collapse>
       </li>
 
+      <li className="nav-item">
+        <Link
+          className="nav-link menu-link"
+          to="#"
+          data-bs-toggle="collapse"
+          onClick={() => {
+            setUsrs(!usrs);
+          }}
+        >
+          <span data-key="t-apps"> Users </span>
+        </Link>
+        <Collapse
+          className="menu-dropdown"
+          isOpen={usrs}
+          //   id="sidebarApps"
+        >
+          <ul className="nav nav-sm flex-column test">
+            {/* <li className="nav-item">
+              <Link to="/product-details" className="nav-link">
+                Product Details
+              </Link>
+            </li> */}
+            <li className="nav-item">
+              <Link to="/list-users" className="nav-link">
+                Users List
+              </Link>
+            </li>
+            
+          </ul>
+        </Collapse>
+      </li>
       {/* <li className="nav-item">
         <Link
           className="nav-link menu-link"

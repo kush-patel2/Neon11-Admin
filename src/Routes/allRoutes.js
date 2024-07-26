@@ -31,6 +31,9 @@ import NeonDesc from "../pages/NeonSigns/NeonDesc";
 import Logo from "../pages/Logo/Logo";
 import NeonGoProducts from "../pages/NeonGoProducts/NeonGoProducts";
 import ControllerProducts from "../pages/ControllerProducts/ControllerProducts";
+import Userslist from "../pages/Userslist/Userslist";
+import ProdCategoryMaster from "../pages/Category/ProdDetails";
+import ProdDetails from "../pages/ProdDetails.js/ProdDetails";
 const authProtectedRoutes = [
   // { path: "/dashboard", component: <DashboardCrm /> },
   { path: "/profile", component: <UserProfile /> },
@@ -51,6 +54,8 @@ const authProtectedRoutes = [
   { path: "/category", component: <CategoryMaster /> },
   { path: "/neonsigns-category", component: <NeonSignsCategoryMaster/> },
   { path: "/led-category", component: <LEDCategoryMaster/> },
+  { path: "/product-category", component: <ProdCategoryMaster/> },
+  { path: "/product-details", component: <ProdDetails/> },
   {path:"/review",component:<Review/>},
   { path: "/blogs", component: <Blogs /> },
   { path: "/banner", component: <Banner /> },
@@ -62,6 +67,7 @@ const authProtectedRoutes = [
   { path: "/neondesc-details", component: <NeonDesc /> },
   { path: "/neongo-products", component: <NeonGoProducts /> },
   { path: "/controller-products", component: <ControllerProducts /> },
+  { path: "/list-users", component: <Userslist /> },
 
 
   {
